@@ -1,6 +1,5 @@
-
 import { Card } from "@/components/ui/card";
-import { Check, Clock, ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 const todaysStats = {
@@ -80,16 +79,6 @@ export default function DashboardStats() {
   const fatPercent = (stats.fat.current / stats.fat.target) * 100;
   const stepsPercent = (stats.steps.current / stats.steps.target) * 100;
   const sleepPercent = (stats.sleep.current / stats.sleep.target) * 100;
-
-  const getBodyBatteryTip = () => {
-    if (stats.bodyBattery < 60) {
-      return "Your body battery is low. Consider a lighter workout or rest day today.";
-    } else if (stats.bodyBattery < 80) {
-      return "You're feeling a bit tired today. Maybe adjust your workout intensity.";
-    } else {
-      return "You're at " + stats.bodyBattery + "% body battery, your body can handle pushing it for your workout today.";
-    }
-  };
 
   return (
     <Card className="p-6 shadow-lg">
@@ -259,17 +248,6 @@ export default function DashboardStats() {
                 style={{ width: `${stats.bodyBattery}%` }}
               ></div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Exercise Tips */}
-      <div className="p-4 bg-blue-50 rounded-lg">
-        <div className="flex items-start gap-2">
-          <Clock size={16} className="text-blue-500 mt-0.5" />
-          <div className="text-sm text-blue-700">
-            <span className="font-medium">Energy Tip:</span>{" "}
-            {getBodyBatteryTip()}
           </div>
         </div>
       </div>
