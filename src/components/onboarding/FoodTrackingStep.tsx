@@ -51,9 +51,8 @@ export default function FoodTrackingStep({ data, onUpdate, onNext, onPrev }: Foo
               onClick={() => setHasTracked(true)}
             >
               <div className="text-center">
-                <div className="text-2xl mb-2">✅</div>
                 <h4 className="font-medium">Yes</h4>
-                <p className="text-sm text-gray-600">I've used food tracking apps before</p>
+                <p className="text-sm text-gray-600 mt-1">I've used food tracking apps before</p>
               </div>
             </Card>
             <Card
@@ -65,9 +64,8 @@ export default function FoodTrackingStep({ data, onUpdate, onNext, onPrev }: Foo
               onClick={() => setHasTracked(false)}
             >
               <div className="text-center">
-                <div className="text-2xl mb-2">🆕</div>
                 <h4 className="font-medium">No</h4>
-                <p className="text-sm text-gray-600">This is new to me</p>
+                <p className="text-sm text-gray-600 mt-1">This is new to me</p>
               </div>
             </Card>
           </div>
@@ -85,9 +83,8 @@ export default function FoodTrackingStep({ data, onUpdate, onNext, onPrev }: Foo
               onClick={() => setKnowsMacros(true)}
             >
               <div className="text-center">
-                <div className="text-2xl mb-2">🧠</div>
                 <h4 className="font-medium">Yes</h4>
-                <p className="text-sm text-gray-600">I understand macronutrients</p>
+                <p className="text-sm text-gray-600 mt-1">I understand macronutrients</p>
               </div>
             </Card>
             <Card
@@ -99,9 +96,8 @@ export default function FoodTrackingStep({ data, onUpdate, onNext, onPrev }: Foo
               onClick={() => setKnowsMacros(false)}
             >
               <div className="text-center">
-                <div className="text-2xl mb-2">📚</div>
                 <h4 className="font-medium">No</h4>
-                <p className="text-sm text-gray-600">I'd like to learn more</p>
+                <p className="text-sm text-gray-600 mt-1">I'd like to learn more</p>
               </div>
             </Card>
           </div>

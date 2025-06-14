@@ -15,20 +15,17 @@ const EXPERIENCE_LEVELS = [
   {
     id: 'beginner',
     title: 'Beginner',
-    description: 'New to fitness or getting back into it',
-    icon: '🌱'
+    description: 'New to fitness or getting back into it'
   },
   {
     id: 'intermediate',
     title: 'Intermediate',
-    description: 'Regular exercise routine, some experience',
-    icon: '💪'
+    description: 'Regular exercise routine, some experience'
   },
   {
     id: 'advanced',
     title: 'Advanced',
-    description: 'Experienced with structured training',
-    icon: '🏆'
+    description: 'Experienced with structured training'
   }
 ];
 
@@ -61,7 +58,6 @@ export default function ExperienceStep({ data, onUpdate, onNext, onPrev }: Exper
             onClick={() => setSelected(level.id)}
           >
             <div className="flex items-center space-x-4">
-              <div className="text-2xl">{level.icon}</div>
               <div className="flex-1">
                 <h3 className="font-semibold">{level.title}</h3>
                 <p className="text-sm text-gray-600">{level.description}</p>

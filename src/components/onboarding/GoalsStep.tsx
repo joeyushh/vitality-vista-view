@@ -15,26 +15,22 @@ const GOALS = [
   {
     id: 'lose_weight',
     title: 'Lose Weight',
-    description: 'Reduce body fat and get leaner',
-    icon: '📉'
+    description: 'Reduce body fat and get leaner'
   },
   {
     id: 'gain_muscle',
     title: 'Gain Muscle',
-    description: 'Build strength and muscle mass',
-    icon: '💪'
+    description: 'Build strength and muscle mass'
   },
   {
     id: 'maintain',
     title: 'Maintain',
-    description: 'Keep current weight and fitness level',
-    icon: '⚖️'
+    description: 'Keep current weight and fitness level'
   },
   {
     id: 'improve_health',
     title: 'Improve Health',
-    description: 'Focus on overall wellness and energy',
-    icon: '❤️'
+    description: 'Focus on overall wellness and energy'
   }
 ];
 
@@ -67,7 +63,6 @@ export default function GoalsStep({ data, onUpdate, onNext, onPrev }: GoalsStepP
             onClick={() => setSelected(goal.id)}
           >
             <div className="text-center space-y-2">
-              <div className="text-3xl">{goal.icon}</div>
               <h3 className="font-semibold">{goal.title}</h3>
               <p className="text-sm text-gray-600">{goal.description}</p>
             </div>
