@@ -6,38 +6,38 @@ import { useState } from "react";
 
 const strengthData = [
   { session: "Week 1", push: 100, pull: 90, legs: 110 },
-  { session: "Week 2", push: 102, pull: 92, legs: 112 },
-  { session: "Week 3", push: 105, pull: 95, legs: 115 },
-  { session: "Week 4", push: 107, pull: 97, legs: 118 },
-  { session: "Week 5", push: 110, pull: 100, legs: 120 },
+  { session: "Week 2", push: 98, pull: 94, legs: 108 },
+  { session: "Week 3", push: 105, pull: 97, legs: 115 },
+  { session: "Week 4", push: 103, pull: 99, legs: 118 },
+  { session: "Week 5", push: 110, pull: 96, legs: 120 },
   { session: "Week 6", push: 112, pull: 102, legs: 123 },
 ];
 
-// Exercise progress data for each workout type
+// Exercise progress data for each workout type with 1RM calculations
 const exerciseProgress = {
   push: [
-    { exercise: "Bench Press", startWeight: "75kg", currentWeight: "82kg", change: 9.3, trend: "up" },
-    { exercise: "Incline DB Press", startWeight: "25kg", currentWeight: "30kg", change: 20.0, trend: "up" },
-    { exercise: "Cable Flyes", startWeight: "20kg", currentWeight: "25kg", change: 25.0, trend: "up" },
-    { exercise: "Tricep Pushdowns", startWeight: "35kg", currentWeight: "40kg", change: 14.3, trend: "up" },
-    { exercise: "Overhead Press", startWeight: "40kg", currentWeight: "50kg", change: 25.0, trend: "up" },
-    { exercise: "Lateral Raises", startWeight: "10kg", currentWeight: "12.5kg", change: 25.0, trend: "up" },
+    { exercise: "Bench Press", startWeight: "75kg", currentWeight: "82kg", start1RM: 95, current1RM: 104, change: 9.5, trend: "up" },
+    { exercise: "Incline DB Press", startWeight: "25kg", currentWeight: "30kg", start1RM: 32, current1RM: 38, change: 18.8, trend: "up" },
+    { exercise: "Cable Flyes", startWeight: "20kg", currentWeight: "25kg", start1RM: 26, current1RM: 32, change: 23.1, trend: "up" },
+    { exercise: "Tricep Pushdowns", startWeight: "35kg", currentWeight: "40kg", start1RM: 44, current1RM: 51, change: 15.9, trend: "up" },
+    { exercise: "Overhead Press", startWeight: "40kg", currentWeight: "50kg", start1RM: 50, current1RM: 63, change: 26.0, trend: "up" },
+    { exercise: "Lateral Raises", startWeight: "10kg", currentWeight: "12.5kg", start1RM: 15, current1RM: 19, change: 26.7, trend: "up" },
   ],
   pull: [
-    { exercise: "Pull-ups", startWeight: "BW", currentWeight: "BW+5kg", change: 15.0, trend: "up" },
-    { exercise: "Bent Over Rows", startWeight: "60kg", currentWeight: "70kg", change: 16.7, trend: "up" },
-    { exercise: "Lat Pulldowns", startWeight: "55kg", currentWeight: "65kg", change: 18.2, trend: "up" },
-    { exercise: "Face Pulls", startWeight: "30kg", currentWeight: "35kg", change: 16.7, trend: "up" },
-    { exercise: "Bicep Curls", startWeight: "12.5kg", currentWeight: "17.5kg", change: 40.0, trend: "up" },
-    { exercise: "Deadlifts", startWeight: "100kg", currentWeight: "110kg", change: 10.0, trend: "up" },
+    { exercise: "Pull-ups", startWeight: "BW", currentWeight: "BW+5kg", start1RM: 85, current1RM: 98, change: 15.3, trend: "up" },
+    { exercise: "Bent Over Rows", startWeight: "60kg", currentWeight: "70kg", start1RM: 76, current1RM: 89, change: 17.1, trend: "up" },
+    { exercise: "Lat Pulldowns", startWeight: "55kg", currentWeight: "65kg", start1RM: 70, current1RM: 83, change: 18.6, trend: "up" },
+    { exercise: "Face Pulls", startWeight: "30kg", currentWeight: "35kg", start1RM: 38, current1RM: 44, change: 15.8, trend: "up" },
+    { exercise: "Bicep Curls", startWeight: "12.5kg", currentWeight: "17.5kg", start1RM: 18, current1RM: 25, change: 38.9, trend: "up" },
+    { exercise: "Deadlifts", startWeight: "100kg", currentWeight: "110kg", start1RM: 127, current1RM: 140, change: 10.2, trend: "up" },
   ],
   legs: [
-    { exercise: "Squats", startWeight: "80kg", currentWeight: "100kg", change: 25.0, trend: "up" },
-    { exercise: "Romanian Deadlifts", startWeight: "70kg", currentWeight: "80kg", change: 14.3, trend: "up" },
-    { exercise: "Bulgarian Split Squats", startWeight: "20kg", currentWeight: "25kg", change: 25.0, trend: "up" },
-    { exercise: "Leg Press", startWeight: "160kg", currentWeight: "180kg", change: 12.5, trend: "up" },
-    { exercise: "Calf Raises", startWeight: "45kg", currentWeight: "60kg", change: 33.3, trend: "up" },
-    { exercise: "Leg Curls", startWeight: "30kg", currentWeight: "45kg", change: 50.0, trend: "up" },
+    { exercise: "Squats", startWeight: "80kg", currentWeight: "100kg", start1RM: 102, current1RM: 127, change: 24.5, trend: "up" },
+    { exercise: "Romanian Deadlifts", startWeight: "70kg", currentWeight: "80kg", start1RM: 89, current1RM: 102, change: 14.6, trend: "up" },
+    { exercise: "Bulgarian Split Squats", startWeight: "20kg", currentWeight: "25kg", start1RM: 28, current1RM: 35, change: 25.0, trend: "up" },
+    { exercise: "Leg Press", startWeight: "160kg", currentWeight: "180kg", start1RM: 203, current1RM: 229, change: 12.8, trend: "up" },
+    { exercise: "Calf Raises", startWeight: "45kg", currentWeight: "60kg", start1RM: 63, current1RM: 84, change: 33.3, trend: "up" },
+    { exercise: "Leg Curls", startWeight: "30kg", currentWeight: "45kg", start1RM: 42, current1RM: 63, change: 50.0, trend: "up" },
   ]
 };
 
@@ -176,12 +176,16 @@ export default function StrengthProgressChart() {
                   </span>
                 </div>
               </div>
-              <div className="flex justify-between items-center text-sm text-gray-600">
-                <div>
-                  <span className="font-medium">Start:</span> {exercise.startWeight}
+              <div className="space-y-1 text-sm text-gray-600">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-medium">Working Weight:</span> {exercise.startWeight} → {exercise.currentWeight}
+                  </div>
                 </div>
-                <div>
-                  <span className="font-medium">Current:</span> {exercise.currentWeight}
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-medium">Calculated 1RM:</span> {exercise.start1RM}kg → {exercise.current1RM}kg
+                  </div>
                 </div>
               </div>
             </div>
