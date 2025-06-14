@@ -1,6 +1,13 @@
-
 import { Card } from "@/components/ui/card";
 import { Activity, Target, Calendar, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const NAV_LINKS = [
+  { label: "Dashboard", href: "/", active: false },
+  { label: "Food", href: "/food", active: false },
+  { label: "Workouts", href: "/workouts", active: true },
+  { label: "Progress", href: "#progress", active: false },
+];
 
 const weeklyGoals = {
   workoutsPerWeek: 4,
@@ -32,6 +39,14 @@ const bodyBattery = 90;
 const currentCarbs = 142;
 
 export default function Workouts() {
+  const navigate = useNavigate();
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("/")) {
+      navigate(href);
+    }
+  };
+
   const getEnergyTip = () => {
     if (bodyBattery >= 80) {
       return `You're feeling great today (${bodyBattery}% body battery)! You've had ${currentCarbs}g carbs - perfect energy for a strong workout. Consider pushing your limits today.`;
@@ -43,15 +58,35 @@ export default function Workouts() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <span className="inline-flex items-center justify-center rounded-full bg-blue-50 p-3">
-            <Activity size={28} className="text-blue-600" />
-          </span>
-          <h1 className="text-3xl font-bold tracking-tight text-blue-700">Workout Tracker</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col">
+      {/* Top Navigation */}
+      <nav className="w-full flex items-center px-10 py-4 shadow mb-8 bg-white/80 backdrop-blur-sm z-10">
+        <div className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-blue-800 via-blue-600 to-green-600 bg-clip-text text-transparent mr-10 select-none">
+          FitTrack Pro
         </div>
+        <ul className="flex gap-2 text-base font-medium">
+          {NAV_LINKS.map((link, i) => (
+            <li key={i}>
+              <button
+                onClick={() => handleNavClick(link.href)}
+                className={`story-link px-3 py-1 rounded ${
+                  link.active
+                    ? "bg-blue-100 text-blue-800 shadow"
+                    : "hover:bg-blue-50 text-gray-600"
+                }`}
+              >
+                {link.label}
+              </button>
+            </li>
+          ))}
+        </ul>
 
+        <div className="ml-auto text-sm text-gray-400 hidden md:block">
+          {new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
+        </div>
+      </nav>
+
+      <div className="px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Today's Workout */}
           <div className="lg:col-span-2 space-y-6">
@@ -179,6 +214,10 @@ export default function Workouts() {
           </div>
         </div>
       </div>
+      
+      <footer className="w-full text-center py-3 text-gray-400 text-xs mt-auto">
+        &copy; {new Date().getFullYear()} FitTrack Pro. Your all-in-one fitness companion.
+      </footer>
     </div>
   );
 }

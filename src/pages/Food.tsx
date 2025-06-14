@@ -1,6 +1,13 @@
-
 import { Card } from "@/components/ui/card";
 import { Utensils, Scan, Clock, Target } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const NAV_LINKS = [
+  { label: "Dashboard", href: "/", active: false },
+  { label: "Food", href: "/food", active: true },
+  { label: "Workouts", href: "/workouts", active: false },
+  { label: "Progress", href: "#progress", active: false },
+];
 
 const todaysMeals = [
   { meal: "Breakfast", food: "Oatmeal + Banana", calories: 320, protein: 12, carbs: 58, fat: 6, time: "7:30 AM" },
@@ -24,21 +31,49 @@ const todaysStats = {
 };
 
 export default function Food() {
+  const navigate = useNavigate();
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("/")) {
+      navigate(href);
+    }
+  };
+
   const caloriesPercent = (todaysStats.calories.current / todaysStats.calories.target) * 100;
   const proteinPercent = (todaysStats.protein.current / todaysStats.protein.target) * 100;
   const carbsPercent = (todaysStats.carbs.current / todaysStats.carbs.target) * 100;
   const fatPercent = (todaysStats.fat.current / todaysStats.fat.target) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <span className="inline-flex items-center justify-center rounded-full bg-green-50 p-3">
-            <Utensils size={28} className="text-green-600" />
-          </span>
-          <h1 className="text-3xl font-bold tracking-tight text-green-700">Food Tracker</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col">
+      {/* Top Navigation */}
+      <nav className="w-full flex items-center px-10 py-4 shadow mb-8 bg-white/80 backdrop-blur-sm z-10">
+        <div className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-blue-800 via-blue-600 to-green-600 bg-clip-text text-transparent mr-10 select-none">
+          FitTrack Pro
         </div>
+        <ul className="flex gap-2 text-base font-medium">
+          {NAV_LINKS.map((link, i) => (
+            <li key={i}>
+              <button
+                onClick={() => handleNavClick(link.href)}
+                className={`story-link px-3 py-1 rounded ${
+                  link.active
+                    ? "bg-blue-100 text-blue-800 shadow"
+                    : "hover:bg-blue-50 text-gray-600"
+                }`}
+              >
+                {link.label}
+              </button>
+            </li>
+          ))}
+        </ul>
 
+        <div className="ml-auto text-sm text-gray-400 hidden md:block">
+          {new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
+        </div>
+      </nav>
+
+      <div className="px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Today's Progress */}
           <div className="lg:col-span-2 space-y-6">
@@ -161,6 +196,10 @@ export default function Food() {
           </div>
         </div>
       </div>
+      
+      <footer className="w-full text-center py-3 text-gray-400 text-xs mt-auto">
+        &copy; {new Date().getFullYear()} FitTrack Pro. Your all-in-one fitness companion.
+      </footer>
     </div>
   );
 }
