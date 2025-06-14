@@ -1,5 +1,7 @@
 
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Star } from "lucide-react";
 
 const todaysCredits = {
   calories: { hit: false, credits: 0 }, // Changed to false since 1845 < 2200
@@ -26,12 +28,14 @@ const todaysMetrics = {
 export default function DashboardStats() {
   return (
     <Card className="p-4 shadow-lg animate-fade-in">
-      {/* Credits Header - Neutral styling */}
+      {/* Credits Header - Enhanced styling */}
       <div className="flex items-center gap-3 mb-4">
         <h2 className="text-lg font-bold text-gray-800">Today's Progress</h2>
-        <div className="ml-auto flex items-center gap-1">
-          <span className="text-sm text-gray-600">Credits:</span>
-          <div className="text-lg font-bold text-gray-800">{totalCreditsToday}</div>
+        <div className="ml-auto flex items-center gap-2">
+          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300 px-3 py-1">
+            <Star size={14} className="mr-1 fill-yellow-600 text-yellow-600" />
+            <span className="text-sm font-medium">Credits Earned: {totalCreditsToday}</span>
+          </Badge>
         </div>
       </div>
 
