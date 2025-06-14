@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -91,19 +90,19 @@ export default function DashboardStats() {
   const getProgressBarColor = (metricId: string, baseColor: string) => {
     const isCompleted = isGoalCompleted(metricId);
     if (isCompleted) {
-      return 'hsl(45, 93%, 47%)'; // Yellow color for completed goals
+      return '#eab308'; // Yellow color for completed goals
     }
     
     // Return the appropriate color based on metric type
     switch (baseColor) {
       case 'green':
-        return 'hsl(142, 76%, 36%)'; // Green
+        return '#16a34a'; // Green
       case 'blue':
-        return 'hsl(221, 83%, 53%)'; // Blue
+        return '#3b82f6'; // Blue
       case 'purple':
-        return 'hsl(262, 83%, 58%)'; // Purple
+        return '#a855f7'; // Purple
       default:
-        return 'hsl(221, 83%, 53%)'; // Default blue
+        return '#3b82f6'; // Default blue
     }
   };
 
@@ -135,9 +134,7 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('calories')} 
               className="h-2"
-              style={{ 
-                '--progress-foreground': getProgressBarColor('calories', 'green')
-              } as React.CSSProperties}
+              indicatorColor={getProgressBarColor('calories', 'green')}
             />
           </div>
         </div>
@@ -155,9 +152,7 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('protein')} 
               className="h-2"
-              style={{ 
-                '--progress-foreground': getProgressBarColor('protein', 'green')
-              } as React.CSSProperties}
+              indicatorColor={getProgressBarColor('protein', 'green')}
             />
           </div>
         </div>
@@ -175,9 +170,7 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('carbs')} 
               className="h-2"
-              style={{ 
-                '--progress-foreground': getProgressBarColor('carbs', 'green')
-              } as React.CSSProperties}
+              indicatorColor={getProgressBarColor('carbs', 'green')}
             />
           </div>
         </div>
@@ -195,9 +188,7 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('fats')} 
               className="h-2"
-              style={{ 
-                '--progress-foreground': getProgressBarColor('fats', 'green')
-              } as React.CSSProperties}
+              indicatorColor={getProgressBarColor('fats', 'green')}
             />
           </div>
         </div>
@@ -218,9 +209,7 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('steps')} 
               className="h-2"
-              style={{ 
-                '--progress-foreground': getProgressBarColor('steps', 'blue')
-              } as React.CSSProperties}
+              indicatorColor={getProgressBarColor('steps', 'blue')}
             />
           </div>
         </div>
@@ -238,9 +227,7 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('workoutsCompleted')} 
               className="h-2"
-              style={{ 
-                '--progress-foreground': getProgressBarColor('workoutsCompleted', 'blue')
-              } as React.CSSProperties}
+              indicatorColor={getProgressBarColor('workoutsCompleted', 'blue')}
             />
           </div>
         </div>
@@ -258,9 +245,7 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('sleep')} 
               className="h-2"
-              style={{ 
-                '--progress-foreground': getProgressBarColor('sleep', 'purple')
-              } as React.CSSProperties}
+              indicatorColor={getProgressBarColor('sleep', 'purple')}
             />
           </div>
         </div>
@@ -275,9 +260,7 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('bodyBattery')} 
               className="h-2"
-              style={{ 
-                '--progress-foreground': getProgressBarColor('bodyBattery', 'purple')
-              } as React.CSSProperties}
+              indicatorColor={getProgressBarColor('bodyBattery', 'purple')}
             />
           </div>
         </div>
