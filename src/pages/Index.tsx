@@ -1,4 +1,3 @@
-
 import FoodTracker from "@/components/FoodTracker";
 import WorkoutTracker from "@/components/WorkoutTracker";
 import DashboardStats from "@/components/DashboardStats";
@@ -26,8 +25,8 @@ export default function Index() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col">
       {/* Top Navigation */}
       <nav className="w-full flex items-center px-10 py-4 shadow mb-8 bg-white/80 backdrop-blur-sm z-10">
-        <div className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-blue-800 via-blue-600 to-green-600 bg-clip-text text-transparent mr-10 select-none">
-          FitTrack Pro
+        <div className="text-2xl font-extrabold tracking-tight text-black mr-10 select-none">
+          Momentum
         </div>
         <ul className="flex gap-2 text-base font-medium">
           {NAV_LINKS.map((link, i) => (
@@ -77,7 +76,7 @@ export default function Index() {
       </main>
       
       <footer className="w-full text-center py-3 text-gray-400 text-xs mt-auto">
-        &copy; {new Date().getFullYear()} FitTrack Pro. Your all-in-one fitness companion.
+        &copy; {new Date().getFullYear()} Momentum. Your all-in-one fitness companion.
       </footer>
     </div>
   );

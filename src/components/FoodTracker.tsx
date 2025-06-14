@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const dummyFoods = [
   { meal: "Breakfast", food: "Oatmeal + Banana", calories: 320, protein: 12, carbs: 58, fat: 6, barcode: true },
@@ -14,6 +15,7 @@ const dummyFoods = [
 
 export default function FoodTracker() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedFood, setSelectedFood] = useState(null);
 
   const handleFoodLogClick = () => {
@@ -21,7 +23,10 @@ export default function FoodTracker() {
   };
 
   const handleTrackFoodClick = () => {
-    navigate("/food");
+    toast({
+      title: "Track Food",
+      description: "Ready to log your next meal! Scan barcode or search food database.",
+    });
   };
 
   return (

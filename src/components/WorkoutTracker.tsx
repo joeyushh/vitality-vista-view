@@ -2,6 +2,7 @@
 import { Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const dummyWorkouts = [
   { ex: "Bench Press", sets: 4, weightReps: "80kg/6, 75kg/7, 70kg/8, 65kg/9", restTime: "2-3min", notes: "" },
@@ -12,6 +13,7 @@ const dummyWorkouts = [
 
 export default function WorkoutTracker() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const totalSets = dummyWorkouts.reduce((sum, w) => sum + w.sets, 0);
   const workoutDuration = "Not started";
 
@@ -20,7 +22,10 @@ export default function WorkoutTracker() {
   };
 
   const handleStartWorkoutClick = () => {
-    navigate("/workouts");
+    toast({
+      title: "Starting Workout",
+      description: "Push Day - Chest & Triceps workout has begun!",
+    });
   };
 
   return (
