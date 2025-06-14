@@ -7,10 +7,10 @@ import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import PullToRefresh from "@/components/PullToRefresh";
 import DateNavigation from "@/components/DateNavigation";
-import OnboardingFlow from "@/components/OnboardingFlow";
-import { OnboardingData } from "@/types/onboarding";
+import SimpleOnboardingFlow from "@/components/SimpleOnboardingFlow";
+import { SimpleOnboardingData } from "@/types/onboarding-simple";
 import CreditGoalsModal from "@/components/CreditGoalsModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Available credit goals to choose from (same as in Rewards page)
 const availableCreditGoals = [
@@ -45,13 +45,23 @@ export default function Index() {
     await new Promise(resolve => setTimeout(resolve, 1000));
   };
 
-  const handleOnboardingComplete = (data: OnboardingData) => {
+  const handleOnboardingComplete = (data: SimpleOnboardingData) => {
     console.log('Onboarding completed with data:', data);
-    // Here you would typically save the data to your state management or backend
+    // Save the simplified data
     localStorage.setItem('onboarding_completed', 'true');
     localStorage.setItem('user_profile', JSON.stringify(data));
     setShowOnboarding(false);
     setIsFirstTime(false);
+    
+    // Update credit goals based on calculated values
+    const updatedGoals = [
+      { id: 'calories', name: 'Calories', value: data.dailyCalories, unit: '', color: 'green' },
+      { id: 'protein', name: 'Protein', value: data.dailyProtein, unit: 'g', color: 'green' },
+      { id: 'steps', name: 'Steps', value: data.dailySteps, unit: '', color: 'blue' },
+      { id: 'workouts', name: 'Workouts', value: 1, unit: 'scheduled', color: 'blue' },
+      { id: 'sleep', name: 'Sleep', value: 8, unit: 'hrs', color: 'purple' }
+    ];
+    setUserCreditGoals(updatedGoals);
   };
 
   const handleSkipOnboarding = () => {
@@ -61,7 +71,7 @@ export default function Index() {
   };
 
   // Check if user should see onboarding on mount
-  useState(() => {
+  useEffect(() => {
     const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
     if (!hasCompletedOnboarding) {
       setShowOnboarding(true);
@@ -69,28 +79,26 @@ export default function Index() {
       setIsFirstTime(false);
     }
 
-    // Load credit goals from localStorage
-    const savedOnboardingData = localStorage.getItem('onboarding_data');
-    if (savedOnboardingData) {
+    // Load user profile if available
+    const savedProfile = localStorage.getItem('user_profile');
+    if (savedProfile) {
       try {
-        const onboardingData = JSON.parse(savedOnboardingData);
-        if (onboardingData.selectedCreditGoals && onboardingData.selectedCreditGoals.length > 0) {
-          const updatedGoals = onboardingData.selectedCreditGoals.map((goal: any) => {
-            if (onboardingData.manualGoals) {
-              const manualValue = onboardingData.manualGoals[goal.id];
-              if (manualValue !== undefined) {
-                return { ...goal, value: manualValue };
-              }
-            }
-            return goal;
-          });
+        const profile = JSON.parse(savedProfile);
+        if (profile.dailyCalories && profile.dailyProtein) {
+          const updatedGoals = [
+            { id: 'calories', name: 'Calories', value: profile.dailyCalories, unit: '', color: 'green' },
+            { id: 'protein', name: 'Protein', value: profile.dailyProtein, unit: 'g', color: 'green' },
+            { id: 'steps', name: 'Steps', value: profile.dailySteps || 10000, unit: '', color: 'blue' },
+            { id: 'workouts', name: 'Workouts', value: 1, unit: 'scheduled', color: 'blue' },
+            { id: 'sleep', name: 'Sleep', value: 8, unit: 'hrs', color: 'purple' }
+          ];
           setUserCreditGoals(updatedGoals);
         }
       } catch (error) {
-        console.error('Error loading onboarding data:', error);
+        console.error('Error loading user profile:', error);
       }
     }
-  });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
@@ -131,9 +139,9 @@ export default function Index() {
       
       <BottomNavigation />
 
-      {/* Onboarding Flow */}
+      {/* Simplified Onboarding Flow */}
       {showOnboarding && (
-        <OnboardingFlow
+        <SimpleOnboardingFlow
           onComplete={handleOnboardingComplete}
           onClose={handleSkipOnboarding}
         />

@@ -4,16 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
-import { OnboardingData } from "@/types/onboarding";
+import { SimpleOnboardingData } from "@/types/onboarding-simple";
 
-interface BasicInfoStepProps {
-  data: Partial<OnboardingData>;
-  onUpdate: (data: Partial<OnboardingData>) => void;
-  onNext: () => void;
-  onPrev: () => void;
+interface Step1Props {
+  data: Partial<SimpleOnboardingData>;
+  onNext: (data: Partial<SimpleOnboardingData>) => void;
 }
 
-export default function BasicInfoStep({ data, onUpdate, onNext, onPrev }: BasicInfoStepProps) {
+export default function Step1BasicInfo({ data, onNext }: Step1Props) {
   const [height, setHeight] = useState(data.height?.toString() || '');
   const [weight, setWeight] = useState(data.weight?.toString() || '');
   const [age, setAge] = useState(data.age?.toString() || '');
@@ -21,13 +19,12 @@ export default function BasicInfoStep({ data, onUpdate, onNext, onPrev }: BasicI
 
   const handleNext = () => {
     if (height && weight && age && gender) {
-      onUpdate({
+      onNext({
         height: parseInt(height),
         weight: parseInt(weight),
         age: parseInt(age),
         gender: gender as 'male' | 'female' | 'other'
       });
-      onNext();
     }
   };
 
@@ -36,8 +33,8 @@ export default function BasicInfoStep({ data, onUpdate, onNext, onPrev }: BasicI
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900">Tell us about yourself</h2>
-        <p className="text-gray-600 mt-2">This helps us calculate your personalized targets</p>
+        <h2 className="text-2xl font-bold">Tell us about yourself</h2>
+        <p className="text-gray-600 mt-2">We'll calculate your personalized goals</p>
       </div>
 
       <div className="space-y-4">
@@ -94,14 +91,9 @@ export default function BasicInfoStep({ data, onUpdate, onNext, onPrev }: BasicI
         </div>
       </div>
 
-      <div className="flex gap-3">
-        <Button variant="outline" onClick={onPrev} className="flex-1">
-          Back
-        </Button>
-        <Button onClick={handleNext} disabled={!isValid} className="flex-1">
-          Continue
-        </Button>
-      </div>
+      <Button onClick={handleNext} disabled={!isValid} className="w-full">
+        Continue
+      </Button>
     </div>
   );
 }
