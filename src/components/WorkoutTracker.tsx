@@ -1,5 +1,5 @@
 
-import { activity } from "lucide-react";
+import { Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const dummyWorkouts = [
@@ -13,7 +13,7 @@ export default function WorkoutTracker() {
     <Card className="p-6 shadow-lg animate-fade-in flex flex-col h-full">
       <div className="flex items-center gap-3 mb-4">
         <span className="inline-flex items-center justify-center rounded-full bg-green-50 p-2">
-          <activity size={22} className="text-green-600" />
+          <Activity size={22} className="text-green-600" />
         </span>
         <h2 className="text-2xl font-bold tracking-tight">Workout Tracker</h2>
         <button className="ml-auto px-3 py-1 bg-green-600 text-white rounded shadow hover:scale-105 transition-transform">Add Workout</button>
