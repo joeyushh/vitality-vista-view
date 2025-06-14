@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Dumbbell, Play, Calendar, Edit, Clock, Target, ChevronRight, MessageCircle } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -15,6 +16,7 @@ const workoutProgram = [
     duration: "60 mins",
     sets: 3,
     reps: "8-12",
+    completed: true,
   },
   {
     day: "Tuesday",
@@ -24,6 +26,7 @@ const workoutProgram = [
     duration: "45 mins",
     sets: 3,
     reps: "15-20",
+    completed: true,
   },
   {
     day: "Wednesday",
@@ -33,6 +36,7 @@ const workoutProgram = [
     duration: "60 mins",
     sets: 4,
     reps: "10-15",
+    completed: true,
   },
   {
     day: "Thursday",
@@ -42,6 +46,7 @@ const workoutProgram = [
     duration: "30 mins",
     sets: 1,
     reps: "N/A",
+    completed: false,
   },
   {
     day: "Friday",
@@ -51,6 +56,7 @@ const workoutProgram = [
     duration: "60 mins",
     sets: 3,
     reps: "12-15",
+    completed: false,
   },
   {
     day: "Saturday",
@@ -60,6 +66,7 @@ const workoutProgram = [
     duration: "45 mins",
     sets: 3,
     reps: "15-20",
+    completed: false,
   },
   {
     day: "Sunday",
@@ -69,6 +76,7 @@ const workoutProgram = [
     duration: "N/A",
     sets: 0,
     reps: "N/A",
+    completed: false,
   },
 ];
 
@@ -80,16 +88,18 @@ const fitnessGoals = [
     progress: 75,
   },
   {
+    title: "Weekly Workouts",
+    description: "Complete your weekly workout schedule.",
+    icon: Calendar,
+    progress: Math.round((workoutProgram.filter(w => w.completed).length / workoutProgram.length) * 100),
+    completed: workoutProgram.filter(w => w.completed).length,
+    total: workoutProgram.length,
+  },
+  {
     title: "Endurance",
     description: "Improve your cardiovascular endurance.",
     icon: Play,
     progress: 40,
-  },
-  {
-    title: "Flexibility",
-    description: "Enhance your flexibility and range of motion.",
-    icon: Calendar,
-    progress: 60,
   },
 ];
 
@@ -121,24 +131,12 @@ export default function Workouts() {
     };
   };
 
-  const handlePreviousDay = () => {
-    const previousDay = new Date(currentDate);
-    previousDay.setDate(previousDay.getDate() - 1);
-    setCurrentDate(previousDay);
+  const handleEditProgrammeClick = () => {
     toast({
-      title: "Day Changed",
-      description: `Viewing workout for ${previousDay.toLocaleDateString()}`,
+      title: "Edit Programme",
+      description: "Programme editing functionality would be available here",
     });
-  };
-
-  const handleNextDay = () => {
-    const nextDay = new Date(currentDate);
-    nextDay.setDate(nextDay.getDate() + 1);
-    setCurrentDate(nextDay);
-    toast({
-      title: "Day Changed",
-      description: `Viewing workout for ${nextDay.toLocaleDateString()}`,
-    });
+    console.log("Opening programme editor...");
   };
 
   const handleTipsClick = () => {
@@ -175,7 +173,9 @@ export default function Workouts() {
                     <div className="text-sm text-gray-500">{goal.description}</div>
                   </div>
                 </div>
-                <div className="text-sm text-orange-600">{goal.progress}%</div>
+                <div className="text-sm text-orange-600">
+                  {goal.title === "Weekly Workouts" ? `${goal.completed}/${goal.total}` : `${goal.progress}%`}
+                </div>
               </div>
             ))}
           </div>
@@ -195,6 +195,35 @@ export default function Workouts() {
         </Card>
 
         {/* Weekly Programme */}
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-orange-800">Weekly Programme</h2>
+            <button 
+              onClick={handleEditProgrammeClick}
+              className="flex items-center gap-2 px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm"
+            >
+              <Edit size={16} />
+              Edit Programme
+            </button>
+          </div>
+          <div className="space-y-3">
+            {workoutProgram.map((day, i) => (
+              <div key={i} className={`p-3 rounded-lg border ${day.completed ? 'bg-green-50 border-green-200' : 'bg-orange-50 border-orange-200'}`}>
+                <div className="flex items-center justify-between mb-1">
+                  <div className="font-medium text-orange-800">{day.day}</div>
+                  <div className="flex items-center gap-2">
+                    {day.completed && <span className="text-green-600 text-sm">✓</span>}
+                    <span className="text-xs text-gray-500">{day.time}</span>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-700 mb-1">{day.workout}</div>
+                <div className="text-xs text-gray-600">{day.duration} | {day.sets} sets | {day.reps} reps</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Today's Workout */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-orange-800">Today's Workout</h2>
