@@ -9,23 +9,81 @@ interface RewardsModalProps {
 const userGoals = {
   dailyCalories: 2200,
   dailyProtein: 220,
-  weeklyWorkouts: 5
+  weeklyWorkouts: 5,
+  dailySteps: 10000,
+  dailySleep: 8 // hours
 };
 
 const weeklyProgress = [
-  { day: "Monday", caloriesHit: true, proteinHit: true, workoutDone: true, creditsEarned: 3 },
-  { day: "Tuesday", caloriesHit: true, proteinHit: false, workoutDone: true, creditsEarned: 2 },
-  { day: "Wednesday", caloriesHit: true, proteinHit: true, workoutDone: false, creditsEarned: 2 },
-  { day: "Thursday", caloriesHit: false, proteinHit: true, workoutDone: true, creditsEarned: 2 },
-  { day: "Friday", caloriesHit: true, proteinHit: true, workoutDone: true, creditsEarned: 3 },
-  { day: "Saturday", caloriesHit: true, proteinHit: false, workoutDone: false, creditsEarned: 1 },
-  { day: "Today", caloriesHit: true, proteinHit: true, workoutDone: true, creditsEarned: 3 }
+  { 
+    day: "Monday", 
+    caloriesHit: true, 
+    proteinHit: true, 
+    workoutDone: true, 
+    stepsHit: true, 
+    sleepHit: true, 
+    creditsEarned: 5 
+  },
+  { 
+    day: "Tuesday", 
+    caloriesHit: true, 
+    proteinHit: false, 
+    workoutDone: true, 
+    stepsHit: true, 
+    sleepHit: false, 
+    creditsEarned: 3 
+  },
+  { 
+    day: "Wednesday", 
+    caloriesHit: true, 
+    proteinHit: true, 
+    workoutDone: false, 
+    stepsHit: false, 
+    sleepHit: true, 
+    creditsEarned: 3 
+  },
+  { 
+    day: "Thursday", 
+    caloriesHit: false, 
+    proteinHit: true, 
+    workoutDone: true, 
+    stepsHit: true, 
+    sleepHit: true, 
+    creditsEarned: 4 
+  },
+  { 
+    day: "Friday", 
+    caloriesHit: true, 
+    proteinHit: true, 
+    workoutDone: true, 
+    stepsHit: true, 
+    sleepHit: true, 
+    creditsEarned: 5 
+  },
+  { 
+    day: "Saturday", 
+    caloriesHit: true, 
+    proteinHit: false, 
+    workoutDone: false, 
+    stepsHit: false, 
+    sleepHit: false, 
+    creditsEarned: 1 
+  },
+  { 
+    day: "Today", 
+    caloriesHit: true, 
+    proteinHit: true, 
+    workoutDone: true, 
+    stepsHit: true, 
+    sleepHit: false, 
+    creditsEarned: 4 
+  }
 ];
 
 const availableRewards = [
   { name: "Free Smoothie", location: "Local Gym", cost: 15, credits: "15 credits", available: true },
   { name: "50% Off Chipotle Bowl", location: "Chipotle", cost: 8, credits: "8 credits", available: true },
-  { name: "20% Off Nike Shoes", location: "Nike Store", cost: 25, credits: "25 credits", available: false },
+  { name: "20% Off Nike Shoes", location: "Nike Store", cost: 25, credits: "25 credits", available: true },
   { name: "Free Protein Bar", location: "Supplement Store", cost: 5, credits: "5 credits", available: true }
 ];
 
@@ -65,20 +123,33 @@ export default function RewardsModal({ onClose }: RewardsModalProps) {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4">
               <Target className="text-blue-600" size={20} />
-              <h3 className="text-xl font-semibold">Your Goals</h3>
+              <h3 className="text-xl font-semibold">Your Goals & Credits</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="bg-green-50 p-4 rounded-lg text-center">
                 <div className="text-2xl font-bold text-green-600">{userGoals.dailyCalories}</div>
                 <div className="text-sm text-gray-600">Calories per day</div>
+                <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
               </div>
               <div className="bg-green-50 p-4 rounded-lg text-center">
                 <div className="text-2xl font-bold text-green-600">{userGoals.dailyProtein}g</div>
                 <div className="text-sm text-gray-600">Protein per day</div>
+                <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
               </div>
               <div className="bg-blue-50 p-4 rounded-lg text-center">
                 <div className="text-2xl font-bold text-blue-600">{userGoals.weeklyWorkouts}</div>
                 <div className="text-sm text-gray-600">Workouts per week</div>
+                <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
+              </div>
+              <div className="bg-blue-50 p-4 rounded-lg text-center">
+                <div className="text-2xl font-bold text-blue-600">{userGoals.dailySteps.toLocaleString()}</div>
+                <div className="text-sm text-gray-600">Steps per day</div>
+                <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
+              </div>
+              <div className="bg-blue-50 p-4 rounded-lg text-center">
+                <div className="text-2xl font-bold text-blue-600">{userGoals.dailySleep}hrs</div>
+                <div className="text-sm text-gray-600">Sleep per night</div>
+                <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
               </div>
             </div>
           </div>
@@ -98,6 +169,8 @@ export default function RewardsModal({ onClose }: RewardsModalProps) {
                       <span className={`w-3 h-3 rounded-full ${day.caloriesHit ? 'bg-green-500' : 'bg-gray-300'}`} title="Calories"></span>
                       <span className={`w-3 h-3 rounded-full ${day.proteinHit ? 'bg-green-500' : 'bg-gray-300'}`} title="Protein"></span>
                       <span className={`w-3 h-3 rounded-full ${day.workoutDone ? 'bg-blue-500' : 'bg-gray-300'}`} title="Workout"></span>
+                      <span className={`w-3 h-3 rounded-full ${day.stepsHit ? 'bg-blue-500' : 'bg-gray-300'}`} title="Steps"></span>
+                      <span className={`w-3 h-3 rounded-full ${day.sleepHit ? 'bg-purple-500' : 'bg-gray-300'}`} title="Sleep"></span>
                     </div>
                     <div className="text-sm font-medium text-orange-600">
                       +{day.creditsEarned} credits
@@ -113,7 +186,11 @@ export default function RewardsModal({ onClose }: RewardsModalProps) {
               </span>
               <span className="flex items-center gap-1">
                 <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-                Workout Goals
+                Activity Goals
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-full bg-purple-500"></span>
+                Sleep Goal
               </span>
             </div>
           </div>

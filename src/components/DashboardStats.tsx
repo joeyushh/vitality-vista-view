@@ -7,12 +7,11 @@ const todaysStats = {
   protein: { current: 89, target: 165 },
   carbs: { current: 142, target: 220 },
   fat: { current: 48, target: 73 },
-  water: { current: 6, target: 8 },
   steps: { current: 8234, target: 10000 },
   sleep: { current: 7.5, target: 8 },
   workoutCompleted: true,
-  setsCompleted: 13,
-  targetSets: 16,
+  workoutsLogged: 4,
+  targetWorkouts: 5,
   foodStreak: 12,
   workoutStreak: 8
 };
@@ -131,16 +130,16 @@ export default function DashboardStats() {
             </div>
           </div>
 
-          {/* Workout Sets */}
+          {/* Workouts Logged */}
           <div className="bg-blue-50 rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-blue-600">
-              {todaysStats.setsCompleted}
+              {todaysStats.workoutsLogged}
             </div>
-            <div className="text-xs text-gray-500 mb-2">/ {todaysStats.targetSets} sets completed</div>
+            <div className="text-xs text-gray-500 mb-2">/ {todaysStats.targetWorkouts} workouts logged</div>
             <div className="w-full bg-blue-200 rounded-full h-2">
               <div 
                 className="bg-blue-600 h-2 rounded-full transition-all" 
-                style={{ width: `${Math.min((todaysStats.setsCompleted / todaysStats.targetSets) * 100, 100)}%` }}
+                style={{ width: `${Math.min((todaysStats.workoutsLogged / todaysStats.targetWorkouts) * 100, 100)}%` }}
               ></div>
             </div>
           </div>
@@ -159,17 +158,14 @@ export default function DashboardStats() {
             </div>
           </div>
 
-          {/* Water */}
-          <div className="bg-blue-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">
-              {todaysStats.water.current}
+          {/* Extra card for symmetry if needed */}
+          <div className="bg-blue-50 rounded-lg p-4 text-center opacity-50">
+            <div className="text-xl font-bold text-blue-600">
+              Coming Soon
             </div>
-            <div className="text-xs text-gray-500 mb-2">/ {todaysStats.water.target} cups water</div>
+            <div className="text-xs text-gray-500 mb-2">More metrics</div>
             <div className="w-full bg-blue-200 rounded-full h-2">
-              <div 
-                className="bg-blue-600 h-2 rounded-full transition-all" 
-                style={{ width: `${Math.min((todaysStats.water.current / todaysStats.water.target) * 100, 100)}%` }}
-              ></div>
+              <div className="bg-blue-600 h-2 rounded-full transition-all" style={{ width: '0%' }}></div>
             </div>
           </div>
         </div>
