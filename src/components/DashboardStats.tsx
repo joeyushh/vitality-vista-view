@@ -62,7 +62,7 @@ export default function DashboardStats() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
           {isTrackedForCredits('calories') && (
-            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+            <Star size={12} className="absolute top-1 right-1 fill-green-700 text-green-700" />
           )}
           <div className="text-xl font-bold text-green-600">{todaysMetrics.calories.current}</div>
           <div className="text-xs text-gray-600 mb-1">Calories</div>
@@ -71,7 +71,7 @@ export default function DashboardStats() {
 
         <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
           {isTrackedForCredits('protein') && (
-            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+            <Star size={12} className="absolute top-1 right-1 fill-green-700 text-green-700" />
           )}
           <div className="text-xl font-bold text-green-600">{todaysMetrics.protein.current}g</div>
           <div className="text-xs text-gray-600 mb-1">Protein</div>
@@ -80,7 +80,7 @@ export default function DashboardStats() {
 
         <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
           {isTrackedForCredits('carbs') && (
-            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+            <Star size={12} className="absolute top-1 right-1 fill-green-700 text-green-700" />
           )}
           <div className="text-xl font-bold text-green-600">{todaysMetrics.carbs.current}g</div>
           <div className="text-xs text-gray-600 mb-1">Carbs</div>
@@ -89,7 +89,7 @@ export default function DashboardStats() {
 
         <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
           {isTrackedForCredits('fats') && (
-            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+            <Star size={12} className="absolute top-1 right-1 fill-green-700 text-green-700" />
           )}
           <div className="text-xl font-bold text-green-600">{todaysMetrics.fats.current}g</div>
           <div className="text-xs text-gray-600 mb-1">Fats</div>
@@ -101,7 +101,7 @@ export default function DashboardStats() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="p-3 bg-blue-50 rounded-lg text-center border border-blue-200 relative">
           {isTrackedForCredits('steps') && (
-            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+            <Star size={12} className="absolute top-1 right-1 fill-blue-700 text-blue-700" />
           )}
           <div className="text-xl font-bold text-blue-600">{todaysMetrics.steps.current.toLocaleString()}</div>
           <div className="text-xs text-gray-600 mb-1">Steps</div>
@@ -110,7 +110,7 @@ export default function DashboardStats() {
 
         <div className="p-3 bg-blue-50 rounded-lg text-center border border-blue-200 relative">
           {isTrackedForCredits('workoutsCompleted') && (
-            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+            <Star size={12} className="absolute top-1 right-1 fill-blue-700 text-blue-700" />
           )}
           <div className="text-xl font-bold text-blue-600">{todaysMetrics.workoutsCompleted.current}/{todaysMetrics.workoutsCompleted.target}</div>
           <div className="text-xs text-gray-600 mb-1">Workouts</div>
@@ -119,7 +119,7 @@ export default function DashboardStats() {
 
         <div className="p-3 bg-purple-50 rounded-lg text-center border border-purple-200 relative">
           {isTrackedForCredits('sleep') && (
-            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+            <Star size={12} className="absolute top-1 right-1 fill-purple-700 text-purple-700" />
           )}
           <div className="text-xl font-bold text-purple-600">{todaysMetrics.sleep.current}hrs</div>
           <div className="text-xs text-gray-600 mb-1">Sleep</div>
