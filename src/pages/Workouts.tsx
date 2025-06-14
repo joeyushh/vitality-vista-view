@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +5,6 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
-import StrengthProgressChart from "@/components/StrengthProgressChart";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
@@ -308,9 +306,6 @@ export default function Workouts() {
             </div>
           )}
         </Card>
-
-        {/* Strength Progress Chart */}
-        <StrengthProgressChart />
 
         {/* Weekly Program */}
         <Card className="p-6">

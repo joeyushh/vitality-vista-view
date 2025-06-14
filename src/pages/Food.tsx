@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera } from "lucide-react";
+import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -167,6 +167,14 @@ export default function Food() {
     console.log("Opening microphone for voice recording...");
   };
 
+  const handleAITipsClick = () => {
+    toast({
+      title: "AI Nutrition Assistant",
+      description: "AI chatbot for nutrition tips would open here",
+    });
+    console.log("Opening AI chatbot for nutrition tips...");
+  };
+
   const caloriesPercent = (todaysStats.calories.current / todaysStats.calories.target) * 100;
   const proteinPercent = (todaysStats.protein.current / todaysStats.protein.target) * 100;
   const carbsPercent = (todaysStats.carbs.current / todaysStats.carbs.target) * 100;
@@ -245,25 +253,6 @@ export default function Food() {
           </div>
         </Card>
 
-        {/* Tips - Moved Higher */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-green-800 mb-4">Tracking Tips</h2>
-          <div className="space-y-3 text-sm text-gray-600">
-            <div className="p-3 bg-yellow-50 rounded-lg">
-              <div className="font-medium text-yellow-800 mb-1">Weigh Food Raw</div>
-              <div>Always weigh meat, rice, and pasta before cooking for accurate calories.</div>
-            </div>
-            <div className="p-3 bg-yellow-50 rounded-lg">
-              <div className="font-medium text-yellow-800 mb-1">Measure Oils & Sauces</div>
-              <div>Cooking oils and sauces add up quickly - don't forget to log them!</div>
-            </div>
-            <div className="p-3 bg-yellow-50 rounded-lg">
-              <div className="font-medium text-yellow-800 mb-1">Stay Consistent</div>
-              <div>Track everything, even small snacks and drinks for the most accurate results.</div>
-            </div>
-          </div>
-        </Card>
-
         {/* Saved Meals */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold text-green-800 mb-4">Saved Meals</h2>
@@ -278,6 +267,35 @@ export default function Food() {
               </div>
             ))}
           </div>
+        </Card>
+
+        {/* Tracking Tips */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Target size={20} className="text-green-600" />
+            <h2 className="text-xl font-semibold text-green-800">Tracking Tips</h2>
+          </div>
+          <div className="space-y-3 text-sm mb-4">
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Weigh Food Raw</div>
+              <div className="text-yellow-700">Always weigh meat, rice, and pasta before cooking for accurate calories.</div>
+            </div>
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Measure Oils & Sauces</div>
+              <div className="text-yellow-700">Cooking oils and sauces add up quickly - don't forget to log them!</div>
+            </div>
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Stay Consistent</div>
+              <div className="text-yellow-700">Track everything, even small snacks and drinks for the most accurate results.</div>
+            </div>
+          </div>
+          <button 
+            onClick={handleAITipsClick}
+            className="w-full flex items-center justify-center gap-2 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors"
+          >
+            <MessageCircle size={18} />
+            Do you need more tips?
+          </button>
         </Card>
       </div>
 
