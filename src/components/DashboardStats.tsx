@@ -14,8 +14,7 @@ const todaysStats = {
   setsCompleted: 13,
   targetSets: 16,
   foodStreak: 12,
-  workoutStreak: 8,
-  combinedStreak: 14
+  workoutStreak: 8
 };
 
 export default function DashboardStats() {
@@ -105,14 +104,6 @@ export default function DashboardStats() {
               ></div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Combined Streak */}
-      <div className="flex justify-center mb-6">
-        <div className="bg-orange-50 rounded-lg p-4 text-center">
-          <div className="text-3xl font-bold text-orange-600">{todaysStats.combinedStreak}</div>
-          <div className="text-xs text-gray-500">day consistency streak</div>
         </div>
       </div>
 
