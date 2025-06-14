@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Star, Target, Calendar } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import BottomNavigation from "@/components/BottomNavigation";
+import MobileHeader from "@/components/MobileHeader";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
@@ -38,178 +39,117 @@ const availableRewards = [
 const totalCredits = weeklyProgress.reduce((sum, day) => sum + day.creditsEarned, 0);
 
 export default function Rewards() {
-  const navigate = useNavigate();
-
-  const handleNavClick = (href: string) => {
-    if (href.startsWith("/")) {
-      navigate(href);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col">
-      {/* Top Navigation */}
-      <nav className="w-full flex items-center px-10 py-4 shadow mb-8 bg-white/80 backdrop-blur-sm z-10">
-        <div className="text-2xl font-extrabold tracking-tight text-black mr-10 select-none">
-          Momentum
-        </div>
-        <ul className="flex gap-2 text-base font-medium">
-          {NAV_LINKS.map((link, i) => (
-            <li key={i}>
-              <button
-                onClick={() => handleNavClick(link.href)}
-                className={`story-link px-3 py-1 rounded ${
-                  link.active
-                    ? "bg-blue-100 text-blue-800 shadow"
-                    : "hover:bg-blue-50 text-gray-600"
-                }`}
-              >
-                {link.label}
-              </button>
-            </li>
-          ))}
-        </ul>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
+      <MobileHeader title="Rewards" />
 
-        <div className="ml-auto text-sm text-gray-400 hidden md:block">
-          {new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
-        </div>
-      </nav>
-
-      <div className="px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
+      <div className="flex-1 px-4 py-4 space-y-6">
         {/* Credits Summary */}
-        <div className="mb-6 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg">
+        <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Star className="text-yellow-500" size={28} />
+              <Star className="text-yellow-500" size={24} />
               <div>
-                <h2 className="text-2xl font-bold text-orange-800">Your Credits</h2>
-                <p className="text-orange-600">Earned by hitting your daily goals</p>
+                <h2 className="text-xl font-bold text-orange-800">Your Credits</h2>
+                <p className="text-sm text-orange-600">Earned by hitting daily goals</p>
               </div>
             </div>
-            <div className="text-5xl font-bold text-orange-600">{totalCredits}</div>
+            <div className="text-3xl font-bold text-orange-600">{totalCredits}</div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Goals & Progress */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Your Goals Section */}
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Target className="text-blue-600" size={20} />
-                <h3 className="text-xl font-semibold">Your Goals & Credits</h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="bg-green-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-green-600">{userGoals.dailyCalories}</div>
-                  <div className="text-sm text-gray-600">Calories per day</div>
-                  <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
-                </div>
-                <div className="bg-green-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-green-600">{userGoals.dailyProtein}g</div>
-                  <div className="text-sm text-gray-600">Protein per day</div>
-                  <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-blue-600">{userGoals.weeklyWorkouts}</div>
-                  <div className="text-sm text-gray-600">Workouts per week</div>
-                  <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-blue-600">{userGoals.dailySteps.toLocaleString()}</div>
-                  <div className="text-sm text-gray-600">Steps per day</div>
-                  <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-blue-600">{userGoals.dailySleep}hrs</div>
-                  <div className="text-sm text-gray-600">Sleep per night</div>
-                  <div className="text-xs text-orange-600 font-medium mt-1">+1 credit</div>
-                </div>
-              </div>
-            </Card>
-
-            {/* Weekly Progress */}
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Calendar className="text-purple-600" size={20} />
-                <h3 className="text-xl font-semibold">This Week's Progress</h3>
-              </div>
-              <div className="space-y-2">
-                {weeklyProgress.map((day, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="font-medium">{day.day}</div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex gap-2">
-                        <span className={`w-3 h-3 rounded-full ${day.caloriesHit ? 'bg-green-500' : 'bg-gray-300'}`} title="Calories"></span>
-                        <span className={`w-3 h-3 rounded-full ${day.proteinHit ? 'bg-green-500' : 'bg-gray-300'}`} title="Protein"></span>
-                        <span className={`w-3 h-3 rounded-full ${day.workoutDone ? 'bg-blue-500' : 'bg-gray-300'}`} title="Workout"></span>
-                        <span className={`w-3 h-3 rounded-full ${day.stepsHit ? 'bg-blue-500' : 'bg-gray-300'}`} title="Steps"></span>
-                        <span className={`w-3 h-3 rounded-full ${day.sleepHit ? 'bg-purple-500' : 'bg-gray-300'}`} title="Sleep"></span>
-                      </div>
-                      <div className="text-sm font-medium text-orange-600">
-                        +{day.creditsEarned} credits
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-2 text-xs text-gray-500 flex items-center gap-4">
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 rounded-full bg-green-500"></span>
-                  Food Goals
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-                  Activity Goals
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 rounded-full bg-purple-500"></span>
-                  Sleep Goal
-                </span>
-              </div>
-            </Card>
+        {/* Your Goals Section - Mobile Optimized */}
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Target className="text-blue-600" size={18} />
+            <h3 className="text-lg font-semibold">Daily Goals & Credits</h3>
           </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-green-50 p-3 rounded-lg text-center">
+              <div className="text-lg font-bold text-green-600">{userGoals.dailyCalories}</div>
+              <div className="text-xs text-gray-600">Calories</div>
+              <div className="text-xs text-orange-600 font-medium">+1 credit</div>
+            </div>
+            <div className="bg-green-50 p-3 rounded-lg text-center">
+              <div className="text-lg font-bold text-green-600">{userGoals.dailyProtein}g</div>
+              <div className="text-xs text-gray-600">Protein</div>
+              <div className="text-xs text-orange-600 font-medium">+1 credit</div>
+            </div>
+            <div className="bg-blue-50 p-3 rounded-lg text-center">
+              <div className="text-lg font-bold text-blue-600">{userGoals.weeklyWorkouts}</div>
+              <div className="text-xs text-gray-600">Workouts</div>
+              <div className="text-xs text-orange-600 font-medium">+1 credit</div>
+            </div>
+            <div className="bg-blue-50 p-3 rounded-lg text-center">
+              <div className="text-lg font-bold text-blue-600">{userGoals.dailySteps.toLocaleString()}</div>
+              <div className="text-xs text-gray-600">Steps</div>
+              <div className="text-xs text-orange-600 font-medium">+1 credit</div>
+            </div>
+          </div>
+        </Card>
 
-          {/* Right Column - Available Rewards */}
-          <div>
-            <Card className="p-6">
-              <h3 className="text-xl font-semibold mb-4">Available Rewards</h3>
-              <div className="space-y-4">
-                {availableRewards.map((reward, i) => (
-                  <div key={i} className={`p-4 rounded-lg border-2 ${
+        {/* Weekly Progress - Simplified for Mobile */}
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Calendar className="text-purple-600" size={18} />
+            <h3 className="text-lg font-semibold">This Week</h3>
+          </div>
+          <div className="space-y-2">
+            {weeklyProgress.slice(-4).map((day, i) => (
+              <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="font-medium text-sm">{day.day}</div>
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1">
+                    <span className={`w-2 h-2 rounded-full ${day.caloriesHit ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                    <span className={`w-2 h-2 rounded-full ${day.proteinHit ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                    <span className={`w-2 h-2 rounded-full ${day.workoutDone ? 'bg-blue-500' : 'bg-gray-300'}`}></span>
+                    <span className={`w-2 h-2 rounded-full ${day.stepsHit ? 'bg-blue-500' : 'bg-gray-300'}`}></span>
+                    <span className={`w-2 h-2 rounded-full ${day.sleepHit ? 'bg-purple-500' : 'bg-gray-300'}`}></span>
+                  </div>
+                  <div className="text-sm font-medium text-orange-600">
+                    +{day.creditsEarned}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Available Rewards */}
+        <Card className="p-4">
+          <h3 className="text-lg font-semibold mb-4">Available Rewards</h3>
+          <div className="space-y-3">
+            {availableRewards.map((reward, i) => (
+              <div key={i} className={`p-3 rounded-lg border-2 ${
+                reward.available 
+                  ? 'border-green-200 bg-green-50' 
+                  : 'border-gray-200 bg-gray-50 opacity-75'
+              }`}>
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-semibold text-sm">{reward.name}</h4>
+                  <span className={`text-xs px-2 py-1 rounded ${
                     reward.available 
-                      ? 'border-green-200 bg-green-50' 
-                      : 'border-gray-200 bg-gray-50 opacity-75'
+                      ? 'bg-green-200 text-green-800' 
+                      : 'bg-gray-200 text-gray-600'
                   }`}>
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-semibold">{reward.name}</h4>
-                      <span className={`text-sm px-2 py-1 rounded ${
-                        reward.available 
-                          ? 'bg-green-200 text-green-800' 
-                          : 'bg-gray-200 text-gray-600'
-                      }`}>
-                        {reward.credits}
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-600 mb-3">{reward.location}</div>
-                    <button className={`w-full py-2 px-4 rounded font-medium ${
-                      reward.available 
-                        ? 'bg-green-600 text-white hover:bg-green-700' 
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`} disabled={!reward.available}>
-                      {reward.available ? 'Redeem' : 'Not Enough Credits'}
-                    </button>
-                  </div>
-                ))}
+                    {reward.credits}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-600 mb-3">{reward.location}</div>
+                <button className={`w-full py-2 px-3 rounded font-medium text-sm ${
+                  reward.available 
+                    ? 'bg-green-600 text-white hover:bg-green-700 active:scale-98' 
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`} disabled={!reward.available}>
+                  {reward.available ? 'Redeem' : 'Not Enough Credits'}
+                </button>
               </div>
-            </Card>
+            ))}
           </div>
-        </div>
+        </Card>
       </div>
       
-      <footer className="w-full text-center py-3 text-gray-400 text-xs mt-auto">
-        &copy; {new Date().getFullYear()} Momentum. Your all-in-one fitness companion.
-      </footer>
+      <BottomNavigation />
     </div>
   );
 }
