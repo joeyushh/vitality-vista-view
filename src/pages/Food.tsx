@@ -1,6 +1,5 @@
-
 import { Card } from "@/components/ui/card";
-import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera } from "lucide-react";
+import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -168,6 +167,14 @@ export default function Food() {
     console.log("Opening microphone for voice recording...");
   };
 
+  const handleTipsClick = () => {
+    toast({
+      title: "AI Tips Assistant",
+      description: "AI agent would be activated here to provide personalized nutrition tips",
+    });
+    console.log("Opening AI tips assistant...");
+  };
+
   const caloriesPercent = (todaysStats.calories.current / todaysStats.calories.target) * 100;
   const proteinPercent = (todaysStats.protein.current / todaysStats.protein.target) * 100;
   const carbsPercent = (todaysStats.carbs.current / todaysStats.carbs.target) * 100;
@@ -262,9 +269,18 @@ export default function Food() {
           </div>
         </Card>
 
-        {/* Tips - Moved to Bottom */}
+        {/* Tips - At Bottom with AI Button */}
         <Card className="p-6">
-          <h2 className="text-xl font-semibold text-green-800 mb-4">Tracking Tips</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-green-800">Tracking Tips</h2>
+            <button 
+              onClick={handleTipsClick}
+              className="flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+            >
+              <MessageCircle size={16} />
+              Want more tips?
+            </button>
+          </div>
           <div className="space-y-3 text-sm text-gray-600">
             <div className="p-3 bg-yellow-50 rounded-lg">
               <div className="font-medium text-yellow-800 mb-1">Weigh Food Raw</div>
