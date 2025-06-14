@@ -1,8 +1,11 @@
+
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Camera, Calendar, Target, Upload } from "lucide-react";
+import { TrendingUp, Camera, Calendar, Target, Upload, MessageCircle } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
+import StrengthProgressChart from "@/components/StrengthProgressChart";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const weightData = [
   { date: "2024-01-01", weight: 82.1, photos: 2 },
@@ -28,6 +31,7 @@ const recentPhotos = [
 
 export default function Progress() {
   const [viewMode, setViewMode] = useState<"yearly" | "monthly">("yearly");
+  const { toast } = useToast();
 
   const maxWeight = Math.max(...weightData.map(w => w.weight));
   const minWeight = Math.min(...weightData.map(w => w.weight));
@@ -36,6 +40,14 @@ export default function Progress() {
   const startWeight = weightData[0].weight;
   const totalLoss = startWeight - currentWeight;
 
+  const handleAITipsClick = () => {
+    toast({
+      title: "AI Progress Assistant",
+      description: "AI chatbot for progress tips would open here",
+    });
+    console.log("Opening AI chatbot for progress tips...");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
       <MobileHeader title="Progress" />
@@ -43,37 +55,37 @@ export default function Progress() {
       <div className="flex-1 px-4 py-4 space-y-6">
         {/* Progress Overview */}
         <Card className="p-4">
-          <h2 className="text-lg font-semibold text-purple-800 mb-4">Progress Overview</h2>
+          <h2 className="text-lg font-semibold text-red-800 mb-4">Progress Overview</h2>
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-purple-50 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-purple-800">{currentWeight} kg</div>
-              <div className="text-xs text-purple-600">Current</div>
+            <div className="bg-red-50 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-red-800">{currentWeight} kg</div>
+              <div className="text-xs text-red-600">Current</div>
             </div>
-            <div className="bg-purple-50 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-purple-800">-{totalLoss.toFixed(1)} kg</div>
-              <div className="text-xs text-purple-600">Lost</div>
+            <div className="bg-red-50 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-red-800">-{totalLoss.toFixed(1)} kg</div>
+              <div className="text-xs text-red-600">Lost</div>
             </div>
-            <div className="bg-purple-50 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-purple-800">{recentPhotos.length}</div>
-              <div className="text-xs text-purple-600">Photos</div>
+            <div className="bg-red-50 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-red-800">{recentPhotos.length}</div>
+              <div className="text-xs text-red-600">Photos</div>
             </div>
           </div>
         </Card>
 
         {/* Quick Actions */}
         <Card className="p-4">
-          <h2 className="text-lg font-semibold text-purple-800 mb-4">Track Progress</h2>
+          <h2 className="text-lg font-semibold text-red-800 mb-4">Track Progress</h2>
           <div className="grid grid-cols-1 gap-3">
-            <button className="flex items-center gap-3 p-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors active:scale-98">
+            <button className="flex items-center gap-3 p-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors active:scale-98">
               <TrendingUp size={20} />
               <span className="font-medium">Log Weight</span>
             </button>
             <div className="grid grid-cols-2 gap-3">
-              <button className="flex items-center gap-2 p-3 bg-purple-100 text-purple-800 border border-purple-300 rounded-lg hover:bg-purple-200 transition-colors active:scale-98">
+              <button className="flex items-center gap-2 p-3 bg-red-100 text-red-800 border border-red-300 rounded-lg hover:bg-red-200 transition-colors active:scale-98">
                 <Camera size={18} />
                 <span className="text-sm font-medium">Take Photo</span>
               </button>
-              <button className="flex items-center gap-2 p-3 bg-purple-100 text-purple-800 border border-purple-300 rounded-lg hover:bg-purple-200 transition-colors active:scale-98">
+              <button className="flex items-center gap-2 p-3 bg-red-100 text-red-800 border border-red-300 rounded-lg hover:bg-red-200 transition-colors active:scale-98">
                 <Upload size={18} />
                 <span className="text-sm font-medium">Upload</span>
               </button>
@@ -84,29 +96,29 @@ export default function Progress() {
         {/* Weight Chart - Mobile Optimized */}
         <Card className="p-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-purple-800">Weight Trend</h2>
+            <h2 className="text-lg font-semibold text-red-800">Weight Trend</h2>
             <div className="flex gap-1">
               <button 
                 onClick={() => setViewMode("monthly")}
-                className={`px-3 py-1 rounded text-xs ${viewMode === "monthly" ? "bg-purple-600 text-white" : "bg-purple-100 text-purple-800"}`}
+                className={`px-3 py-1 rounded text-xs ${viewMode === "monthly" ? "bg-red-600 text-white" : "bg-red-100 text-red-800"}`}
               >
                 Monthly
               </button>
               <button 
                 onClick={() => setViewMode("yearly")}
-                className={`px-3 py-1 rounded text-xs ${viewMode === "yearly" ? "bg-purple-600 text-white" : "bg-purple-100 text-purple-800"}`}
+                className={`px-3 py-1 rounded text-xs ${viewMode === "yearly" ? "bg-red-600 text-white" : "bg-red-100 text-red-800"}`}
               >
                 Yearly
               </button>
             </div>
           </div>
           
-          <div className="h-48 bg-purple-50 rounded-lg p-3">
+          <div className="h-48 bg-red-50 rounded-lg p-3">
             <svg className="w-full h-full" viewBox="0 0 800 200">
               <defs>
                 <linearGradient id="weightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#a855f7" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#a855f7" stopOpacity="0.1" />
+                  <stop offset="0%" stopColor="#ef4444" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#ef4444" stopOpacity="0.1" />
                 </linearGradient>
               </defs>
               
@@ -118,7 +130,7 @@ export default function Progress() {
               {/* Weight line */}
               <polyline
                 fill="none"
-                stroke="#a855f7"
+                stroke="#ef4444"
                 strokeWidth="3"
                 points={weightData.map((w, i) => {
                   const x = 40 + (i / (weightData.length - 1)) * 720;
@@ -137,7 +149,7 @@ export default function Progress() {
                     cx={x}
                     cy={y}
                     r="4"
-                    fill="#a855f7"
+                    fill="#ef4444"
                     stroke="white"
                     strokeWidth="2"
                   />
@@ -178,21 +190,24 @@ export default function Progress() {
           </div>
         </Card>
 
+        {/* Strength Progression Chart */}
+        <StrengthProgressChart />
+
         {/* Progress Photos */}
         <Card className="p-4">
-          <h2 className="text-lg font-semibold text-purple-800 mb-4">Progress Photos</h2>
+          <h2 className="text-lg font-semibold text-red-800 mb-4">Progress Photos</h2>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {recentPhotos.map((photo, i) => (
-              <div key={i} className="aspect-square bg-purple-50 rounded-lg border-2 border-dashed border-purple-300 flex flex-col items-center justify-center">
-                <Camera size={20} className="text-purple-400 mb-1" />
-                <div className="text-xs text-purple-600 text-center">
+              <div key={i} className="aspect-square bg-red-50 rounded-lg border-2 border-dashed border-red-300 flex flex-col items-center justify-center">
+                <Camera size={20} className="text-red-400 mb-1" />
+                <div className="text-xs text-red-600 text-center">
                   <div className="font-medium">{photo.type}</div>
                   <div>{photo.date}</div>
                 </div>
               </div>
             ))}
           </div>
-          <button className="w-full py-2 text-sm text-purple-600 hover:text-purple-800 transition-colors">
+          <button className="w-full py-2 text-sm text-red-600 hover:text-red-800 transition-colors">
             View All Photos
           </button>
         </Card>
@@ -200,10 +215,10 @@ export default function Progress() {
         {/* Progress Tips */}
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-4">
-            <Target size={18} className="text-purple-600" />
-            <h2 className="text-lg font-semibold text-purple-800">Tips</h2>
+            <Target size={18} className="text-red-600" />
+            <h2 className="text-lg font-semibold text-red-800">Tracking Tips</h2>
           </div>
-          <div className="space-y-3 text-sm">
+          <div className="space-y-3 text-sm mb-4">
             <div className="p-3 bg-yellow-50 rounded-lg">
               <div className="font-medium text-yellow-800 mb-1">📸 Consistent Photos</div>
               <div className="text-yellow-700">Same time, same lighting, same pose</div>
@@ -213,6 +228,13 @@ export default function Progress() {
               <div className="text-yellow-700">Weekly averages show true progress</div>
             </div>
           </div>
+          <button 
+            onClick={handleAITipsClick}
+            className="w-full flex items-center justify-center gap-2 p-3 bg-red-100 text-red-800 border border-red-300 rounded-lg hover:bg-red-200 transition-colors"
+          >
+            <MessageCircle size={18} />
+            Do you need more tips?
+          </button>
         </Card>
       </div>
       
