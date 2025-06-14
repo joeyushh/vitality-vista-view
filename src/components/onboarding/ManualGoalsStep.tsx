@@ -15,17 +15,17 @@ interface ManualGoalsStepProps {
 
 export default function ManualGoalsStep({ data, onUpdate, onNext, onPrev }: ManualGoalsStepProps) {
   const [goals, setGoals] = useState({
-    calories: data.manualGoals?.calories || '',
-    protein: data.manualGoals?.protein || '',
-    carbs: data.manualGoals?.carbs || '',
-    fats: data.manualGoals?.fats || '',
-    sleep: data.manualGoals?.sleep || '',
-    steps: data.manualGoals?.steps || '',
-    workouts: data.manualGoals?.workouts || ''
+    calories: data.manualGoals?.calories?.toString() || '',
+    protein: data.manualGoals?.protein?.toString() || '',
+    carbs: data.manualGoals?.carbs?.toString() || '',
+    fats: data.manualGoals?.fats?.toString() || '',
+    sleep: data.manualGoals?.sleep?.toString() || '',
+    steps: data.manualGoals?.steps?.toString() || '',
+    workouts: data.manualGoals?.workouts?.toString() || ''
   });
 
   const handleNext = () => {
-    const allFilled = Object.values(goals).every(value => value.trim() !== '');
+    const allFilled = Object.values(goals).every(value => String(value).trim() !== '');
     if (allFilled) {
       onUpdate({ 
         manualGoals: {
@@ -46,7 +46,7 @@ export default function ManualGoalsStep({ data, onUpdate, onNext, onPrev }: Manu
     setGoals(prev => ({ ...prev, [key]: value }));
   };
 
-  const allFilled = Object.values(goals).every(value => value.trim() !== '');
+  const allFilled = Object.values(goals).every(value => String(value).trim() !== '');
 
   return (
     <div className="space-y-6">
