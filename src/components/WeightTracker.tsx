@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Weight, Plus, TrendingDown } from "lucide-react";
 import { useState } from "react";
@@ -37,7 +36,7 @@ export default function WeightTracker() {
             onClick={handleAddWeightClick}
             className="flex items-center gap-1 px-3 py-2 bg-red-600 text-white rounded-lg shadow-sm hover:bg-red-700 transition-colors active:scale-95">
             <Plus size={16} />
-            <span className="text-sm font-medium">Add</span>
+            <span className="text-sm font-medium">Log</span>
           </button>
         </div>
 

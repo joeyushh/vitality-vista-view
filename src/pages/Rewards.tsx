@@ -32,7 +32,7 @@ const weeklyProgress = [
 const availableRewards = [
   { name: "Free Smoothie", location: "Local Gym", cost: 15, credits: "15 credits", available: true },
   { name: "50% Off Chipotle Bowl", location: "Chipotle", cost: 8, credits: "8 credits", available: true },
-  { name: "20% Off Nike Shoes", location: "Nike Store", cost: 25, credits: "25 credits", available: true },
+  { name: "20% Off Nike Shoes", location: "Nike Store", cost: 25, credits: "25 credits", available: false },
   { name: "Free Protein Bar", location: "Supplement Store", cost: 5, credits: "5 credits", available: true }
 ];
 
@@ -122,14 +122,14 @@ export default function Rewards() {
             {availableRewards.map((reward, i) => (
               <div key={i} className={`p-3 rounded-lg border-2 ${
                 reward.available 
-                  ? 'border-green-200 bg-green-50' 
+                  ? 'border-yellow-200 bg-yellow-50' 
                   : 'border-gray-200 bg-gray-50 opacity-75'
               }`}>
                 <div className="flex justify-between items-start mb-2">
                   <h4 className="font-semibold text-sm">{reward.name}</h4>
                   <span className={`text-xs px-2 py-1 rounded ${
                     reward.available 
-                      ? 'bg-green-200 text-green-800' 
+                      ? 'bg-yellow-200 text-yellow-800' 
                       : 'bg-gray-200 text-gray-600'
                   }`}>
                     {reward.credits}
@@ -138,7 +138,7 @@ export default function Rewards() {
                 <div className="text-xs text-gray-600 mb-3">{reward.location}</div>
                 <button className={`w-full py-2 px-3 rounded font-medium text-sm ${
                   reward.available 
-                    ? 'bg-green-600 text-white hover:bg-green-700 active:scale-98' 
+                    ? 'bg-yellow-500 text-white hover:bg-yellow-600 active:scale-98' 
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`} disabled={!reward.available}>
                   {reward.available ? 'Redeem' : 'Not Enough Credits'}
