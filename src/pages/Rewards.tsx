@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Star, Target, Calendar, Settings } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreditGoalsModal from "@/components/CreditGoalsModal";
 
 const NAV_LINKS = [
@@ -25,8 +25,8 @@ const availableCreditGoals = [
   { id: 'workouts', name: 'Workouts', value: 1, unit: 'scheduled', color: 'blue' }
 ];
 
-// User's selected credit goals (5 max)
-const userCreditGoals = [
+// Default credit goals (fallback)
+const defaultCreditGoals = [
   { id: 'calories', name: 'Calories', value: 2200, unit: '', color: 'green' },
   { id: 'protein', name: 'Protein', value: 220, unit: 'g', color: 'green' },
   { id: 'workouts', name: 'Workouts', value: 1, unit: 'scheduled', color: 'blue' },
@@ -51,10 +51,37 @@ const availableRewards = [
   { name: "Free Protein Bar", location: "Supplement Store", cost: 5, credits: "5 credits", available: true }
 ];
 
-const totalCredits = weeklyProgress.reduce((sum, day) => sum + day.creditsEarned, 0);
-
 export default function Rewards() {
   const [showCreditGoalsModal, setShowCreditGoalsModal] = useState(false);
+  const [userCreditGoals, setUserCreditGoals] = useState(defaultCreditGoals);
+
+  // Load credit goals from localStorage on component mount
+  useEffect(() => {
+    const savedOnboardingData = localStorage.getItem('onboarding_data');
+    if (savedOnboardingData) {
+      try {
+        const onboardingData = JSON.parse(savedOnboardingData);
+        if (onboardingData.selectedCreditGoals && onboardingData.selectedCreditGoals.length > 0) {
+          // Update goals with values from manual goals or use defaults
+          const updatedGoals = onboardingData.selectedCreditGoals.map((goal: any) => {
+            if (onboardingData.manualGoals) {
+              // Use manual goals values if available
+              const manualValue = onboardingData.manualGoals[goal.id];
+              if (manualValue !== undefined) {
+                return { ...goal, value: manualValue };
+              }
+            }
+            return goal;
+          });
+          setUserCreditGoals(updatedGoals);
+        }
+      } catch (error) {
+        console.error('Error loading onboarding data:', error);
+      }
+    }
+  }, []);
+
+  const totalCredits = weeklyProgress.reduce((sum, day) => sum + day.creditsEarned, 0);
 
   // Get workout status for today - binary based on scheduled workouts
   const getTodayWorkoutStatus = () => {
@@ -69,6 +96,8 @@ export default function Rewards() {
       case 'workouts': return dayData.workoutComplete;
       case 'steps': return dayData.stepsHit;
       case 'sleep': return dayData.sleepHit;
+      case 'carbs': return dayData.caloriesHit; // Assuming carbs follows calories
+      case 'fats': return dayData.caloriesHit; // Assuming fats follows calories
       default: return false;
     }
   };
