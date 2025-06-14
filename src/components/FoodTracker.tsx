@@ -13,8 +13,6 @@ const dummyFoods = [
 
 export default function FoodTracker() {
   const [selectedFood, setSelectedFood] = useState(null);
-  const totalCalories = dummyFoods.reduce((sum, food) => sum + food.calories, 0);
-  const totalProtein = dummyFoods.reduce((sum, food) => sum + food.protein, 0);
 
   return (
     <Card className="p-6 shadow-lg animate-fade-in flex flex-col">
@@ -86,19 +84,6 @@ export default function FoodTracker() {
             </PopoverContent>
           </Popover>
         ))}
-      </div>
-
-      <div className="border-t pt-4">
-        <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="bg-green-50 rounded p-3">
-            <div className="text-2xl font-bold text-green-600">{totalCalories}</div>
-            <div className="text-sm text-gray-600">Calories Today</div>
-          </div>
-          <div className="bg-green-100 rounded p-3">
-            <div className="text-2xl font-bold text-green-700">{totalProtein}g</div>
-            <div className="text-sm text-gray-600">Protein Today</div>
-          </div>
-        </div>
       </div>
 
       <div className="mt-4 p-3 bg-yellow-50 rounded text-sm">

@@ -65,16 +65,23 @@ export default function Index() {
         <DashboardStats />
       </div>
 
-      <main className="flex flex-1 gap-8 px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
-        {/* Left column - Food & Weight */}
-        <div className="w-full md:w-1/2 flex flex-col gap-8">
-          <FoodTracker />
-          <WeightTracker />
+      <main className="flex flex-col gap-8 px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
+        {/* Top row - Food & Workouts */}
+        <div className="flex flex-1 gap-8">
+          {/* Left column - Food */}
+          <div className="w-full md:w-1/2">
+            <FoodTracker />
+          </div>
+          
+          {/* Right column - Workouts */}
+          <div className="w-full md:w-1/2">
+            <WorkoutTracker />
+          </div>
         </div>
         
-        {/* Right column - Workouts */}
-        <div className="w-full md:w-1/2">
-          <WorkoutTracker />
+        {/* Bottom row - Weight Tracker (Full Width) */}
+        <div className="w-full">
+          <WeightTracker />
         </div>
       </main>
       
