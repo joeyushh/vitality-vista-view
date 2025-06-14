@@ -45,6 +45,38 @@ export default function DashboardStats() {
     return creditGoalId && selectedCreditGoals.includes(creditGoalId);
   };
 
+  const isGoalCompleted = (metricId: string) => {
+    const metric = todaysMetrics[metricId as keyof typeof todaysMetrics];
+    if (!metric) return false;
+    
+    // Special case for workouts - exact match
+    if (metricId === 'workoutsCompleted') {
+      return metric.current >= metric.target;
+    }
+    
+    return metric.current >= metric.target;
+  };
+
+  const getMetricClasses = (metricId: string, baseColor: string) => {
+    const isCompleted = isGoalCompleted(metricId);
+    
+    if (isCompleted) {
+      return {
+        bg: 'bg-yellow-50',
+        border: 'border-yellow-200',
+        text: 'text-yellow-600',
+        subtext: 'text-yellow-700'
+      };
+    }
+    
+    return {
+      bg: `bg-${baseColor}-50`,
+      border: `border-${baseColor}-200`,
+      text: `text-${baseColor}-600`,
+      subtext: `text-${baseColor}-700`
+    };
+  };
+
   return (
     <Card className="p-4 shadow-lg animate-fade-in">
       {/* Credits Header - Enhanced styling */}
@@ -60,70 +92,70 @@ export default function DashboardStats() {
 
       {/* Food Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
+        <div className={`p-3 rounded-lg text-center border relative ${getMetricClasses('calories', 'green').bg} ${getMetricClasses('calories', 'green').border}`}>
           {isTrackedForCredits('calories') && (
-            <Star size={12} className="absolute top-1 right-1 fill-green-700 text-green-700" />
+            <Star size={12} className={`absolute top-1 right-1 fill-${isGoalCompleted('calories') ? 'yellow' : 'green'}-700 text-${isGoalCompleted('calories') ? 'yellow' : 'green'}-700`} />
           )}
-          <div className="text-xl font-bold text-green-600">{todaysMetrics.calories.current}</div>
+          <div className={`text-xl font-bold ${getMetricClasses('calories', 'green').text}`}>{todaysMetrics.calories.current}</div>
           <div className="text-xs text-gray-600 mb-1">Calories</div>
-          <div className="text-xs text-green-700">of {todaysMetrics.calories.target}</div>
+          <div className={`text-xs ${getMetricClasses('calories', 'green').subtext}`}>of {todaysMetrics.calories.target}</div>
         </div>
 
-        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
+        <div className={`p-3 rounded-lg text-center border relative ${getMetricClasses('protein', 'green').bg} ${getMetricClasses('protein', 'green').border}`}>
           {isTrackedForCredits('protein') && (
-            <Star size={12} className="absolute top-1 right-1 fill-green-700 text-green-700" />
+            <Star size={12} className={`absolute top-1 right-1 fill-${isGoalCompleted('protein') ? 'yellow' : 'green'}-700 text-${isGoalCompleted('protein') ? 'yellow' : 'green'}-700`} />
           )}
-          <div className="text-xl font-bold text-green-600">{todaysMetrics.protein.current}g</div>
+          <div className={`text-xl font-bold ${getMetricClasses('protein', 'green').text}`}>{todaysMetrics.protein.current}g</div>
           <div className="text-xs text-gray-600 mb-1">Protein</div>
-          <div className="text-xs text-green-700">of {todaysMetrics.protein.target}g</div>
+          <div className={`text-xs ${getMetricClasses('protein', 'green').subtext}`}>of {todaysMetrics.protein.target}g</div>
         </div>
 
-        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
+        <div className={`p-3 rounded-lg text-center border relative ${getMetricClasses('carbs', 'green').bg} ${getMetricClasses('carbs', 'green').border}`}>
           {isTrackedForCredits('carbs') && (
-            <Star size={12} className="absolute top-1 right-1 fill-green-700 text-green-700" />
+            <Star size={12} className={`absolute top-1 right-1 fill-${isGoalCompleted('carbs') ? 'yellow' : 'green'}-700 text-${isGoalCompleted('carbs') ? 'yellow' : 'green'}-700`} />
           )}
-          <div className="text-xl font-bold text-green-600">{todaysMetrics.carbs.current}g</div>
+          <div className={`text-xl font-bold ${getMetricClasses('carbs', 'green').text}`}>{todaysMetrics.carbs.current}g</div>
           <div className="text-xs text-gray-600 mb-1">Carbs</div>
-          <div className="text-xs text-green-700">of {todaysMetrics.carbs.target}g</div>
+          <div className={`text-xs ${getMetricClasses('carbs', 'green').subtext}`}>of {todaysMetrics.carbs.target}g</div>
         </div>
 
-        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
+        <div className={`p-3 rounded-lg text-center border relative ${getMetricClasses('fats', 'green').bg} ${getMetricClasses('fats', 'green').border}`}>
           {isTrackedForCredits('fats') && (
-            <Star size={12} className="absolute top-1 right-1 fill-green-700 text-green-700" />
+            <Star size={12} className={`absolute top-1 right-1 fill-${isGoalCompleted('fats') ? 'yellow' : 'green'}-700 text-${isGoalCompleted('fats') ? 'yellow' : 'green'}-700`} />
           )}
-          <div className="text-xl font-bold text-green-600">{todaysMetrics.fats.current}g</div>
+          <div className={`text-xl font-bold ${getMetricClasses('fats', 'green').text}`}>{todaysMetrics.fats.current}g</div>
           <div className="text-xs text-gray-600 mb-1">Fats</div>
-          <div className="text-xs text-green-700">of {todaysMetrics.fats.target}g</div>
+          <div className={`text-xs ${getMetricClasses('fats', 'green').subtext}`}>of {todaysMetrics.fats.target}g</div>
         </div>
       </div>
 
       {/* Activity Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="p-3 bg-blue-50 rounded-lg text-center border border-blue-200 relative">
+        <div className={`p-3 rounded-lg text-center border relative ${getMetricClasses('steps', 'blue').bg} ${getMetricClasses('steps', 'blue').border}`}>
           {isTrackedForCredits('steps') && (
-            <Star size={12} className="absolute top-1 right-1 fill-blue-700 text-blue-700" />
+            <Star size={12} className={`absolute top-1 right-1 fill-${isGoalCompleted('steps') ? 'yellow' : 'blue'}-700 text-${isGoalCompleted('steps') ? 'yellow' : 'blue'}-700`} />
           )}
-          <div className="text-xl font-bold text-blue-600">{todaysMetrics.steps.current.toLocaleString()}</div>
+          <div className={`text-xl font-bold ${getMetricClasses('steps', 'blue').text}`}>{todaysMetrics.steps.current.toLocaleString()}</div>
           <div className="text-xs text-gray-600 mb-1">Steps</div>
-          <div className="text-xs text-blue-700">of {todaysMetrics.steps.target.toLocaleString()}</div>
+          <div className={`text-xs ${getMetricClasses('steps', 'blue').subtext}`}>of {todaysMetrics.steps.target.toLocaleString()}</div>
         </div>
 
-        <div className="p-3 bg-blue-50 rounded-lg text-center border border-blue-200 relative">
+        <div className={`p-3 rounded-lg text-center border relative ${getMetricClasses('workoutsCompleted', 'blue').bg} ${getMetricClasses('workoutsCompleted', 'blue').border}`}>
           {isTrackedForCredits('workoutsCompleted') && (
-            <Star size={12} className="absolute top-1 right-1 fill-blue-700 text-blue-700" />
+            <Star size={12} className={`absolute top-1 right-1 fill-${isGoalCompleted('workoutsCompleted') ? 'yellow' : 'blue'}-700 text-${isGoalCompleted('workoutsCompleted') ? 'yellow' : 'blue'}-700`} />
           )}
-          <div className="text-xl font-bold text-blue-600">{todaysMetrics.workoutsCompleted.current}/{todaysMetrics.workoutsCompleted.target}</div>
+          <div className={`text-xl font-bold ${getMetricClasses('workoutsCompleted', 'blue').text}`}>{todaysMetrics.workoutsCompleted.current}/{todaysMetrics.workoutsCompleted.target}</div>
           <div className="text-xs text-gray-600 mb-1">Workouts</div>
-          <div className="text-xs text-blue-700">completed</div>
+          <div className={`text-xs ${getMetricClasses('workoutsCompleted', 'blue').subtext}`}>completed</div>
         </div>
 
-        <div className="p-3 bg-purple-50 rounded-lg text-center border border-purple-200 relative">
+        <div className={`p-3 rounded-lg text-center border relative ${getMetricClasses('sleep', 'purple').bg} ${getMetricClasses('sleep', 'purple').border}`}>
           {isTrackedForCredits('sleep') && (
-            <Star size={12} className="absolute top-1 right-1 fill-purple-700 text-purple-700" />
+            <Star size={12} className={`absolute top-1 right-1 fill-${isGoalCompleted('sleep') ? 'yellow' : 'purple'}-700 text-${isGoalCompleted('sleep') ? 'yellow' : 'purple'}-700`} />
           )}
-          <div className="text-xl font-bold text-purple-600">{todaysMetrics.sleep.current}hrs</div>
+          <div className={`text-xl font-bold ${getMetricClasses('sleep', 'purple').text}`}>{todaysMetrics.sleep.current}hrs</div>
           <div className="text-xs text-gray-600 mb-1">Sleep</div>
-          <div className="text-xs text-purple-700">of {todaysMetrics.sleep.target}hrs</div>
+          <div className={`text-xs ${getMetricClasses('sleep', 'purple').subtext}`}>of {todaysMetrics.sleep.target}hrs</div>
         </div>
 
         <div className="p-3 bg-purple-50 rounded-lg text-center border border-purple-200 relative">
