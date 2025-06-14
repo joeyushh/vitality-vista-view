@@ -7,6 +7,8 @@ import WelcomeStep from './onboarding/WelcomeStep';
 import BasicInfoStep from './onboarding/BasicInfoStep';
 import ExperienceStep from './onboarding/ExperienceStep';
 import GoalsStep from './onboarding/GoalsStep';
+import TargetGoalsStep from './onboarding/TargetGoalsStep';
+import SecondaryGoalsStep from './onboarding/SecondaryGoalsStep';
 import FoodTrackingStep from './onboarding/FoodTrackingStep';
 import GoalSetupPreferenceStep from './onboarding/GoalSetupPreferenceStep';
 import ManualGoalsStep from './onboarding/ManualGoalsStep';
@@ -22,12 +24,29 @@ export interface OnboardingData {
   age: number;
   gender: 'male' | 'female' | 'other';
   
+  // Goals
+  primaryGoal: 'lose_weight' | 'gain_muscle' | 'maintain' | 'improve_health';
+  secondaryGoal?: string;
+  targetWeight?: number;
+  timeline?: string;
+  weeklyGoal?: number;
+  
   // Experience & Goals
   fitnessLevel: 'beginner' | 'intermediate' | 'advanced';
-  primaryGoal: 'lose_weight' | 'gain_muscle' | 'maintain' | 'improve_health';
   
   // Goal Setup Preference
   goalSetupPreference: 'guided' | 'manual';
+  
+  // Calculated Goals (for guided setup)
+  calculatedGoals?: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fats: number;
+    steps: number;
+    sleep: number;
+    workouts: number;
+  };
   
   // Manual Goals (if user chooses manual)
   manualGoals?: {
@@ -66,7 +85,7 @@ interface OnboardingFlowProps {
   onClose: () => void;
 }
 
-const TOTAL_STEPS = 10; // Reduced from 11 since we're optimizing the flow
+const TOTAL_STEPS = 12; // Updated to include new steps
 
 export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowProps) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -76,24 +95,69 @@ export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowPr
     setData(prev => ({ ...prev, ...stepData }));
   };
 
+  // Calculate personalized goals based on user data
+  const calculatePersonalizedGoals = (userData: Partial<OnboardingData>) => {
+    if (!userData.height || !userData.weight || !userData.age || !userData.gender) return null;
+
+    // Basic BMR calculation (Mifflin-St Jeor)
+    let bmr;
+    if (userData.gender === 'male') {
+      bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age + 5;
+    } else {
+      bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age - 161;
+    }
+
+    // Activity multiplier based on workout frequency
+    const activityMultiplier = userData.currentWorkoutFrequency 
+      ? 1.2 + (userData.currentWorkoutFrequency * 0.1) 
+      : 1.4; // Default for guided users
+
+    let tdee = bmr * activityMultiplier;
+
+    // Adjust calories based on goal
+    if (userData.primaryGoal === 'lose_weight' && userData.weeklyGoal) {
+      tdee -= userData.weeklyGoal * 7700 / 7; // 7700 cal per kg of fat
+    } else if (userData.primaryGoal === 'gain_muscle' && userData.weeklyGoal) {
+      tdee += userData.weeklyGoal * 7700 / 7;
+    }
+
+    // Calculate macros
+    const protein = userData.weight * (userData.primaryGoal === 'gain_muscle' ? 2.2 : 1.8);
+    const fats = Math.round(tdee * 0.25 / 9);
+    const carbs = Math.round((tdee - (protein * 4) - (fats * 9)) / 4);
+
+    return {
+      calories: Math.round(tdee),
+      protein: Math.round(protein),
+      carbs,
+      fats,
+      steps: userData.fitnessLevel === 'beginner' ? 8000 : userData.fitnessLevel === 'intermediate' ? 10000 : 12000,
+      sleep: 8,
+      workouts: userData.currentWorkoutFrequency || 3
+    };
+  };
+
   const nextStep = () => {
-    // After Goal Setup Preference step (step 5)
-    if (currentStep === 5) {
-      // If manual setup, go to Manual Goals (step 6)
-      // If guided setup, skip to Activity step (step 7)
+    // After Goal Setup Preference step (step 7)
+    if (currentStep === 7) {
       if (data.goalSetupPreference === 'guided') {
-        setCurrentStep(7); // Skip Manual Goals, go to Activity
+        // Calculate personalized goals for guided users
+        const calculated = calculatePersonalizedGoals(data);
+        if (calculated) {
+          updateData({ calculatedGoals: calculated });
+        }
+        setCurrentStep(8); // Go to Activity step
       } else {
-        setCurrentStep(6); // Go to Manual Goals
+        setCurrentStep(9); // Go to Manual Goals step
       }
     }
-    // After Manual Goals step (step 6), go to Wearable Connection (step 8)
-    else if (currentStep === 6) {
-      setCurrentStep(8); // Skip Activity, go to Wearable Connection
+    // After Manual Goals step (step 9), skip to Wearable Connection (step 10)
+    else if (currentStep === 9) {
+      setCurrentStep(10);
     }
-    // After Activity step (step 7), go to Wearable Connection (step 8)
-    else if (currentStep === 7) {
-      setCurrentStep(8);
+    // After Activity step (step 8), go to Wearable Connection (step 10)
+    else if (currentStep === 8) {
+      setCurrentStep(10);
     }
     // Normal progression for other steps
     else if (currentStep < TOTAL_STEPS - 1) {
@@ -102,21 +166,21 @@ export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowPr
   };
 
   const prevStep = () => {
-    // From Wearable Connection step (step 8)
-    if (currentStep === 8) {
+    // From Wearable Connection step (step 10)
+    if (currentStep === 10) {
       if (data.goalSetupPreference === 'manual') {
-        setCurrentStep(6); // Go back to Manual Goals
+        setCurrentStep(9); // Go back to Manual Goals
       } else {
-        setCurrentStep(7); // Go back to Activity
+        setCurrentStep(8); // Go back to Activity
       }
     }
-    // From Activity step (step 7), go back to Goal Setup Preference (step 5)
-    else if (currentStep === 7) {
-      setCurrentStep(5);
+    // From Activity step (step 8), go back to Goal Setup Preference (step 7)
+    else if (currentStep === 8) {
+      setCurrentStep(7);
     }
-    // From Manual Goals step (step 6), go back to Goal Setup Preference (step 5)
-    else if (currentStep === 6) {
-      setCurrentStep(5);
+    // From Manual Goals step (step 9), go back to Goal Setup Preference (step 7)
+    else if (currentStep === 9) {
+      setCurrentStep(7);
     }
     // Normal progression for other steps
     else if (currentStep > 0) {
@@ -141,18 +205,22 @@ export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowPr
       case 3:
         return <GoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 4:
-        return <FoodTrackingStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+        return <TargetGoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 5:
-        return <GoalSetupPreferenceStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+        return <SecondaryGoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 6:
-        return <ManualGoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+        return <FoodTrackingStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 7:
-        return <ActivityStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+        return <GoalSetupPreferenceStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 8:
-        return <WearableConnectionStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+        return <ActivityStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 9:
-        return <CreditGoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+        return <ManualGoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 10:
+        return <WearableConnectionStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+      case 11:
+        return <CreditGoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+      case 12:
         return <SummaryStep data={data} onComplete={handleComplete} onPrev={prevStep} />;
       default:
         return null;
