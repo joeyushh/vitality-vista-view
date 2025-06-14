@@ -1,13 +1,14 @@
 
-// Dashboard-style entry page: Food and Workout trackers, side-by-side, split screen, navigation at the top.
-
 import FoodTracker from "@/components/FoodTracker";
 import WorkoutTracker from "@/components/WorkoutTracker";
+import DashboardStats from "@/components/DashboardStats";
+import WeightTracker from "@/components/WeightTracker";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "#", active: true },
-  { label: "Food Tracker", href: "#food" },
-  { label: "Workout Tracker", href: "#workouts" },
+  { label: "Food", href: "#food" },
+  { label: "Workouts", href: "#workouts" },
+  { label: "Progress", href: "#progress" },
 ];
 
 export default function Index() {
@@ -16,7 +17,7 @@ export default function Index() {
       {/* Top Navigation */}
       <nav className="w-full flex items-center px-10 py-4 shadow mb-8 bg-white/80 backdrop-blur-sm z-10">
         <div className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-blue-800 via-blue-600 to-green-600 bg-clip-text text-transparent mr-10 select-none">
-          TrackIt
+          FitTrack Pro
         </div>
         <ul className="flex gap-2 text-base font-medium">
           {NAV_LINKS.map((link, i) => (
@@ -39,17 +40,26 @@ export default function Index() {
         </div>
       </nav>
 
+      {/* Dashboard Stats Overview */}
+      <div className="px-6 mb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
+        <DashboardStats />
+      </div>
+
       <main className="flex flex-1 gap-8 px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
-        {/* Desktop split grid, stack on mobile */}
-        <section className="w-full md:w-1/2 mb-8 md:mb-0">
+        {/* Left column - Food & Weight */}
+        <div className="w-full md:w-1/2 flex flex-col gap-8">
           <FoodTracker />
-        </section>
-        <section className="w-full md:w-1/2">
+          <WeightTracker />
+        </div>
+        
+        {/* Right column - Workouts */}
+        <div className="w-full md:w-1/2">
           <WorkoutTracker />
-        </section>
+        </div>
       </main>
+      
       <footer className="w-full text-center py-3 text-gray-400 text-xs mt-auto">
-        &copy; {new Date().getFullYear()} TrackIt. Built with Lovable.
+        &copy; {new Date().getFullYear()} FitTrack Pro. Your all-in-one fitness companion.
       </footer>
     </div>
   );
