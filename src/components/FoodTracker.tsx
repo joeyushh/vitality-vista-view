@@ -1,5 +1,5 @@
 
-import { KnifeFork } from "lucide-react";
+import { Utensils } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
@@ -20,7 +20,7 @@ export default function FoodTracker() {
     <Card className="p-6 shadow-lg animate-fade-in flex flex-col">
       <div className="flex items-center gap-3 mb-4">
         <span className="inline-flex items-center justify-center rounded-full bg-green-50 p-2">
-          <KnifeFork size={22} className="text-green-600" />
+          <Utensils size={22} className="text-green-600" />
         </span>
         <h2 className="text-2xl font-bold tracking-tight text-green-700">Food Tracker</h2>
         <div className="ml-auto flex gap-2">
