@@ -1,4 +1,3 @@
-
 import FoodTracker from "@/components/FoodTracker";
 import WorkoutTracker from "@/components/WorkoutTracker";
 import DashboardStats from "@/components/DashboardStats";
@@ -7,16 +6,44 @@ import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import PullToRefresh from "@/components/PullToRefresh";
 import DateNavigation from "@/components/DateNavigation";
+import OnboardingFlow, { OnboardingData } from "@/components/OnboardingFlow";
 import { useState } from "react";
 
 export default function Index() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isFirstTime, setIsFirstTime] = useState(true); // This would typically check localStorage
 
   const handleRefresh = async () => {
     // Simulate data refresh
     await new Promise(resolve => setTimeout(resolve, 1000));
   };
+
+  const handleOnboardingComplete = (data: OnboardingData) => {
+    console.log('Onboarding completed with data:', data);
+    // Here you would typically save the data to your state management or backend
+    localStorage.setItem('onboarding_completed', 'true');
+    localStorage.setItem('user_profile', JSON.stringify(data));
+    setShowOnboarding(false);
+    setIsFirstTime(false);
+  };
+
+  const handleSkipOnboarding = () => {
+    localStorage.setItem('onboarding_completed', 'true');
+    setShowOnboarding(false);
+    setIsFirstTime(false);
+  };
+
+  // Check if user should see onboarding on mount
+  useState(() => {
+    const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
+    if (!hasCompletedOnboarding) {
+      setShowOnboarding(true);
+    } else {
+      setIsFirstTime(false);
+    }
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
@@ -56,6 +83,14 @@ export default function Index() {
       </PullToRefresh>
       
       <BottomNavigation />
+
+      {/* Onboarding Flow */}
+      {showOnboarding && (
+        <OnboardingFlow
+          onComplete={handleOnboardingComplete}
+          onClose={handleSkipOnboarding}
+        />
+      )}
     </div>
   );
 }
