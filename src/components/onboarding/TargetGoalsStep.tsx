@@ -20,10 +20,8 @@ export default function TargetGoalsStep({ data, onUpdate, onNext, onPrev }: Targ
 
   const handleNext = () => {
     if (targetWeight && timeline) {
-      const weeklyGoalValue = data.primaryGoal === 'lose_weight' ? 
-        parseFloat(weeklyGoal || '0.5') : 
-        data.primaryGoal === 'gain_muscle' ? 
-        parseFloat(weeklyGoal || '0.3') : 0;
+      const weeklyGoalValue = data.primaryGoal !== 'maintain' && weeklyGoal ? 
+        parseFloat(weeklyGoal) : 0;
 
       onUpdate({
         targetWeight: parseFloat(targetWeight),
@@ -45,8 +43,16 @@ export default function TargetGoalsStep({ data, onUpdate, onNext, onPrev }: Targ
 
   const getWeeklyGoalLabel = () => {
     switch (data.primaryGoal) {
-      case 'lose_weight': return 'How much weight do you want to lose per week?';
-      case 'gain_muscle': return 'How much weight do you want to gain per week?';
+      case 'lose_weight': return 'How much weight do you want to lose per week? (kg)';
+      case 'gain_muscle': return 'How much weight do you want to gain per week? (kg)';
+      default: return '';
+    }
+  };
+
+  const getWeeklyGoalPlaceholder = () => {
+    switch (data.primaryGoal) {
+      case 'lose_weight': return '0.5';
+      case 'gain_muscle': return '0.3';
       default: return '';
     }
   };
@@ -91,26 +97,19 @@ export default function TargetGoalsStep({ data, onUpdate, onNext, onPrev }: Targ
         {data.primaryGoal !== 'maintain' && data.primaryGoal !== 'improve_health' && (
           <div>
             <Label htmlFor="weekly-goal">{getWeeklyGoalLabel()}</Label>
-            <Select value={weeklyGoal} onValueChange={setWeeklyGoal}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select weekly goal" />
-              </SelectTrigger>
-              <SelectContent>
-                {data.primaryGoal === 'lose_weight' ? (
-                  <>
-                    <SelectItem value="0.25">0.25 kg/week (slow)</SelectItem>
-                    <SelectItem value="0.5">0.5 kg/week (moderate)</SelectItem>
-                    <SelectItem value="0.75">0.75 kg/week (aggressive)</SelectItem>
-                  </>
-                ) : (
-                  <>
-                    <SelectItem value="0.2">0.2 kg/week (lean gains)</SelectItem>
-                    <SelectItem value="0.3">0.3 kg/week (moderate)</SelectItem>
-                    <SelectItem value="0.5">0.5 kg/week (bulk)</SelectItem>
-                  </>
-                )}
-              </SelectContent>
-            </Select>
+            <Input
+              id="weekly-goal"
+              type="number"
+              step="0.1"
+              min="0.1"
+              max="2"
+              placeholder={getWeeklyGoalPlaceholder()}
+              value={weeklyGoal}
+              onChange={(e) => setWeeklyGoal(e.target.value)}
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Recommended: {data.primaryGoal === 'lose_weight' ? '0.25-0.75' : '0.2-0.5'} kg per week
+            </p>
           </div>
         )}
       </div>

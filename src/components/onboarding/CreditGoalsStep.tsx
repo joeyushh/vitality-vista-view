@@ -29,17 +29,18 @@ export default function CreditGoalsStep({ data, onUpdate, onNext, onPrev }: Cred
     const isSelected = selectedGoals.some(g => g.id === goal.id);
     
     if (isSelected) {
-      setSelectedGoals(selectedGoals.filter(g => g.id !== goal.id));
+      const newGoals = selectedGoals.filter(g => g.id !== goal.id);
+      setSelectedGoals(newGoals);
     } else if (selectedGoals.length < 5) {
-      setSelectedGoals([...selectedGoals, goal]);
+      const newGoals = [...selectedGoals, goal];
+      setSelectedGoals(newGoals);
     }
   };
 
   const handleNext = () => {
-    if (selectedGoals.length > 0) {
-      onUpdate({ selectedCreditGoals: selectedGoals });
-      onNext();
-    }
+    console.log('Credit goals handleNext called, selectedGoals:', selectedGoals);
+    onUpdate({ selectedCreditGoals: selectedGoals });
+    onNext();
   };
 
   const getGoalDisplayText = (goal: typeof AVAILABLE_GOALS[0]) => {
@@ -48,6 +49,8 @@ export default function CreditGoalsStep({ data, onUpdate, onNext, onPrev }: Cred
     }
     return `${goal.value.toLocaleString()}${goal.unit} daily`;
   };
+
+  const isValid = selectedGoals.length > 0;
 
   return (
     <div className="space-y-6">
@@ -116,8 +119,8 @@ export default function CreditGoalsStep({ data, onUpdate, onNext, onPrev }: Cred
         <Button variant="outline" onClick={onPrev} className="flex-1">
           Back
         </Button>
-        <Button onClick={handleNext} disabled={selectedGoals.length === 0} className="flex-1">
-          Continue
+        <Button onClick={handleNext} disabled={!isValid} className="flex-1">
+          Continue ({selectedGoals.length} selected)
         </Button>
       </div>
     </div>
