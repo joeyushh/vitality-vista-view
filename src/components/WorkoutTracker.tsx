@@ -1,5 +1,7 @@
+
 import { Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 const dummyWorkouts = [
   { ex: "Bench Press", sets: 4, weightReps: "80kg/6, 75kg/7, 70kg/8, 65kg/9", restTime: "2-3min", notes: "" },
@@ -9,8 +11,17 @@ const dummyWorkouts = [
 ];
 
 export default function WorkoutTracker() {
+  const navigate = useNavigate();
   const totalSets = dummyWorkouts.reduce((sum, w) => sum + w.sets, 0);
   const workoutDuration = "Not started";
+
+  const handleWorkoutLogClick = () => {
+    navigate("/workouts");
+  };
+
+  const handleStartWorkoutClick = () => {
+    navigate("/workouts");
+  };
 
   return (
     <Card className="p-6 shadow-lg animate-fade-in flex flex-col h-full">
@@ -20,10 +31,14 @@ export default function WorkoutTracker() {
         </span>
         <h2 className="text-2xl font-bold tracking-tight text-blue-700">Today's Workout</h2>
         <div className="ml-auto flex gap-2">
-          <button className="px-3 py-1 bg-blue-600 text-white rounded shadow hover:scale-105 transition-transform">
+          <button 
+            onClick={handleStartWorkoutClick}
+            className="px-3 py-1 bg-blue-600 text-white rounded shadow hover:scale-105 transition-transform">
             Start Workout
           </button>
-          <button className="px-3 py-1 bg-blue-100 text-blue-700 border border-blue-300 rounded shadow hover:scale-105 transition-transform">
+          <button 
+            onClick={handleWorkoutLogClick}
+            className="px-3 py-1 bg-blue-100 text-blue-700 border border-blue-300 rounded shadow hover:scale-105 transition-transform">
             Workout Log
           </button>
         </div>

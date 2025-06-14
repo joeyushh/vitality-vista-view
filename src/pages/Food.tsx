@@ -12,13 +12,56 @@ const NAV_LINKS = [
   { label: "Rewards", href: "/rewards", active: false },
 ];
 
-const todaysMeals = [
+// Base meals data
+const baseMeals = [
   { meal: "Breakfast", food: "Oatmeal + Banana", calories: 320, protein: 12, carbs: 58, fat: 6, time: "7:30 AM" },
   { meal: "Lunch", food: "Chicken Rice Bowl", calories: 480, protein: 35, carbs: 45, fat: 12, time: "12:45 PM" },
   { meal: "Snack", food: "Grenade Protein Bar", calories: 220, protein: 22, carbs: 1.5, fat: 11, time: "3:20 PM" },
   { meal: "Pre-workout", food: "Banana + Coffee", calories: 125, protein: 2, carbs: 28, fat: 0, time: "5:15 PM" },
 ];
 
+// Different meal variations for different days
+const mealVariations = {
+  monday: [
+    { meal: "Breakfast", food: "Protein Pancakes", calories: 350, protein: 28, carbs: 42, fat: 8, time: "7:15 AM" },
+    { meal: "Lunch", food: "Tuna Salad Wrap", calories: 420, protein: 32, carbs: 35, fat: 15, time: "12:30 PM" },
+    { meal: "Snack", food: "Greek Yogurt + Berries", calories: 180, protein: 18, carbs: 20, fat: 2, time: "3:00 PM" },
+    { meal: "Dinner", food: "Salmon + Quinoa", calories: 520, protein: 38, carbs: 45, fat: 18, time: "7:00 PM" },
+  ],
+  tuesday: [
+    { meal: "Breakfast", food: "Egg White Omelette", calories: 280, protein: 24, carbs: 15, fat: 12, time: "7:45 AM" },
+    { meal: "Lunch", food: "Turkey & Avocado Sandwich", calories: 450, protein: 30, carbs: 40, fat: 18, time: "1:00 PM" },
+    { meal: "Snack", food: "Protein Shake", calories: 160, protein: 30, carbs: 5, fat: 2, time: "4:15 PM" },
+    { meal: "Dinner", food: "Grilled Chicken & Veggies", calories: 380, protein: 40, carbs: 20, fat: 12, time: "7:30 PM" },
+  ],
+  wednesday: [
+    { meal: "Breakfast", food: "Overnight Oats", calories: 310, protein: 15, carbs: 50, fat: 7, time: "7:20 AM" },
+    { meal: "Lunch", food: "Beef Stir Fry", calories: 520, protein: 38, carbs: 40, fat: 20, time: "12:15 PM" },
+    { meal: "Snack", food: "Apple & Peanut Butter", calories: 200, protein: 7, carbs: 25, fat: 8, time: "3:30 PM" },
+    { meal: "Pre-workout", food: "Rice Cakes + Jam", calories: 150, protein: 2, carbs: 35, fat: 0, time: "5:00 PM" },
+  ],
+  thursday: baseMeals,
+  friday: [
+    { meal: "Breakfast", food: "Breakfast Burrito", calories: 420, protein: 25, carbs: 45, fat: 15, time: "8:00 AM" },
+    { meal: "Lunch", food: "Chicken Caesar Salad", calories: 380, protein: 35, carbs: 10, fat: 22, time: "1:15 PM" },
+    { meal: "Snack", food: "Protein Bar", calories: 210, protein: 20, carbs: 20, fat: 7, time: "4:00 PM" },
+    { meal: "Dinner", food: "Pasta with Turkey Meatballs", calories: 550, protein: 30, carbs: 65, fat: 15, time: "7:45 PM" },
+  ],
+  saturday: [
+    { meal: "Breakfast", food: "Bagel with Cream Cheese", calories: 450, protein: 15, carbs: 65, fat: 12, time: "9:30 AM" },
+    { meal: "Lunch", food: "Grilled Cheese & Soup", calories: 520, protein: 18, carbs: 60, fat: 22, time: "1:30 PM" },
+    { meal: "Snack", food: "Trail Mix", calories: 250, protein: 8, carbs: 20, fat: 15, time: "4:30 PM" },
+    { meal: "Dinner", food: "Pizza (2 slices)", calories: 580, protein: 24, carbs: 70, fat: 20, time: "7:30 PM" },
+  ],
+  sunday: [
+    { meal: "Breakfast", food: "French Toast", calories: 420, protein: 15, carbs: 60, fat: 12, time: "9:00 AM" },
+    { meal: "Lunch", food: "Burger & Sweet Potato Fries", calories: 750, protein: 35, carbs: 80, fat: 30, time: "1:00 PM" },
+    { meal: "Snack", food: "Protein Smoothie", calories: 280, protein: 25, carbs: 30, fat: 5, time: "4:00 PM" },
+    { meal: "Dinner", food: "Steak & Roasted Vegetables", calories: 550, protein: 45, carbs: 25, fat: 28, time: "7:30 PM" },
+  ]
+};
+
+// Same saved meals as before
 const savedMeals = [
   { name: "Post-workout Shake", calories: 350, protein: 40, carbs: 25, fat: 8 },
   { name: "Chicken & Rice", calories: 520, protein: 42, carbs: 48, fat: 14 },
@@ -26,17 +69,64 @@ const savedMeals = [
   { name: "Salmon & Vegetables", calories: 420, protein: 38, carbs: 15, fat: 22 },
 ];
 
-const todaysStats = {
-  calories: { current: 1450, target: 2200 },
-  protein: { current: 89, target: 165 },
-  carbs: { current: 142, target: 220 },
-  fat: { current: 48, target: 73 },
-};
-
 export default function Food() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [currentDate, setCurrentDate] = useState(new Date());
+
+  // Get the day name for the current date
+  const getDayName = (date) => {
+    return date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+  };
+
+  // Get meals for the selected day
+  const getMealsForDay = (date) => {
+    const dayName = getDayName(date);
+    const today = new Date().toDateString();
+    const selectedDay = date.toDateString();
+    
+    // Future days have no meals logged yet
+    if (new Date(selectedDay) > new Date(today)) {
+      return [];
+    }
+    
+    return mealVariations[dayName] || baseMeals;
+  };
+
+  // Calculate nutrition stats based on the meals for the day
+  const calculateNutritionStats = (meals) => {
+    if (meals.length === 0) {
+      return {
+        calories: { current: 0, target: 2200 },
+        protein: { current: 0, target: 165 },
+        carbs: { current: 0, target: 220 },
+        fat: { current: 0, target: 73 },
+      };
+    }
+    
+    return {
+      calories: { 
+        current: meals.reduce((sum, meal) => sum + meal.calories, 0), 
+        target: 2200 
+      },
+      protein: { 
+        current: Math.round(meals.reduce((sum, meal) => sum + meal.protein, 0)), 
+        target: 165 
+      },
+      carbs: { 
+        current: Math.round(meals.reduce((sum, meal) => sum + meal.carbs, 0)), 
+        target: 220 
+      },
+      fat: { 
+        current: Math.round(meals.reduce((sum, meal) => sum + meal.fat, 0)), 
+        target: 73 
+      },
+    };
+  };
+
+  const todaysMeals = getMealsForDay(currentDate);
+  const todaysStats = calculateNutritionStats(todaysMeals);
+  const isFutureDate = currentDate > new Date();
 
   const handleNavClick = (href: string) => {
     if (href.startsWith("/")) {
@@ -57,15 +147,11 @@ export default function Food() {
   const handleNextDay = () => {
     const nextDay = new Date(currentDate);
     nextDay.setDate(nextDay.getDate() + 1);
-    
-    // Don't allow going beyond today
-    if (nextDay <= new Date()) {
-      setCurrentDate(nextDay);
-      toast({
-        title: "Day Changed",
-        description: `Viewing data for ${nextDay.toLocaleDateString()}`,
-      });
-    }
+    setCurrentDate(nextDay);
+    toast({
+      title: "Day Changed",
+      description: `Viewing data for ${nextDay.toLocaleDateString()}`,
+    });
   };
 
   const caloriesPercent = (todaysStats.calories.current / todaysStats.calories.target) * 100;
@@ -124,8 +210,7 @@ export default function Food() {
           
           <button
             onClick={handleNextDay}
-            disabled={currentDate.toDateString() === new Date().toDateString()}
-            className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             Next Day
             <ChevronRight size={20} />
@@ -137,7 +222,9 @@ export default function Food() {
           <div className="lg:col-span-2 space-y-6">
             {/* Nutrition Dashboard */}
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-green-800 mb-4">Today's Nutrition</h2>
+              <h2 className="text-xl font-semibold text-green-800 mb-4">
+                {isFutureDate ? "Future Day - No Data Yet" : "Today's Nutrition"}
+              </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-green-50 rounded-lg p-4 text-center">
                   <div className="text-2xl font-bold text-green-800">{todaysStats.calories.current}</div>
@@ -172,27 +259,40 @@ export default function Food() {
 
             {/* Today's Meals */}
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-green-800 mb-4">Today's Meals</h2>
-              <div className="space-y-3">
-                {todaysMeals.map((meal, i) => (
-                  <div key={i} className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-green-800">{meal.food}</span>
-                        <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">{meal.meal}</span>
+              <h2 className="text-xl font-semibold text-green-800 mb-4">
+                {isFutureDate ? "No Meals Logged Yet" : "Today's Meals"}
+              </h2>
+              {isFutureDate ? (
+                <div className="p-8 bg-green-50 rounded-lg text-center">
+                  <p className="text-green-600">
+                    This is a future date. No meals have been logged yet.
+                  </p>
+                  <button className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    Pre-plan Meals
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {todaysMeals.map((meal, i) => (
+                    <div key={i} className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium text-green-800">{meal.food}</span>
+                          <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">{meal.meal}</span>
+                        </div>
+                        <div className="text-sm text-gray-600 flex items-center gap-2">
+                          <Clock size={14} />
+                          {meal.time}
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-600 flex items-center gap-2">
-                        <Clock size={14} />
-                        {meal.time}
+                      <div className="text-right">
+                        <div className="font-semibold text-green-700">{meal.calories} cal</div>
+                        <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g | F: {meal.fat}g</div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-green-700">{meal.calories} cal</div>
-                      <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g | F: {meal.fat}g</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </Card>
           </div>
 

@@ -1,7 +1,9 @@
+
 import { Utensils } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const dummyFoods = [
   { meal: "Breakfast", food: "Oatmeal + Banana", calories: 320, protein: 12, carbs: 58, fat: 6, barcode: true },
@@ -11,7 +13,16 @@ const dummyFoods = [
 ];
 
 export default function FoodTracker() {
+  const navigate = useNavigate();
   const [selectedFood, setSelectedFood] = useState(null);
+
+  const handleFoodLogClick = () => {
+    navigate("/food");
+  };
+
+  const handleTrackFoodClick = () => {
+    navigate("/food");
+  };
 
   return (
     <Card className="p-6 shadow-lg animate-fade-in flex flex-col h-full">
@@ -21,10 +32,14 @@ export default function FoodTracker() {
         </span>
         <h2 className="text-2xl font-bold tracking-tight text-green-700">Food Tracker</h2>
         <div className="ml-auto flex gap-2">
-          <button className="px-3 py-1 bg-green-600 text-white rounded shadow hover:scale-105 transition-transform">
+          <button 
+            onClick={handleTrackFoodClick}
+            className="px-3 py-1 bg-green-600 text-white rounded shadow hover:scale-105 transition-transform">
             Track Food
           </button>
-          <button className="px-3 py-1 bg-green-100 text-green-700 border border-green-300 rounded shadow hover:scale-105 transition-transform">
+          <button 
+            onClick={handleFoodLogClick}
+            className="px-3 py-1 bg-green-100 text-green-700 border border-green-300 rounded shadow hover:scale-105 transition-transform">
             Food Log
           </button>
         </div>
