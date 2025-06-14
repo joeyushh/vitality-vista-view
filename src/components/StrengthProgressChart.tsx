@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { TrendingUp, ArrowLeft } from "lucide-react";
+import { TrendingUp, ArrowLeft, TrendingDown } from "lucide-react";
 import { useState } from "react";
 
 const strengthData = [
@@ -12,6 +12,34 @@ const strengthData = [
   { session: "Week 5", push: 110, pull: 100, legs: 120 },
   { session: "Week 6", push: 112, pull: 102, legs: 123 },
 ];
+
+// Exercise progress data for each workout type
+const exerciseProgress = {
+  push: [
+    { exercise: "Bench Press", startWeight: "75kg", currentWeight: "82kg", change: 9.3, trend: "up" },
+    { exercise: "Incline DB Press", startWeight: "25kg", currentWeight: "30kg", change: 20.0, trend: "up" },
+    { exercise: "Cable Flyes", startWeight: "20kg", currentWeight: "25kg", change: 25.0, trend: "up" },
+    { exercise: "Tricep Pushdowns", startWeight: "35kg", currentWeight: "40kg", change: 14.3, trend: "up" },
+    { exercise: "Overhead Press", startWeight: "40kg", currentWeight: "50kg", change: 25.0, trend: "up" },
+    { exercise: "Lateral Raises", startWeight: "10kg", currentWeight: "12.5kg", change: 25.0, trend: "up" },
+  ],
+  pull: [
+    { exercise: "Pull-ups", startWeight: "BW", currentWeight: "BW+5kg", change: 15.0, trend: "up" },
+    { exercise: "Bent Over Rows", startWeight: "60kg", currentWeight: "70kg", change: 16.7, trend: "up" },
+    { exercise: "Lat Pulldowns", startWeight: "55kg", currentWeight: "65kg", change: 18.2, trend: "up" },
+    { exercise: "Face Pulls", startWeight: "30kg", currentWeight: "35kg", change: 16.7, trend: "up" },
+    { exercise: "Bicep Curls", startWeight: "12.5kg", currentWeight: "17.5kg", change: 40.0, trend: "up" },
+    { exercise: "Deadlifts", startWeight: "100kg", currentWeight: "110kg", change: 10.0, trend: "up" },
+  ],
+  legs: [
+    { exercise: "Squats", startWeight: "80kg", currentWeight: "100kg", change: 25.0, trend: "up" },
+    { exercise: "Romanian Deadlifts", startWeight: "70kg", currentWeight: "80kg", change: 14.3, trend: "up" },
+    { exercise: "Bulgarian Split Squats", startWeight: "20kg", currentWeight: "25kg", change: 25.0, trend: "up" },
+    { exercise: "Leg Press", startWeight: "160kg", currentWeight: "180kg", change: 12.5, trend: "up" },
+    { exercise: "Calf Raises", startWeight: "45kg", currentWeight: "60kg", change: 33.3, trend: "up" },
+    { exercise: "Leg Curls", startWeight: "30kg", currentWeight: "45kg", change: 50.0, trend: "up" },
+  ]
+};
 
 // Past workout data for each type
 const workoutHistory = {
@@ -37,6 +65,7 @@ const workoutHistory = {
 
 export default function StrengthProgressChart() {
   const [selectedWorkoutType, setSelectedWorkoutType] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
 
   const calculateGrowth = (data: any[], key: string) => {
     const first = data[0][key];
@@ -50,13 +79,22 @@ export default function StrengthProgressChart() {
 
   const handleWorkoutTypeClick = (type: string) => {
     setSelectedWorkoutType(type);
+    setShowHistory(false);
   };
 
   const handleBackClick = () => {
-    setSelectedWorkoutType(null);
+    if (showHistory) {
+      setShowHistory(false);
+    } else {
+      setSelectedWorkoutType(null);
+    }
   };
 
-  if (selectedWorkoutType) {
+  const handleViewHistoryClick = () => {
+    setShowHistory(true);
+  };
+
+  if (selectedWorkoutType && showHistory) {
     const history = workoutHistory[selectedWorkoutType as keyof typeof workoutHistory];
     const workoutTypeName = selectedWorkoutType.charAt(0).toUpperCase() + selectedWorkoutType.slice(1);
     
@@ -99,6 +137,63 @@ export default function StrengthProgressChart() {
             </div>
           ))}
         </div>
+      </Card>
+    );
+  }
+
+  if (selectedWorkoutType) {
+    const exercises = exerciseProgress[selectedWorkoutType as keyof typeof exerciseProgress];
+    const workoutTypeName = selectedWorkoutType.charAt(0).toUpperCase() + selectedWorkoutType.slice(1);
+    
+    return (
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-4">
+          <button 
+            onClick={handleBackClick}
+            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <ArrowLeft className="text-red-600" size={18} />
+          </button>
+          <TrendingUp className="text-red-600" size={18} />
+          <h3 className="text-lg font-semibold text-red-800">{workoutTypeName} Exercise Progress</h3>
+        </div>
+
+        <div className="space-y-3 mb-4">
+          {exercises.map((exercise, i) => (
+            <div key={i} className="p-4 bg-red-50 rounded-lg border border-red-200">
+              <div className="flex justify-between items-center mb-2">
+                <div className="font-medium text-red-800">{exercise.exercise}</div>
+                <div className="flex items-center gap-2">
+                  {exercise.trend === 'up' ? (
+                    <TrendingUp className="text-green-600" size={16} />
+                  ) : (
+                    <TrendingDown className="text-red-600" size={16} />
+                  )}
+                  <span className={`text-lg font-bold ${
+                    exercise.trend === 'up' ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {exercise.trend === 'up' ? '+' : '-'}{exercise.change}%
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center text-sm text-gray-600">
+                <div>
+                  <span className="font-medium">Start:</span> {exercise.startWeight}
+                </div>
+                <div>
+                  <span className="font-medium">Current:</span> {exercise.currentWeight}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={handleViewHistoryClick}
+          className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          View Workout History
+        </button>
       </Card>
     );
   }
