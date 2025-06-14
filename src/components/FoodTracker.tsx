@@ -1,10 +1,9 @@
-
 import { Utensils, Plus, List } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import TrackingModal from "./TrackingModal";
+import EnhancedFoodModal from "./EnhancedFoodModal";
 
 const dummyFoods = [
   { meal: "Breakfast", food: "Oatmeal + Banana", calories: 320, protein: 12, carbs: 58, fat: 6, barcode: true },
@@ -117,10 +116,7 @@ export default function FoodTracker() {
       </Card>
 
       {showTrackingModal && (
-        <TrackingModal 
-          type="food" 
-          onClose={() => setShowTrackingModal(false)} 
-        />
+        <EnhancedFoodModal onClose={() => setShowTrackingModal(false)} />
       )}
     </>
   );

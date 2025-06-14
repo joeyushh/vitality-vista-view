@@ -1,16 +1,11 @@
 import { Card } from "@/components/ui/card";
-import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight } from "lucide-react";
+import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-
-const NAV_LINKS = [
-  { label: "Dashboard", href: "/", active: false },
-  { label: "Food", href: "/food", active: true },
-  { label: "Workouts", href: "/workouts", active: false },
-  { label: "Progress", href: "/progress", active: false },
-  { label: "Rewards", href: "/rewards", active: false },
-];
+import BottomNavigation from "@/components/BottomNavigation";
+import MobileHeader from "@/components/MobileHeader";
+import EnhancedFoodModal from "@/components/EnhancedFoodModal";
 
 // Base meals data
 const baseMeals = [
@@ -73,6 +68,7 @@ export default function Food() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
 
   // Get the day name for the current date
   const getDayName = (date) => {
@@ -160,51 +156,25 @@ export default function Food() {
   const fatPercent = (todaysStats.fat.current / todaysStats.fat.target) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col">
-      {/* Top Navigation */}
-      <nav className="w-full flex items-center px-10 py-4 shadow mb-8 bg-white/80 backdrop-blur-sm z-10">
-        <div className="text-2xl font-extrabold tracking-tight text-black mr-10 select-none">
-          Momentum
-        </div>
-        <ul className="flex gap-2 text-base font-medium">
-          {NAV_LINKS.map((link, i) => (
-            <li key={i}>
-              <button
-                onClick={() => handleNavClick(link.href)}
-                className={`story-link px-3 py-1 rounded ${
-                  link.active
-                    ? "bg-blue-100 text-blue-800 shadow"
-                    : "hover:bg-blue-50 text-gray-600"
-                }`}
-              >
-                {link.label}
-              </button>
-            </li>
-          ))}
-        </ul>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
+      <MobileHeader title="Food Tracking" />
 
-        <div className="ml-auto text-sm text-gray-400 hidden md:block">
-          {new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
-        </div>
-      </nav>
-
-      <div className="px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
+      <div className="flex-1 px-4 py-4 space-y-6">
         {/* Date Navigation */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between">
           <button
             onClick={handlePreviousDay}
             className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <ChevronLeft size={20} />
-            Previous Day
+            Previous
           </button>
           
-          <h1 className="text-2xl font-bold text-green-800">
+          <h1 className="text-xl font-bold text-green-800">
             {currentDate.toLocaleDateString(undefined, { 
-              weekday: 'long', 
-              month: 'long', 
-              day: 'numeric',
-              year: 'numeric'
+              weekday: 'short', 
+              month: 'short', 
+              day: 'numeric'
             })}
           </h1>
           
@@ -212,152 +182,152 @@ export default function Food() {
             onClick={handleNextDay}
             className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
-            Next Day
+            Next
             <ChevronRight size={20} />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Today's Progress */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Nutrition Dashboard */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-green-800 mb-4">
-                {isFutureDate ? "Future Day - No Data Yet" : "Today's Nutrition"}
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-green-50 rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold text-green-800">{todaysStats.calories.current}</div>
-                  <div className="text-xs text-green-600 mb-2">/ {todaysStats.calories.target} calories</div>
-                  <div className="w-full bg-green-200 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full transition-all" style={{ width: `${Math.min(caloriesPercent, 100)}%` }}></div>
-                  </div>
-                </div>
-                <div className="bg-green-50 rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold text-green-800">{todaysStats.protein.current}g</div>
-                  <div className="text-xs text-green-600 mb-2">/ {todaysStats.protein.target}g protein</div>
-                  <div className="w-full bg-green-200 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full transition-all" style={{ width: `${Math.min(proteinPercent, 100)}%` }}></div>
-                  </div>
-                </div>
-                <div className="bg-green-50 rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold text-green-800">{todaysStats.carbs.current}g</div>
-                  <div className="text-xs text-green-600 mb-2">/ {todaysStats.carbs.target}g carbs</div>
-                  <div className="w-full bg-green-200 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full transition-all" style={{ width: `${Math.min(carbsPercent, 100)}%` }}></div>
-                  </div>
-                </div>
-                <div className="bg-green-50 rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold text-green-800">{todaysStats.fat.current}g</div>
-                  <div className="text-xs text-green-600 mb-2">/ {todaysStats.fat.target}g fat</div>
-                  <div className="w-full bg-green-200 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full transition-all" style={{ width: `${Math.min(fatPercent, 100)}%` }}></div>
-                  </div>
-                </div>
+        {/* Nutrition Dashboard */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold text-green-800 mb-4">
+            {isFutureDate ? "Future Day - No Data Yet" : "Today's Nutrition"}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-green-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-green-800">{todaysStats.calories.current}</div>
+              <div className="text-xs text-green-600 mb-2">/ {todaysStats.calories.target} calories</div>
+              <div className="w-full bg-green-200 rounded-full h-2">
+                <div className="bg-green-600 h-2 rounded-full transition-all" style={{ width: `${Math.min(caloriesPercent, 100)}%` }}></div>
               </div>
-            </Card>
-
-            {/* Today's Meals */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-green-800 mb-4">
-                {isFutureDate ? "No Meals Logged Yet" : "Today's Meals"}
-              </h2>
-              {isFutureDate ? (
-                <div className="p-8 bg-green-50 rounded-lg text-center">
-                  <p className="text-green-600">
-                    This is a future date. No meals have been logged yet.
-                  </p>
-                  <button className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                    Pre-plan Meals
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {todaysMeals.map((meal, i) => (
-                    <div key={i} className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium text-green-800">{meal.food}</span>
-                          <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">{meal.meal}</span>
-                        </div>
-                        <div className="text-sm text-gray-600 flex items-center gap-2">
-                          <Clock size={14} />
-                          {meal.time}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-semibold text-green-700">{meal.calories} cal</div>
-                        <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g | F: {meal.fat}g</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </Card>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-green-800">{todaysStats.protein.current}g</div>
+              <div className="text-xs text-green-600 mb-2">/ {todaysStats.protein.target}g protein</div>
+              <div className="w-full bg-green-200 rounded-full h-2">
+                <div className="bg-green-600 h-2 rounded-full transition-all" style={{ width: `${Math.min(proteinPercent, 100)}%` }}></div>
+              </div>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-green-800">{todaysStats.carbs.current}g</div>
+              <div className="text-xs text-green-600 mb-2">/ {todaysStats.carbs.target}g carbs</div>
+              <div className="w-full bg-green-200 rounded-full h-2">
+                <div className="bg-green-600 h-2 rounded-full transition-all" style={{ width: `${Math.min(carbsPercent, 100)}%` }}></div>
+              </div>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-green-800">{todaysStats.fat.current}g</div>
+              <div className="text-xs text-green-600 mb-2">/ {todaysStats.fat.target}g fat</div>
+              <div className="w-full bg-green-200 rounded-full h-2">
+                <div className="bg-green-600 h-2 rounded-full transition-all" style={{ width: `${Math.min(fatPercent, 100)}%` }}></div>
+              </div>
+            </div>
           </div>
+        </Card>
 
-          {/* Right Column - Tools & Tips */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-green-800 mb-4">Quick Actions</h2>
-              <div className="space-y-3">
-                <button className="w-full flex items-center gap-3 p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                  <Scan size={20} />
-                  Scan Barcode
-                </button>
-                <button className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
-                  <Target size={20} />
-                  Quick Add
-                </button>
-                <button className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
-                  <Utensils size={20} />
-                  Food Log
-                </button>
-              </div>
-            </Card>
-
-            {/* Saved Meals */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-green-800 mb-4">Saved Meals</h2>
-              <div className="space-y-2">
-                {savedMeals.map((meal, i) => (
-                  <div key={i} className="flex justify-between items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer">
-                    <div>
-                      <div className="font-medium text-green-800">{meal.name}</div>
-                      <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g</div>
+        {/* Today's Meals */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold text-green-800 mb-4">
+            {isFutureDate ? "No Meals Logged Yet" : "Today's Meals"}
+          </h2>
+          {isFutureDate ? (
+            <div className="p-8 bg-green-50 rounded-lg text-center">
+              <p className="text-green-600">
+                This is a future date. No meals have been logged yet.
+              </p>
+              <button className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                Pre-plan Meals
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {todaysMeals.map((meal, i) => (
+                <div key={i} className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-green-800">{meal.food}</span>
+                      <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">{meal.meal}</span>
                     </div>
-                    <div className="text-sm font-semibold text-green-700">{meal.calories} cal</div>
+                    <div className="text-sm text-gray-600 flex items-center gap-2">
+                      <Clock size={14} />
+                      {meal.time}
+                    </div>
                   </div>
-                ))}
-              </div>
-            </Card>
+                  <div className="text-right">
+                    <div className="font-semibold text-green-700">{meal.calories} cal</div>
+                    <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g | F: {meal.fat}g</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
 
-            {/* Tips */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-green-800 mb-4">Tracking Tips</h2>
-              <div className="space-y-3 text-sm text-gray-600">
-                <div className="p-3 bg-yellow-50 rounded-lg">
-                  <div className="font-medium text-yellow-800 mb-1">Weigh Food Raw</div>
-                  <div>Always weigh meat, rice, and pasta before cooking for accurate calories.</div>
-                </div>
-                <div className="p-3 bg-yellow-50 rounded-lg">
-                  <div className="font-medium text-yellow-800 mb-1">Measure Oils & Sauces</div>
-                  <div>Cooking oils and sauces add up quickly - don't forget to log them!</div>
-                </div>
-                <div className="p-3 bg-yellow-50 rounded-lg">
-                  <div className="font-medium text-yellow-800 mb-1">Stay Consistent</div>
-                  <div>Track everything, even small snacks and drinks for the most accurate results.</div>
-                </div>
-              </div>
-            </Card>
+        {/* Quick Actions - Enhanced */}
+        <Card className="p-4">
+          <h2 className="text-lg font-semibold text-green-800 mb-4">Quick Actions</h2>
+          <div className="space-y-3">
+            <button 
+              onClick={() => setShowTrackingModal(true)}
+              className="w-full flex items-center gap-3 p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+              <Search size={20} />
+              Search & Add Food
+            </button>
+            <button 
+              onClick={() => setShowTrackingModal(true)}
+              className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
+              <Scan size={20} />
+              Scan Barcode
+            </button>
+            <button 
+              onClick={() => setShowTrackingModal(true)}
+              className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
+              <Mic size={20} />
+              Voice Log
+            </button>
           </div>
-        </div>
+        </Card>
+
+        {/* Saved Meals */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold text-green-800 mb-4">Saved Meals</h2>
+          <div className="space-y-2">
+            {savedMeals.map((meal, i) => (
+              <div key={i} className="flex justify-between items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer">
+                <div>
+                  <div className="font-medium text-green-800">{meal.name}</div>
+                  <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g</div>
+                </div>
+                <div className="text-sm font-semibold text-green-700">{meal.calories} cal</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Tips */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold text-green-800 mb-4">Tracking Tips</h2>
+          <div className="space-y-3 text-sm text-gray-600">
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Weigh Food Raw</div>
+              <div>Always weigh meat, rice, and pasta before cooking for accurate calories.</div>
+            </div>
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Measure Oils & Sauces</div>
+              <div>Cooking oils and sauces add up quickly - don't forget to log them!</div>
+            </div>
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Stay Consistent</div>
+              <div>Track everything, even small snacks and drinks for the most accurate results.</div>
+            </div>
+          </div>
+        </Card>
       </div>
+
+      {showTrackingModal && (
+        <EnhancedFoodModal onClose={() => setShowTrackingModal(false)} />
+      )}
       
-      <footer className="w-full text-center py-3 text-gray-400 text-xs mt-auto">
-        &copy; {new Date().getFullYear()} Momentum. Your all-in-one fitness companion.
-      </footer>
+      <BottomNavigation />
     </div>
   );
 }

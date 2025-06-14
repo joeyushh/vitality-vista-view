@@ -3,6 +3,9 @@ import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight } from "luci
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import BottomNavigation from "@/components/BottomNavigation";
+import MobileHeader from "@/components/MobileHeader";
+import StrengthProgressChart from "@/components/StrengthProgressChart";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
@@ -196,51 +199,25 @@ export default function Workouts() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col">
-      {/* Top Navigation */}
-      <nav className="w-full flex items-center px-10 py-4 shadow mb-8 bg-white/80 backdrop-blur-sm z-10">
-        <div className="text-2xl font-extrabold tracking-tight text-black mr-10 select-none">
-          Momentum
-        </div>
-        <ul className="flex gap-2 text-base font-medium">
-          {NAV_LINKS.map((link, i) => (
-            <li key={i}>
-              <button
-                onClick={() => handleNavClick(link.href)}
-                className={`story-link px-3 py-1 rounded ${
-                  link.active
-                    ? "bg-blue-100 text-blue-800 shadow"
-                    : "hover:bg-blue-50 text-gray-600"
-                }`}
-              >
-                {link.label}
-              </button>
-            </li>
-          ))}
-        </ul>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
+      <MobileHeader title="Workouts" />
 
-        <div className="ml-auto text-sm text-gray-400 hidden md:block">
-          {new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
-        </div>
-      </nav>
-
-      <div className="px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
+      <div className="flex-1 px-4 py-4 space-y-6">
         {/* Date Navigation */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between">
           <button
             onClick={handlePreviousDay}
             className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <ChevronLeft size={20} />
-            Previous Day
+            Previous
           </button>
           
-          <h1 className="text-2xl font-bold text-blue-800">
+          <h1 className="text-xl font-bold text-blue-800">
             {currentDate.toLocaleDateString(undefined, { 
-              weekday: 'long', 
-              month: 'long', 
-              day: 'numeric',
-              year: 'numeric'
+              weekday: 'short',
+              month: 'short', 
+              day: 'numeric'
             })}
           </h1>
           
@@ -248,153 +225,146 @@ export default function Workouts() {
             onClick={handleNextDay}
             className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
-            Next Day
+            Next
             <ChevronRight size={20} />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Today's Workout */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Fitness Goals */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-blue-800 mb-4">Fitness Goals</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="bg-blue-50 rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-800">{weeklyGoals.currentWorkouts}/{weeklyGoals.workoutsPerWeek}</div>
-                  <div className="text-xs text-blue-600">Weekly Workouts</div>
-                </div>
-                <div className="bg-blue-50 rounded-lg p-4 text-center">
-                  <div className="text-lg font-bold text-blue-800">{weeklyGoals.primaryGoal}</div>
-                  <div className="text-xs text-blue-600">Primary Goal</div>
-                </div>
-                <div className="bg-blue-50 rounded-lg p-4 text-center">
-                  <div className="text-lg font-bold text-blue-800">{weeklyGoals.secondaryGoal}</div>
-                  <div className="text-xs text-blue-600">Secondary Goal</div>
-                </div>
-              </div>
-            </Card>
-
-            {/* Today's Workout */}
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-blue-800">{workoutName}</h2>
-                {!isRestDay && (
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    Start Workout
-                  </button>
-                )}
-              </div>
-              
-              {isRestDay ? (
-                <div className="p-8 bg-blue-50 rounded-lg text-center">
-                  <h3 className="text-xl font-medium text-blue-800 mb-2">Rest Day</h3>
-                  <p className="text-blue-600">
-                    Take time to recover today. Focus on stretching, mobility, and adequate nutrition.
-                  </p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto rounded-lg">
-                  <table className="min-w-full bg-white border border-gray-200 text-sm">
-                    <thead className="bg-blue-50 text-gray-600">
-                      <tr>
-                        <th className="px-4 py-3 text-left">Exercise</th>
-                        <th className="px-4 py-3 text-center">Sets</th>
-                        <th className="px-4 py-3 text-center">Weight/Reps</th>
-                        <th className="px-4 py-3 text-center">Rest</th>
-                        <th className="px-4 py-3 text-center">Notes</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {todaysWorkout.map((item, i) => (
-                        <tr key={i} className="border-t border-gray-200 hover:bg-blue-50 transition-colors">
-                          <td className="px-4 py-3">
-                            <div className="font-medium text-blue-800">{item.ex}</div>
-                          </td>
-                          <td className="px-4 py-3 text-center text-blue-700">{item.sets}</td>
-                          <td className="px-4 py-3 text-center font-mono text-xs text-blue-700">{item.weightReps}</td>
-                          <td className="px-4 py-3 text-center text-xs text-gray-500">{item.restTime}</td>
-                          <td className="px-4 py-3 text-center text-xs text-gray-500">{item.notes || "-"}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </Card>
+        {/* Fitness Goals */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold text-blue-800 mb-4">Fitness Goals</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="bg-blue-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-blue-800">{weeklyGoals.currentWorkouts}/{weeklyGoals.workoutsPerWeek}</div>
+              <div className="text-xs text-blue-600">Weekly Workouts</div>
+            </div>
+            <div className="bg-blue-50 rounded-lg p-4 text-center">
+              <div className="text-lg font-bold text-blue-800">{weeklyGoals.primaryGoal}</div>
+              <div className="text-xs text-blue-600">Primary Goal</div>
+            </div>
+            <div className="bg-blue-50 rounded-lg p-4 text-center">
+              <div className="text-lg font-bold text-blue-800">{weeklyGoals.secondaryGoal}</div>
+              <div className="text-xs text-blue-600">Secondary Goal</div>
+            </div>
           </div>
+        </Card>
 
-          {/* Right Column - Program & Tips */}
-          <div className="space-y-6">
-            {/* Energy Tip */}
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Zap size={20} className="text-blue-600" />
-                <h2 className="text-xl font-semibold text-blue-800">Energy Status</h2>
-              </div>
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <div className="text-sm text-blue-700">{getEnergyTip()}</div>
-              </div>
-            </Card>
-
-            {/* Weekly Program */}
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Calendar size={20} className="text-blue-600" />
-                <h2 className="text-xl font-semibold text-blue-800">Weekly Program</h2>
-              </div>
-              <div className="space-y-2">
-                {weeklyProgram.map((day, i) => (
-                  <div key={i} className={`flex justify-between items-center p-3 rounded-lg ${
-                    day.completed ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'
-                  }`}>
-                    <div>
-                      <div className="font-medium text-gray-800">{day.day}</div>
-                      <div className="text-sm text-gray-600">{day.workout}</div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {day.exercises > 0 && (
-                        <span className="text-xs text-gray-500">{day.exercises} exercises</span>
-                      )}
-                      {day.completed && (
-                        <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-xs">✓</span>
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Workout Tips */}
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Target size={20} className="text-blue-600" />
-                <h2 className="text-xl font-semibold text-blue-800">Workout Tips</h2>
-              </div>
-              <div className="space-y-3 text-sm text-gray-600">
-                <div className="p-3 bg-yellow-50 rounded-lg">
-                  <div className="font-medium text-yellow-800 mb-1">Progressive Overload</div>
-                  <div>Gradually increase weight, reps, or sets each week for continued progress.</div>
-                </div>
-                <div className="p-3 bg-yellow-50 rounded-lg">
-                  <div className="font-medium text-yellow-800 mb-1">Rest Between Sets</div>
-                  <div>Take adequate rest between sets - 2-3 minutes for compound exercises.</div>
-                </div>
-                <div className="p-3 bg-yellow-50 rounded-lg">
-                  <div className="font-medium text-yellow-800 mb-1">Listen to Your Body</div>
-                  <div>Adjust intensity based on your body battery and energy levels.</div>
-                </div>
-              </div>
-            </Card>
+        {/* Today's Workout */}
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-blue-800">{workoutName}</h2>
+            {!isRestDay && (
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Start Workout
+              </button>
+            )}
           </div>
-        </div>
+          
+          {isRestDay ? (
+            <div className="p-8 bg-blue-50 rounded-lg text-center">
+              <h3 className="text-xl font-medium text-blue-800 mb-2">Rest Day</h3>
+              <p className="text-blue-600">
+                Take time to recover today. Focus on stretching, mobility, and adequate nutrition.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-lg">
+              <table className="min-w-full bg-white border border-gray-200 text-sm">
+                <thead className="bg-blue-50 text-gray-600">
+                  <tr>
+                    <th className="px-4 py-3 text-left">Exercise</th>
+                    <th className="px-4 py-3 text-center">Sets</th>
+                    <th className="px-4 py-3 text-center">Weight/Reps</th>
+                    <th className="px-4 py-3 text-center">Rest</th>
+                    <th className="px-4 py-3 text-center">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {todaysWorkout.map((item, i) => (
+                    <tr key={i} className="border-t border-gray-200 hover:bg-blue-50 transition-colors">
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-blue-800">{item.ex}</div>
+                      </td>
+                      <td className="px-4 py-3 text-center text-blue-700">{item.sets}</td>
+                      <td className="px-4 py-3 text-center font-mono text-xs text-blue-700">{item.weightReps}</td>
+                      <td className="px-4 py-3 text-center text-xs text-gray-500">{item.restTime}</td>
+                      <td className="px-4 py-3 text-center text-xs text-gray-500">{item.notes || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+
+        {/* Strength Progress Chart */}
+        <StrengthProgressChart />
+
+        {/* Energy Status */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Zap size={20} className="text-blue-600" />
+            <h2 className="text-xl font-semibold text-blue-800">Energy Status</h2>
+          </div>
+          <div className="p-4 bg-blue-50 rounded-lg">
+            <div className="text-sm text-blue-700">{getEnergyTip()}</div>
+          </div>
+        </Card>
+
+        {/* Weekly Program */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Calendar size={20} className="text-blue-600" />
+            <h2 className="text-xl font-semibold text-blue-800">Weekly Program</h2>
+          </div>
+          <div className="space-y-2">
+            {weeklyProgram.map((day, i) => (
+              <div key={i} className={`flex justify-between items-center p-3 rounded-lg ${
+                day.completed ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'
+              }`}>
+                <div>
+                  <div className="font-medium text-gray-800">{day.day}</div>
+                  <div className="text-sm text-gray-600">{day.workout}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {day.exercises > 0 && (
+                    <span className="text-xs text-gray-500">{day.exercises} exercises</span>
+                  )}
+                  {day.completed && (
+                    <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs">✓</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Workout Tips */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Target size={20} className="text-blue-600" />
+            <h2 className="text-xl font-semibold text-blue-800">Workout Tips</h2>
+          </div>
+          <div className="space-y-3 text-sm text-gray-600">
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Progressive Overload</div>
+              <div>Gradually increase weight, reps, or sets each week for continued progress.</div>
+            </div>
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Rest Between Sets</div>
+              <div>Take adequate rest between sets - 2-3 minutes for compound exercises.</div>
+            </div>
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Listen to Your Body</div>
+              <div>Adjust intensity based on your body battery and energy levels.</div>
+            </div>
+          </div>
+        </Card>
       </div>
       
-      <footer className="w-full text-center py-3 text-gray-400 text-xs mt-auto">
-        &copy; {new Date().getFullYear()} Momentum. Your all-in-one fitness companion.
-      </footer>
+      <BottomNavigation />
     </div>
   );
 }
