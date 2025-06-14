@@ -170,30 +170,30 @@ export default function Rewards() {
           </div>
         </Card>
 
-        {/* Weekly Progress - Simplified for Mobile */}
-        <Card className="p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Calendar className="text-purple-600" size={18} />
-            <h3 className="text-lg font-semibold">This Week</h3>
+        {/* Weekly Progress - Enhanced for Better Visibility */}
+        <Card className="p-5">
+          <div className="flex items-center gap-2 mb-5">
+            <Calendar className="text-purple-600" size={20} />
+            <h3 className="text-xl font-bold">This Week</h3>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-4">
             {weeklyProgress.slice(-4).map((day, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="font-medium text-sm">{day.day}</div>
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-1">
+              <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <div className="font-semibold text-base">{day.day}</div>
+                <div className="flex items-center gap-4">
+                  <div className="flex gap-2">
                     {userCreditGoals.map((goal) => {
                       const isHit = getStatusIndicator(day, goal.id);
                       return (
                         <Star 
                           key={goal.id}
-                          size={8}
+                          size={16}
                           className={`${isHit ? `fill-${goal.color}-500 text-${goal.color}-500` : 'fill-gray-300 text-gray-300'}`}
                         />
                       );
                     })}
                   </div>
-                  <div className="text-sm font-medium text-orange-600">
+                  <div className="text-base font-bold text-orange-600">
                     +{day.creditsEarned}
                   </div>
                 </div>

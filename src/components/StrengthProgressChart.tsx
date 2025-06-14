@@ -233,7 +233,8 @@ export default function StrengthProgressChart() {
             <div className="text-lg font-bold text-red-600">+{pushGrowth}%</div>
             <ChevronRight className="text-red-400 group-hover:text-red-600 transition-colors" size={16} />
           </div>
-          <div className="text-xs text-red-700 font-medium">Push Growth</div>
+          <div className="text-xs text-red-700 font-medium mb-1">Push Growth</div>
+          <div className="text-xs text-red-500">Check Stats</div>
           <div className="absolute inset-0 bg-red-600 opacity-0 group-hover:opacity-5 rounded-lg transition-opacity"></div>
         </button>
         <button 
@@ -244,7 +245,8 @@ export default function StrengthProgressChart() {
             <div className="text-lg font-bold text-blue-600">+{pullGrowth}%</div>
             <ChevronRight className="text-blue-400 group-hover:text-blue-600 transition-colors" size={16} />
           </div>
-          <div className="text-xs text-blue-700 font-medium">Pull Growth</div>
+          <div className="text-xs text-blue-700 font-medium mb-1">Pull Growth</div>
+          <div className="text-xs text-blue-500">Check Stats</div>
           <div className="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-5 rounded-lg transition-opacity"></div>
         </button>
         <button 
@@ -255,7 +257,8 @@ export default function StrengthProgressChart() {
             <div className="text-lg font-bold text-green-600">+{legsGrowth}%</div>
             <ChevronRight className="text-green-400 group-hover:text-green-600 transition-colors" size={16} />
           </div>
-          <div className="text-xs text-green-700 font-medium">Legs Growth</div>
+          <div className="text-xs text-green-700 font-medium mb-1">Legs Growth</div>
+          <div className="text-xs text-green-500">Check Stats</div>
           <div className="absolute inset-0 bg-green-600 opacity-0 group-hover:opacity-5 rounded-lg transition-opacity"></div>
         </button>
       </div>
