@@ -16,23 +16,23 @@ export default function WorkoutTracker() {
   return (
     <Card className="p-6 shadow-lg animate-fade-in flex flex-col h-full">
       <div className="flex items-center gap-3 mb-4">
-        <span className="inline-flex items-center justify-center rounded-full bg-green-50 p-2">
-          <Activity size={22} className="text-green-600" />
+        <span className="inline-flex items-center justify-center rounded-full bg-blue-50 p-2">
+          <Activity size={22} className="text-blue-600" />
         </span>
-        <h2 className="text-2xl font-bold tracking-tight">Today's Workout</h2>
-        <button className="ml-auto px-3 py-1 bg-green-600 text-white rounded shadow hover:scale-105 transition-transform">
+        <h2 className="text-2xl font-bold tracking-tight text-blue-700">Today's Workout</h2>
+        <button className="ml-auto px-3 py-1 bg-blue-600 text-white rounded shadow hover:scale-105 transition-transform">
           Start Workout
         </button>
       </div>
 
-      <div className="mb-4 p-3 bg-green-50 rounded-lg">
-        <div className="font-medium text-green-800 mb-1">Push Day - Chest & Triceps</div>
-        <div className="text-sm text-green-600">Duration: {workoutDuration} • {totalSets} sets completed</div>
+      <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+        <div className="font-medium text-blue-800 mb-1">Push Day - Chest & Triceps</div>
+        <div className="text-sm text-blue-600">Duration: {workoutDuration} • {totalSets} sets completed</div>
       </div>
       
       <div className="overflow-x-auto rounded-lg flex-1">
         <table className="min-w-full bg-white border border-gray-200 text-sm">
-          <thead className="bg-green-50 text-gray-600">
+          <thead className="bg-blue-50 text-gray-600">
             <tr>
               <th className="px-3 py-2 text-left">Exercise</th>
               <th className="px-3 py-2 text-center">Sets</th>
@@ -43,14 +43,14 @@ export default function WorkoutTracker() {
           </thead>
           <tbody>
             {dummyWorkouts.map((item, i) => (
-              <tr key={i} className="border-t border-gray-200 hover:bg-green-50 transition-colors">
+              <tr key={i} className="border-t border-gray-200 hover:bg-blue-50 transition-colors">
                 <td className="px-3 py-2">
-                  <div className="font-medium">{item.ex}</div>
+                  <div className="font-medium text-blue-800">{item.ex}</div>
                   {item.notes && <div className="text-xs text-gray-500">{item.notes}</div>}
                 </td>
-                <td className="px-3 py-2 text-center">{item.sets}</td>
-                <td className="px-3 py-2 text-center font-mono text-xs">{item.reps}</td>
-                <td className="px-3 py-2 text-center font-semibold">{item.weight}</td>
+                <td className="px-3 py-2 text-center text-blue-700">{item.sets}</td>
+                <td className="px-3 py-2 text-center font-mono text-xs text-blue-700">{item.reps}</td>
+                <td className="px-3 py-2 text-center font-semibold text-blue-700">{item.weight}</td>
                 <td className="px-3 py-2 text-center text-xs text-gray-500">{item.restTime}</td>
               </tr>
             ))}
@@ -59,22 +59,22 @@ export default function WorkoutTracker() {
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-3 text-center text-sm">
-        <div className="bg-green-50 rounded p-2">
-          <div className="font-bold text-green-600">{totalSets}</div>
+        <div className="bg-blue-50 rounded p-2">
+          <div className="font-bold text-blue-600">{totalSets}</div>
           <div className="text-gray-600">Sets</div>
         </div>
         <div className="bg-blue-50 rounded p-2">
           <div className="font-bold text-blue-600">4/5</div>
           <div className="text-gray-600">This Week</div>
         </div>
-        <div className="bg-purple-50 rounded p-2">
-          <div className="font-bold text-purple-600">✓</div>
-          <div className="text-gray-600">Complete</div>
+        <div className="bg-blue-50 rounded p-2">
+          <div className="font-bold text-blue-600">Complete</div>
+          <div className="text-gray-600">Status</div>
         </div>
       </div>
 
       <div className="mt-3 p-3 bg-gray-50 rounded text-sm">
-        <div className="font-medium mb-1">🎯 Next Session</div>
+        <div className="font-medium mb-1">Next Session</div>
         <div className="text-gray-600">Pull Day - Back & Biceps (Tomorrow)</div>
       </div>
     </Card>
