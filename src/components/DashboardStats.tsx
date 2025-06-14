@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
@@ -9,14 +10,14 @@ const todaysStats = {
   fat: { current: 48, target: 73 },
   steps: { current: 8234, target: 10000 },
   sleep: { current: 7.5, target: 8 },
-  workoutCompleted: true,
-  dailyWorkoutsLogged: 1,
+  workoutCompleted: false,
+  dailyWorkoutsLogged: 0,
   dailyWorkoutTarget: 1,
   foodStreak: 12,
   workoutStreak: 8,
   bodyBattery: 90,
-  hasPlannedWorkout: false,
-  plannedWorkout: ""
+  hasPlannedWorkout: true,
+  plannedWorkout: "Push Day - Chest & Triceps"
 };
 
 const tomorrowStats = {
@@ -242,8 +243,8 @@ export default function DashboardStats() {
             <div className="w-full bg-blue-200 rounded-full h-2">
               <div 
                 className={`h-2 rounded-full transition-all ${
-                  stats.bodyBattery >= 80 ? 'bg-emerald-500' : 
-                  stats.bodyBattery >= 60 ? 'bg-amber-500' : 'bg-red-500'
+                  stats.bodyBattery >= 80 ? 'bg-blue-800' : 
+                  stats.bodyBattery >= 60 ? 'bg-blue-500' : 'bg-blue-300'
                 }`}
                 style={{ width: `${stats.bodyBattery}%` }}
               ></div>

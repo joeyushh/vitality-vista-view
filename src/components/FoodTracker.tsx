@@ -15,7 +15,7 @@ export default function FoodTracker() {
   const [selectedFood, setSelectedFood] = useState(null);
 
   return (
-    <Card className="p-6 shadow-lg animate-fade-in flex flex-col">
+    <Card className="p-6 shadow-lg animate-fade-in flex flex-col h-full">
       <div className="flex items-center gap-3 mb-4">
         <span className="inline-flex items-center justify-center rounded-full bg-green-50 p-2">
           <Utensils size={22} className="text-green-600" />
@@ -31,7 +31,7 @@ export default function FoodTracker() {
         </div>
       </div>
       
-      <div className="space-y-3 mb-4">
+      <div className="space-y-3 mb-4 flex-1">
         {dummyFoods.map((item, i) => (
           <Popover key={i}>
             <PopoverTrigger asChild>

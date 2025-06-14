@@ -1,19 +1,28 @@
+
 import FoodTracker from "@/components/FoodTracker";
 import WorkoutTracker from "@/components/WorkoutTracker";
 import DashboardStats from "@/components/DashboardStats";
 import WeightTracker from "@/components/WeightTracker";
 import RewardsModal from "@/components/RewardsModal";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "#", active: true },
-  { label: "Food", href: "#food" },
-  { label: "Workouts", href: "#workouts" },
+  { label: "Food", href: "/food" },
+  { label: "Workouts", href: "/workouts" },
   { label: "Progress", href: "#progress" },
 ];
 
 export default function Index() {
   const [showRewards, setShowRewards] = useState(false);
+  const navigate = useNavigate();
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("/")) {
+      navigate(href);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col">
@@ -25,8 +34,8 @@ export default function Index() {
         <ul className="flex gap-2 text-base font-medium">
           {NAV_LINKS.map((link, i) => (
             <li key={i}>
-              <a
-                href={link.href}
+              <button
+                onClick={() => handleNavClick(link.href)}
                 className={`story-link px-3 py-1 rounded ${
                   link.active
                     ? "bg-blue-100 text-blue-800 shadow"
@@ -34,7 +43,7 @@ export default function Index() {
                 }`}
               >
                 {link.label}
-              </a>
+              </button>
             </li>
           ))}
         </ul>

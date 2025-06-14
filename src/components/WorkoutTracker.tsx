@@ -3,24 +3,25 @@ import { Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const dummyWorkouts = [
-  { ex: "Bench Press", sets: 4, weightReps: "80kg/8, 75kg/8, 70kg/9, 65kg/10", restTime: "2-3min" },
-  { ex: "Incline DB Press", sets: 3, weightReps: "30kg/10, 27.5kg/9, 25kg/10", restTime: "90s" },
-  { ex: "Cable Flyes", sets: 3, weightReps: "25kg/12, 22.5kg/12, 20kg/11", restTime: "60s" },
-  { ex: "Tricep Pushdowns", sets: 3, weightReps: "40kg/15, 37.5kg/12, 35kg/13", restTime: "60s" },
+  { ex: "Bench Press", sets: 4, weightReps: "80kg/6, 75kg/7, 70kg/8, 65kg/9", restTime: "2-3min", notes: "" },
+  { ex: "Incline DB Press", sets: 3, weightReps: "30kg/8, 27.5kg/9, 25kg/10", restTime: "90s", notes: "" },
+  { ex: "Cable Flyes", sets: 3, weightReps: "25kg/10, 22.5kg/12, 20kg/11", restTime: "60s", notes: "" },
+  { ex: "Tricep Pushdowns", sets: 3, weightReps: "40kg/12, 37.5kg/13, 35kg/15", restTime: "60s", notes: "" },
 ];
 
 export default function WorkoutTracker() {
   const totalSets = dummyWorkouts.reduce((sum, w) => sum + w.sets, 0);
   const workoutDuration = "Not started";
   const bodyBattery = 90;
+  const currentCarbs = 142; // Matching the main dashboard
 
-  const getBodyBatteryTip = () => {
-    if (bodyBattery < 60) {
-      return "Your body battery is low. Consider a lighter workout or rest day today.";
-    } else if (bodyBattery < 80) {
-      return "You're feeling a bit tired today. Maybe adjust your workout intensity.";
+  const getEnergyTip = () => {
+    if (bodyBattery >= 80) {
+      return `You're at ${bodyBattery}% body battery! You've had ${currentCarbs}g carbs today - your body can handle pushing it for your workout.`;
+    } else if (bodyBattery >= 60) {
+      return `You're feeling a bit tired today (${bodyBattery}% body battery). With ${currentCarbs}g carbs consumed, consider adjusting your workout intensity.`;
     } else {
-      return `You're at ${bodyBattery}% body battery, your body can handle pushing it for your workout today.`;
+      return `Your body battery is low (${bodyBattery}%). You've only had ${currentCarbs}g carbs - consider a lighter workout or grab a banana before training.`;
     }
   };
 
@@ -48,7 +49,7 @@ export default function WorkoutTracker() {
 
       <div className="mb-4 p-3 bg-blue-50 rounded text-sm">
         <div className="font-medium mb-1">Energy Tip</div>
-        <div className="text-blue-700">{getBodyBatteryTip()}</div>
+        <div className="text-blue-700">{getEnergyTip()}</div>
       </div>
       
       <div className="overflow-x-auto rounded-lg flex-1">
@@ -59,6 +60,7 @@ export default function WorkoutTracker() {
               <th className="px-3 py-2 text-center">Sets</th>
               <th className="px-3 py-2 text-center">Weight/Reps</th>
               <th className="px-3 py-2 text-center">Rest</th>
+              <th className="px-3 py-2 text-center">Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -70,6 +72,7 @@ export default function WorkoutTracker() {
                 <td className="px-3 py-2 text-center text-blue-700">{item.sets}</td>
                 <td className="px-3 py-2 text-center font-mono text-xs text-blue-700">{item.weightReps}</td>
                 <td className="px-3 py-2 text-center text-xs text-gray-500">{item.restTime}</td>
+                <td className="px-3 py-2 text-center text-xs text-gray-500">{item.notes || "-"}</td>
               </tr>
             ))}
           </tbody>
