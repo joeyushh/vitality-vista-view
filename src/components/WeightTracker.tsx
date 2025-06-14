@@ -29,50 +29,50 @@ export default function WeightTracker() {
     <>
       <Card className="p-4 shadow-lg animate-fade-in">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-purple-100 rounded-full">
-            <Weight size={20} className="text-purple-600" />
+          <div className="p-2 bg-red-100 rounded-full">
+            <Weight size={20} className="text-red-600" />
           </div>
-          <h2 className="text-lg font-bold text-purple-700 flex-1">Weight Progress</h2>
+          <h2 className="text-lg font-bold text-red-700 flex-1">Weight Progress</h2>
           <button 
             onClick={handleAddWeightClick}
-            className="flex items-center gap-1 px-3 py-2 bg-purple-600 text-white rounded-lg shadow-sm hover:bg-purple-700 transition-colors active:scale-95">
+            className="flex items-center gap-1 px-3 py-2 bg-red-600 text-white rounded-lg shadow-sm hover:bg-red-700 transition-colors active:scale-95">
             <Plus size={16} />
             <span className="text-sm font-medium">Add</span>
           </button>
         </div>
 
         {/* Current Weight Display */}
-        <div className="mb-4 p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
+        <div className="mb-4 p-4 bg-gradient-to-r from-red-50 to-red-100 rounded-lg">
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-800 mb-1">78.2 kg</div>
+            <div className="text-2xl font-bold text-red-800 mb-1">78.2 kg</div>
             <div className="flex items-center justify-center gap-1 text-sm text-green-600">
               <TrendingDown size={14} />
               <span>0.3 kg from yesterday</span>
             </div>
-            <div className="mt-2 text-xs text-purple-600">
+            <div className="mt-2 text-xs text-red-600">
               Keep it up! You're on track.
             </div>
           </div>
         </div>
 
         {/* Weight Graph - Simplified for Mobile */}
-        <div className="mb-4 p-3 bg-purple-50 rounded-lg">
+        <div className="mb-4 p-3 bg-red-50 rounded-lg">
           <div className="text-center mb-3">
-            <div className="text-sm font-semibold text-purple-800">7-Day Trend</div>
+            <div className="text-sm font-semibold text-red-800">7-Day Trend</div>
           </div>
           <div className="relative h-16">
             <svg className="w-full h-full" viewBox="0 0 300 60">
               <defs>
                 <linearGradient id="weightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#a855f7" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#a855f7" stopOpacity="0.1" />
+                  <stop offset="0%" stopColor="#ef4444" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#ef4444" stopOpacity="0.1" />
                 </linearGradient>
               </defs>
               
               {/* Weight line */}
               <polyline
                 fill="none"
-                stroke="#a855f7"
+                stroke="#ef4444"
                 strokeWidth="2"
                 points={recentWeights.reverse().map((w, i) => {
                   const x = (i / (recentWeights.length - 1)) * 280 + 10;
@@ -91,7 +91,7 @@ export default function WeightTracker() {
                     cx={x}
                     cy={y}
                     r="2"
-                    fill="#a855f7"
+                    fill="#ef4444"
                     stroke="white"
                     strokeWidth="1"
                   />
@@ -113,9 +113,9 @@ export default function WeightTracker() {
 
         {/* Recent Entries - Compact Mobile View */}
         <div className="space-y-2">
-          <h3 className="font-semibold text-purple-800 text-sm">Recent Entries</h3>
+          <h3 className="font-semibold text-red-800 text-sm">Recent Entries</h3>
           {recentWeights.reverse().slice(0, 3).map((entry, i) => (
-            <div key={i} className="flex justify-between items-center py-2 px-3 bg-purple-50 rounded-lg">
+            <div key={i} className="flex justify-between items-center py-2 px-3 bg-red-50 rounded-lg">
               <span className="text-sm text-gray-600">{entry.date}</span>
               <div className="flex items-center gap-2">
                 <span className="font-medium text-sm">{entry.weight} kg</span>
@@ -132,7 +132,7 @@ export default function WeightTracker() {
             </div>
           ))}
           
-          <button className="w-full py-2 text-sm text-purple-600 hover:text-purple-700 transition-colors">
+          <button className="w-full py-2 text-sm text-red-600 hover:text-red-700 transition-colors">
             View All Entries
           </button>
         </div>

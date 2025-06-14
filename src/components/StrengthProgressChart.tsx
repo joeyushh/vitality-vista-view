@@ -67,24 +67,24 @@ export default function StrengthProgressChart() {
             onClick={handleBackClick}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <ArrowLeft className="text-blue-600" size={18} />
+            <ArrowLeft className="text-red-600" size={18} />
           </button>
-          <TrendingUp className="text-blue-600" size={18} />
-          <h3 className="text-lg font-semibold text-blue-800">{workoutTypeName} Workout History</h3>
+          <TrendingUp className="text-red-600" size={18} />
+          <h3 className="text-lg font-semibold text-red-800">{workoutTypeName} Workout History</h3>
         </div>
 
         <div className="space-y-3">
           {history.map((workout, i) => (
-            <div key={i} className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div key={i} className="p-4 bg-red-50 rounded-lg border border-red-200">
               <div className="flex justify-between items-center mb-2">
-                <div className="font-medium text-blue-800">
+                <div className="font-medium text-red-800">
                   {new Date(workout.date).toLocaleDateString(undefined, { 
                     weekday: 'short', 
                     month: 'short', 
                     day: 'numeric' 
                   })}
                 </div>
-                <div className="text-sm text-blue-600">{workout.totalSets} sets completed</div>
+                <div className="text-sm text-red-600">{workout.totalSets} sets completed</div>
               </div>
               <div className="text-sm text-gray-600">
                 <div className="font-medium mb-1">Exercises:</div>
@@ -106,8 +106,8 @@ export default function StrengthProgressChart() {
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
-        <TrendingUp className="text-blue-600" size={18} />
-        <h3 className="text-lg font-semibold text-blue-800">Strength Progression</h3>
+        <TrendingUp className="text-red-600" size={18} />
+        <h3 className="text-lg font-semibold text-red-800">Strength Progression</h3>
       </div>
       
       <div className="h-64 mb-4">
@@ -135,16 +135,16 @@ export default function StrengthProgressChart() {
         </button>
         <button 
           onClick={() => handleWorkoutTypeClick('pull')}
-          className="text-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer"
+          className="text-center p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
         >
-          <div className="text-lg font-bold text-blue-600">+{pullGrowth}%</div>
+          <div className="text-lg font-bold text-red-600">+{pullGrowth}%</div>
           <div className="text-xs text-gray-600">Pull Growth</div>
         </button>
         <button 
           onClick={() => handleWorkoutTypeClick('legs')}
-          className="text-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer"
+          className="text-center p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
         >
-          <div className="text-lg font-bold text-green-600">+{legsGrowth}%</div>
+          <div className="text-lg font-bold text-red-600">+{legsGrowth}%</div>
           <div className="text-xs text-gray-600">Legs Growth</div>
         </button>
       </div>
