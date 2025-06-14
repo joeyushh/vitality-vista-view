@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -261,7 +262,7 @@ export default function Food() {
               <div key={i} className="flex justify-between items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer">
                 <div>
                   <div className="font-medium text-green-800">{meal.name}</div>
-                  <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g</div>
+                  <div className="text-xs text-gray-500">P: {meal.protein}g • C: {meal.carbs}g • F: {meal.fat}g</div>
                 </div>
                 <div className="text-sm font-semibold text-green-700">{meal.calories} cal</div>
               </div>

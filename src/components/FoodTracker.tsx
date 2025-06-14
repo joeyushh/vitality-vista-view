@@ -97,7 +97,7 @@ export default function FoodTracker() {
                   </div>
                   <div className="text-right ml-3">
                     <div className="font-semibold text-green-700 text-sm">{item.calories} cal</div>
-                    <div className="text-xs text-gray-500">P: {item.protein}g</div>
+                    <div className="text-xs text-gray-500">P: {item.protein}g • C: {item.carbs}g • F: {item.fat}g</div>
                   </div>
                 </div>
               </PopoverTrigger>
