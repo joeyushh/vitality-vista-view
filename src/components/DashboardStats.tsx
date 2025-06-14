@@ -15,7 +15,9 @@ const todaysStats = {
   dailyWorkoutTarget: 1,
   foodStreak: 12,
   workoutStreak: 8,
-  bodyBattery: 90 // Based on sleep quality, nutrition, etc.
+  bodyBattery: 90,
+  hasPlannedWorkout: false,
+  plannedWorkout: ""
 };
 
 const tomorrowStats = {
@@ -27,7 +29,7 @@ const tomorrowStats = {
   sleep: { current: 0, target: 8 },
   workoutCompleted: false,
   dailyWorkoutsLogged: 0,
-  dailyWorkoutTarget: 1, // Has a workout planned
+  dailyWorkoutTarget: 1,
   foodStreak: 12,
   workoutStreak: 8,
   bodyBattery: 85,
@@ -47,7 +49,9 @@ const yesterdayStats = {
   dailyWorkoutTarget: 1,
   foodStreak: 11,
   workoutStreak: 7,
-  bodyBattery: 72
+  bodyBattery: 72,
+  hasPlannedWorkout: false,
+  plannedWorkout: ""
 };
 
 export default function DashboardStats() {
@@ -91,7 +95,7 @@ export default function DashboardStats() {
     <Card className="p-6 shadow-lg">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <h2 className="text-2xl font-bold tracking-tight">{getDayLabel()}</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-800">{getDayLabel()}</h2>
           <div className="flex items-center gap-1">
             <button 
               onClick={() => setCurrentDay(currentDay - 1)}
@@ -107,15 +111,15 @@ export default function DashboardStats() {
             </button>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-sm text-blue-600 font-medium">
+        <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
           {stats.workoutCompleted && currentDay <= 0 && (
             <>
-              <Check size={16} />
+              <Check size={16} className="text-emerald-600" />
               <span>Workout Complete</span>
             </>
           )}
           {currentDay === 1 && stats.hasPlannedWorkout && (
-            <span className="text-blue-600">Workout Planned: {stats.plannedWorkout}</span>
+            <span className="text-gray-700">Workout Planned: {stats.plannedWorkout}</span>
           )}
         </div>
       </div>
@@ -123,64 +127,64 @@ export default function DashboardStats() {
       {/* Food & Nutrition Section */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold text-green-700">Food & Nutrition</h3>
-          <div className="bg-green-50 rounded-lg p-2 text-center">
-            <div className="text-lg font-bold text-green-600">{stats.foodStreak}</div>
+          <h3 className="text-lg font-semibold text-gray-800">Food & Nutrition</h3>
+          <div className="bg-gray-50 rounded-lg p-2 text-center">
+            <div className="text-lg font-bold text-gray-800">{stats.foodStreak}</div>
             <div className="text-xs text-gray-500">food streak</div>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Calories */}
-          <div className="bg-green-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="bg-gray-50 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-gray-800">
               {stats.calories.current}
             </div>
             <div className="text-xs text-gray-500 mb-2">/ {stats.calories.target} calories</div>
-            <div className="w-full bg-green-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-green-600 h-2 rounded-full transition-all" 
+                className="bg-gray-600 h-2 rounded-full transition-all" 
                 style={{ width: `${Math.min(caloriesPercent, 100)}%` }}
               ></div>
             </div>
           </div>
 
           {/* Protein */}
-          <div className="bg-green-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="bg-gray-50 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-gray-800">
               {stats.protein.current}g
             </div>
             <div className="text-xs text-gray-500 mb-2">/ {stats.protein.target}g protein</div>
-            <div className="w-full bg-green-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-green-600 h-2 rounded-full transition-all" 
+                className="bg-gray-600 h-2 rounded-full transition-all" 
                 style={{ width: `${Math.min(proteinPercent, 100)}%` }}
               ></div>
             </div>
           </div>
 
           {/* Carbs */}
-          <div className="bg-green-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="bg-gray-50 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-gray-800">
               {stats.carbs.current}g
             </div>
             <div className="text-xs text-gray-500 mb-2">/ {stats.carbs.target}g carbs</div>
-            <div className="w-full bg-green-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-green-600 h-2 rounded-full transition-all" 
+                className="bg-gray-600 h-2 rounded-full transition-all" 
                 style={{ width: `${Math.min(carbsPercent, 100)}%` }}
               ></div>
             </div>
           </div>
 
           {/* Fat */}
-          <div className="bg-green-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="bg-gray-50 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-gray-800">
               {stats.fat.current}g
             </div>
             <div className="text-xs text-gray-500 mb-2">/ {stats.fat.target}g fat</div>
-            <div className="w-full bg-green-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-green-600 h-2 rounded-full transition-all" 
+                className="bg-gray-600 h-2 rounded-full transition-all" 
                 style={{ width: `${Math.min(fatPercent, 100)}%` }}
               ></div>
             </div>
@@ -191,66 +195,66 @@ export default function DashboardStats() {
       {/* Exercise & Activity Section */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold text-blue-700">Exercise & Activity</h3>
-          <div className="bg-blue-50 rounded-lg p-2 text-center">
-            <div className="text-lg font-bold text-blue-600">{stats.workoutStreak}</div>
+          <h3 className="text-lg font-semibold text-gray-800">Exercise & Activity</h3>
+          <div className="bg-gray-50 rounded-lg p-2 text-center">
+            <div className="text-lg font-bold text-gray-800">{stats.workoutStreak}</div>
             <div className="text-xs text-gray-500">workout streak</div>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Steps */}
-          <div className="bg-blue-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">
+          <div className="bg-gray-50 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-gray-800">
               {stats.steps.current.toLocaleString()}
             </div>
             <div className="text-xs text-gray-500 mb-2">/ {stats.steps.target.toLocaleString()} steps</div>
-            <div className="w-full bg-blue-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-blue-600 h-2 rounded-full transition-all" 
+                className="bg-gray-600 h-2 rounded-full transition-all" 
                 style={{ width: `${Math.min(stepsPercent, 100)}%` }}
               ></div>
             </div>
           </div>
 
           {/* Daily Workouts Logged */}
-          <div className="bg-blue-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">
+          <div className="bg-gray-50 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-gray-800">
               {stats.dailyWorkoutsLogged}/{stats.dailyWorkoutTarget}
             </div>
             <div className="text-xs text-gray-500 mb-2">workouts logged</div>
-            <div className="w-full bg-blue-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-blue-600 h-2 rounded-full transition-all" 
+                className="bg-gray-600 h-2 rounded-full transition-all" 
                 style={{ width: `${Math.min((stats.dailyWorkoutsLogged / stats.dailyWorkoutTarget) * 100, 100)}%` }}
               ></div>
             </div>
           </div>
 
           {/* Sleep */}
-          <div className="bg-blue-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">
+          <div className="bg-gray-50 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-gray-800">
               {stats.sleep.current}hrs
             </div>
             <div className="text-xs text-gray-500 mb-2">/ {stats.sleep.target}hrs sleep</div>
-            <div className="w-full bg-blue-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-blue-600 h-2 rounded-full transition-all" 
+                className="bg-gray-600 h-2 rounded-full transition-all" 
                 style={{ width: `${Math.min(sleepPercent, 100)}%` }}
               ></div>
             </div>
           </div>
 
           {/* Body Battery */}
-          <div className="bg-blue-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">
+          <div className="bg-gray-50 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-gray-800">
               {stats.bodyBattery}%
             </div>
             <div className="text-xs text-gray-500 mb-2">body battery</div>
-            <div className="w-full bg-blue-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
                 className={`h-2 rounded-full transition-all ${
-                  stats.bodyBattery >= 80 ? 'bg-green-500' : 
-                  stats.bodyBattery >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                  stats.bodyBattery >= 80 ? 'bg-emerald-500' : 
+                  stats.bodyBattery >= 60 ? 'bg-amber-500' : 'bg-red-500'
                 }`}
                 style={{ width: `${stats.bodyBattery}%` }}
               ></div>
