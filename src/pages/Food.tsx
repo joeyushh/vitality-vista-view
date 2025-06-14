@@ -6,7 +6,8 @@ const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
   { label: "Food", href: "/food", active: true },
   { label: "Workouts", href: "/workouts", active: false },
-  { label: "Progress", href: "#progress", active: false },
+  { label: "Progress", href: "/progress", active: false },
+  { label: "Rewards", href: "/rewards", active: false },
 ];
 
 const todaysMeals = [

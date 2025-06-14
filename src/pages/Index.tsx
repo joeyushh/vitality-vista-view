@@ -3,19 +3,17 @@ import FoodTracker from "@/components/FoodTracker";
 import WorkoutTracker from "@/components/WorkoutTracker";
 import DashboardStats from "@/components/DashboardStats";
 import WeightTracker from "@/components/WeightTracker";
-import RewardsModal from "@/components/RewardsModal";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const NAV_LINKS = [
-  { label: "Dashboard", href: "#", active: true },
-  { label: "Food", href: "/food" },
-  { label: "Workouts", href: "/workouts" },
-  { label: "Progress", href: "#progress" },
+  { label: "Dashboard", href: "/", active: true },
+  { label: "Food", href: "/food", active: false },
+  { label: "Workouts", href: "/workouts", active: false },
+  { label: "Progress", href: "/progress", active: false },
+  { label: "Rewards", href: "/rewards", active: false },
 ];
 
 export default function Index() {
-  const [showRewards, setShowRewards] = useState(false);
   const navigate = useNavigate();
 
   const handleNavClick = (href: string) => {
@@ -47,27 +45,11 @@ export default function Index() {
             </li>
           ))}
         </ul>
-        
-        {/* Rewards Section */}
-        <div className="ml-4">
-          <button 
-            onClick={() => setShowRewards(true)}
-            className="relative px-3 py-1 rounded hover:bg-blue-50 text-gray-600 flex items-center gap-2"
-          >
-            Rewards
-            <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              2
-            </div>
-          </button>
-        </div>
 
         <div className="ml-auto text-sm text-gray-400 hidden md:block">
           {new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
         </div>
       </nav>
-
-      {/* Rewards Modal */}
-      {showRewards && <RewardsModal onClose={() => setShowRewards(false)} />}
 
       {/* Dashboard Stats Overview */}
       <div className="px-6 mb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>

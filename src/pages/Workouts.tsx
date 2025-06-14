@@ -6,7 +6,7 @@ const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
   { label: "Food", href: "/food", active: false },
   { label: "Workouts", href: "/workouts", active: true },
-  { label: "Progress", href: "#progress", active: false },
+  { label: "Progress", href: "/progress", active: false },
 ];
 
 const weeklyGoals = {
@@ -18,11 +18,11 @@ const weeklyGoals = {
 
 const weeklyProgram = [
   { day: "Monday", workout: "Push Day - Chest & Triceps", completed: true, exercises: 4 },
-  { day: "Tuesday", workout: "Pull Day - Back & Biceps", completed: true, exercises: 5 },
-  { day: "Wednesday", workout: "Rest Day", completed: true, exercises: 0 },
+  { day: "Tuesday", workout: "Rest Day", completed: true, exercises: 0 },
+  { day: "Wednesday", workout: "Pull Day - Back & Biceps", completed: true, exercises: 5 },
   { day: "Thursday", workout: "Legs & Glutes", completed: false, exercises: 6 },
-  { day: "Friday", workout: "Push Day - Shoulders", completed: false, exercises: 4 },
-  { day: "Saturday", workout: "Pull Day - Back Focus", completed: false, exercises: 5 },
+  { day: "Friday", workout: "Rest Day", completed: false, exercises: 0 },
+  { day: "Saturday", workout: "Push Day - Shoulders", completed: false, exercises: 4 },
   { day: "Sunday", workout: "Rest Day", completed: false, exercises: 0 },
 ];
 
