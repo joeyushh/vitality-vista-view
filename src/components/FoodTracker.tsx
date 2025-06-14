@@ -1,4 +1,3 @@
-
 import { Utensils } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -27,47 +26,47 @@ export default function FoodTracker() {
 
   return (
     <>
-      <Card className="p-6 shadow-lg animate-fade-in flex flex-col h-full">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="inline-flex items-center justify-center rounded-full bg-green-50 p-2">
-            <Utensils size={22} className="text-green-600" />
+      <Card className="p-4 md:p-6 shadow-lg animate-fade-in flex flex-col h-full">
+        <div className="flex items-center gap-2 md:gap-3 mb-4">
+          <span className="inline-flex items-center justify-center rounded-full bg-green-50 p-1.5 md:p-2">
+            <Utensils size={18} className="text-green-600 md:w-5 md:h-5" />
           </span>
-          <h2 className="text-2xl font-bold tracking-tight text-green-700">Food Tracker</h2>
-          <div className="ml-auto flex gap-2">
+          <h2 className="text-lg md:text-2xl font-bold tracking-tight text-green-700 flex-1">Food Tracker</h2>
+          <div className="flex gap-1 md:gap-2">
             <button 
               onClick={handleTrackFoodClick}
-              className="px-3 py-1 bg-green-600 text-white rounded shadow hover:scale-105 transition-transform">
+              className="px-2 md:px-3 py-1 md:py-1 text-xs md:text-sm bg-green-600 text-white rounded shadow hover:scale-105 transition-transform min-h-[32px] md:min-h-[36px]">
               Track Food
             </button>
             <button 
               onClick={handleFoodLogClick}
-              className="px-3 py-1 bg-green-100 text-green-700 border border-green-300 rounded shadow hover:scale-105 transition-transform">
+              className="px-2 md:px-3 py-1 md:py-1 text-xs md:text-sm bg-green-100 text-green-700 border border-green-300 rounded shadow hover:scale-105 transition-transform min-h-[32px] md:min-h-[36px]">
               Food Log
             </button>
           </div>
         </div>
         
-        <div className="space-y-3 mb-4 flex-1">
+        <div className="space-y-2 md:space-y-3 mb-4 flex-1">
           {dummyFoods.map((item, i) => (
             <Popover key={i}>
               <PopoverTrigger asChild>
-                <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-green-800">{item.food}</span>
-                      {item.barcode && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Scanned</span>}
-                      {item.saved && <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">Saved</span>}
-                      {item.quick && <span className="text-xs bg-green-300 text-green-900 px-2 py-1 rounded">Quick</span>}
+                <div className="flex justify-between items-center p-2 md:p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer min-h-[56px] md:min-h-[64px]">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1 md:gap-2 mb-1">
+                      <span className="font-medium text-green-800 text-sm md:text-base truncate">{item.food}</span>
+                      {item.barcode && <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded flex-shrink-0">Scanned</span>}
+                      {item.saved && <span className="text-xs bg-green-200 text-green-800 px-1.5 py-0.5 rounded flex-shrink-0">Saved</span>}
+                      {item.quick && <span className="text-xs bg-green-300 text-green-900 px-1.5 py-0.5 rounded flex-shrink-0">Quick</span>}
                     </div>
-                    <div className="text-sm text-gray-600">{item.meal}</div>
+                    <div className="text-xs md:text-sm text-gray-600">{item.meal}</div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-semibold text-green-700">{item.calories} cal</div>
+                  <div className="text-right flex-shrink-0 ml-2">
+                    <div className="font-semibold text-green-700 text-sm md:text-base">{item.calories} cal</div>
                     <div className="text-xs text-gray-500">P: {item.protein}g</div>
                   </div>
                 </div>
               </PopoverTrigger>
-              <PopoverContent className="w-80">
+              <PopoverContent className="w-72 md:w-80">
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-semibold text-green-800 text-lg">{item.food}</h3>

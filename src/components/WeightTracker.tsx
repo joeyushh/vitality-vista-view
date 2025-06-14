@@ -26,36 +26,36 @@ export default function WeightTracker() {
 
   return (
     <>
-      <Card className="p-6 shadow-lg animate-fade-in">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="inline-flex items-center justify-center rounded-full bg-purple-50 p-2">
-            <Weight size={22} className="text-purple-600" />
+      <Card className="p-4 md:p-6 shadow-lg animate-fade-in">
+        <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+          <span className="inline-flex items-center justify-center rounded-full bg-purple-50 p-1.5 md:p-2">
+            <Weight size={18} className="text-purple-600 md:w-5 md:h-5" />
           </span>
-          <h2 className="text-2xl font-bold tracking-tight">Weight Progress</h2>
+          <h2 className="text-lg md:text-2xl font-bold tracking-tight flex-1">Weight Progress</h2>
           <button 
             onClick={handleAddWeightClick}
-            className="ml-auto px-3 py-1 bg-purple-600 text-white rounded shadow hover:scale-105 transition-transform">
+            className="px-2 md:px-3 py-1 md:py-1 text-xs md:text-sm bg-purple-600 text-white rounded shadow hover:scale-105 transition-transform min-h-[32px] md:min-h-[36px]">
             Add Weight
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {/* Current Weight Display */}
-          <div className="p-4 bg-purple-50 rounded-lg">
+          <div className="p-3 md:p-4 bg-purple-50 rounded-lg">
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-800">78.2 kg</div>
-              <div className="text-sm text-purple-600 flex items-center justify-center gap-1">
+              <div className="text-2xl md:text-3xl font-bold text-purple-800">78.2 kg</div>
+              <div className="text-xs md:text-sm text-purple-600 flex items-center justify-center gap-1">
                 <span className="text-green-600">↓ 0.3 kg</span> from yesterday
               </div>
             </div>
           </div>
 
           {/* Weight Graph */}
-          <div className="p-4 bg-purple-50 rounded-lg">
-            <div className="text-center mb-4">
-              <div className="text-lg font-semibold text-purple-800">7-Day Trend</div>
+          <div className="p-3 md:p-4 bg-purple-50 rounded-lg">
+            <div className="text-center mb-3 md:mb-4">
+              <div className="text-base md:text-lg font-semibold text-purple-800">7-Day Trend</div>
             </div>
-            <div className="relative h-20">
+            <div className="relative h-16 md:h-20">
               <svg className="w-full h-full" viewBox="0 0 300 80">
                 <defs>
                   <linearGradient id="weightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -111,14 +111,14 @@ export default function WeightTracker() {
           </div>
         </div>
 
-        <div className="mt-6 space-y-2">
-          <h3 className="font-semibold text-purple-800 mb-3">Recent Entries</h3>
+        <div className="mt-4 md:mt-6 space-y-2">
+          <h3 className="font-semibold text-purple-800 mb-3 text-sm md:text-base">Recent Entries</h3>
           {recentWeights.reverse().slice(0, 4).map((entry, i) => (
-            <div key={i} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
-              <span className="text-sm text-gray-600">{entry.date}</span>
+            <div key={i} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0 min-h-[40px]">
+              <span className="text-xs md:text-sm text-gray-600">{entry.date}</span>
               <div className="flex items-center gap-2">
-                <span className="font-medium">{entry.weight} kg</span>
-                <span className={`text-xs px-2 py-1 rounded ${
+                <span className="font-medium text-sm md:text-base">{entry.weight} kg</span>
+                <span className={`text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded ${
                   entry.change > 0 
                     ? 'bg-red-50 text-red-600' 
                     : entry.change < 0 
@@ -132,7 +132,7 @@ export default function WeightTracker() {
           ))}
         </div>
 
-        <div className="mt-4 text-xs text-gray-500 text-center">
+        <div className="mt-3 md:mt-4 text-xs text-gray-500 text-center">
           Weigh yourself at the same time each day for consistency
         </div>
       </Card>

@@ -1,3 +1,4 @@
+
 import FoodTracker from "@/components/FoodTracker";
 import WorkoutTracker from "@/components/WorkoutTracker";
 import DashboardStats from "@/components/DashboardStats";
@@ -23,53 +24,57 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col">
-      {/* Top Navigation */}
-      <nav className="w-full flex items-center px-10 py-4 shadow mb-8 bg-white/80 backdrop-blur-sm z-10">
-        <div className="text-2xl font-extrabold tracking-tight text-black mr-10 select-none">
+      {/* Mobile-optimized Top Navigation */}
+      <nav className="w-full flex items-center px-4 md:px-10 py-3 md:py-4 shadow mb-4 md:mb-8 bg-white/80 backdrop-blur-sm z-10">
+        <div className="text-xl md:text-2xl font-extrabold tracking-tight text-black mr-4 md:mr-10 select-none">
           Momentum
         </div>
-        <ul className="flex gap-2 text-base font-medium">
-          {NAV_LINKS.map((link, i) => (
-            <li key={i}>
-              <button
-                onClick={() => handleNavClick(link.href)}
-                className={`story-link px-3 py-1 rounded ${
-                  link.active
-                    ? "bg-blue-100 text-blue-800 shadow"
-                    : "hover:bg-blue-50 text-gray-600"
-                }`}
-              >
-                {link.label}
-              </button>
-            </li>
-          ))}
-        </ul>
+        
+        {/* Mobile navigation - horizontal scroll */}
+        <div className="flex-1 overflow-x-auto">
+          <ul className="flex gap-1 md:gap-2 text-sm md:text-base font-medium whitespace-nowrap">
+            {NAV_LINKS.map((link, i) => (
+              <li key={i}>
+                <button
+                  onClick={() => handleNavClick(link.href)}
+                  className={`story-link px-2 md:px-3 py-1.5 md:py-1 rounded min-w-max ${
+                    link.active
+                      ? "bg-blue-100 text-blue-800 shadow"
+                      : "hover:bg-blue-50 text-gray-600"
+                  }`}
+                >
+                  {link.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        <div className="ml-auto text-sm text-gray-400 hidden md:block">
-          {new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
+        <div className="ml-2 text-xs md:text-sm text-gray-400 hidden sm:block">
+          {new Date().toLocaleDateString(undefined, { month: "short", day: "numeric" })}
         </div>
       </nav>
 
       {/* Dashboard Stats Overview */}
-      <div className="px-6 mb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
+      <div className="px-4 md:px-6 mb-4 md:mb-8 max-w-7xl w-full mx-auto">
         <DashboardStats />
       </div>
 
-      <main className="flex flex-col gap-8 px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
-        {/* Top row - Food & Workouts */}
-        <div className="flex flex-1 gap-8">
-          {/* Left column - Food */}
-          <div className="w-full md:w-1/2">
+      <main className="flex flex-col gap-4 md:gap-8 px-4 md:px-6 pb-8 max-w-7xl w-full mx-auto">
+        {/* Mobile: Stack vertically, Desktop: Side by side */}
+        <div className="flex flex-col lg:flex-row gap-4 md:gap-8">
+          {/* Food Tracker */}
+          <div className="w-full lg:w-1/2">
             <FoodTracker />
           </div>
           
-          {/* Right column - Workouts */}
-          <div className="w-full md:w-1/2">
+          {/* Workout Tracker */}
+          <div className="w-full lg:w-1/2">
             <WorkoutTracker />
           </div>
         </div>
         
-        {/* Bottom row - Weight Tracker (Full Width) */}
+        {/* Weight Tracker (Full Width) */}
         <div className="w-full">
           <WeightTracker />
         </div>
