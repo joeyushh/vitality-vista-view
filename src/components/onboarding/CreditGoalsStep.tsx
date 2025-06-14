@@ -36,8 +36,10 @@ export default function CreditGoalsStep({ data, onUpdate, onNext, onPrev }: Cred
   };
 
   const handleNext = () => {
-    onUpdate({ selectedCreditGoals: selectedGoals });
-    onNext();
+    if (selectedGoals.length > 0) {
+      onUpdate({ selectedCreditGoals: selectedGoals });
+      onNext();
+    }
   };
 
   const getGoalDisplayText = (goal: typeof AVAILABLE_GOALS[0]) => {

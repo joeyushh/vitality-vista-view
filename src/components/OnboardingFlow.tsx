@@ -141,13 +141,14 @@ export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowPr
     // After Goal Setup Preference step (step 7)
     if (currentStep === 7) {
       if (data.goalSetupPreference === 'guided') {
-        // Calculate personalized goals for guided users
+        // For guided users, calculate personalized goals and go to Activity step
         const calculated = calculatePersonalizedGoals(data);
         if (calculated) {
           updateData({ calculatedGoals: calculated });
         }
         setCurrentStep(8); // Go to Activity step
       } else {
+        // For manual users, go directly to Manual Goals step
         setCurrentStep(9); // Go to Manual Goals step
       }
     }
