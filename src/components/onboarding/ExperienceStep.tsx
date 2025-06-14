@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
-import { OnboardingData } from "../OnboardingFlow";
+import { OnboardingData } from "@/types/onboarding";
 
 interface ExperienceStepProps {
   data: Partial<OnboardingData>;

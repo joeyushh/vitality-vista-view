@@ -3,6 +3,11 @@ import { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { OnboardingData } from '@/types/onboarding';
+import { calculatePersonalizedGoals } from '@/utils/onboardingCalculations';
+import { TOTAL_STEPS, getNextStep, getPreviousStep } from '@/utils/onboardingNavigation';
+
+// Step components
 import WelcomeStep from './onboarding/WelcomeStep';
 import BasicInfoStep from './onboarding/BasicInfoStep';
 import ExperienceStep from './onboarding/ExperienceStep';
@@ -17,75 +22,10 @@ import CreditGoalsStep from './onboarding/CreditGoalsStep';
 import SummaryStep from './onboarding/SummaryStep';
 import WearableConnectionStep from './onboarding/WearableConnectionStep';
 
-export interface OnboardingData {
-  // Basic Info
-  height: number;
-  weight: number;
-  age: number;
-  gender: 'male' | 'female' | 'other';
-  
-  // Goals
-  primaryGoal: 'lose_weight' | 'gain_muscle' | 'maintain' | 'improve_health';
-  secondaryGoal?: string;
-  targetWeight?: number;
-  timeline?: string;
-  weeklyGoal?: number;
-  
-  // Experience & Goals
-  fitnessLevel: 'beginner' | 'intermediate' | 'advanced';
-  
-  // Goal Setup Preference
-  goalSetupPreference: 'guided' | 'manual';
-  
-  // Calculated Goals (for guided setup)
-  calculatedGoals?: {
-    calories: number;
-    protein: number;
-    carbs: number;
-    fats: number;
-    steps: number;
-    sleep: number;
-    workouts: number;
-  };
-  
-  // Manual Goals (if user chooses manual)
-  manualGoals?: {
-    calories: number;
-    protein: number;
-    carbs: number;
-    fats: number;
-    sleep: number;
-    steps: number;
-    workouts: number;
-  };
-  
-  // Food Tracking
-  hasTrackedFood: boolean;
-  familiarWithMacros: boolean;
-  
-  // Activity (only for guided setup)
-  currentWorkoutFrequency?: number;
-  preferredActivities?: string[];
-  
-  // Wearable Connection
-  connectedWearable?: string;
-  
-  // Credit Goals
-  selectedCreditGoals: Array<{
-    id: string;
-    name: string;
-    value: number;
-    unit: string;
-    color: string;
-  }>;
-}
-
 interface OnboardingFlowProps {
   onComplete: (data: OnboardingData) => void;
   onClose: () => void;
 }
-
-const TOTAL_STEPS = 12; // Updated to include new steps
 
 export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowProps) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -95,102 +35,23 @@ export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowPr
     setData(prev => ({ ...prev, ...stepData }));
   };
 
-  // Calculate personalized goals based on user data
-  const calculatePersonalizedGoals = (userData: Partial<OnboardingData>) => {
-    if (!userData.height || !userData.weight || !userData.age || !userData.gender) return null;
-
-    // Basic BMR calculation (Mifflin-St Jeor)
-    let bmr;
-    if (userData.gender === 'male') {
-      bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age + 5;
-    } else {
-      bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age - 161;
-    }
-
-    // Activity multiplier based on workout frequency
-    const activityMultiplier = userData.currentWorkoutFrequency 
-      ? 1.2 + (userData.currentWorkoutFrequency * 0.1) 
-      : 1.4; // Default for guided users
-
-    let tdee = bmr * activityMultiplier;
-
-    // Adjust calories based on goal
-    if (userData.primaryGoal === 'lose_weight' && userData.weeklyGoal) {
-      tdee -= userData.weeklyGoal * 7700 / 7; // 7700 cal per kg of fat
-    } else if (userData.primaryGoal === 'gain_muscle' && userData.weeklyGoal) {
-      tdee += userData.weeklyGoal * 7700 / 7;
-    }
-
-    // Calculate macros
-    const protein = userData.weight * (userData.primaryGoal === 'gain_muscle' ? 2.2 : 1.8);
-    const fats = Math.round(tdee * 0.25 / 9);
-    const carbs = Math.round((tdee - (protein * 4) - (fats * 9)) / 4);
-
-    return {
-      calories: Math.round(tdee),
-      protein: Math.round(protein),
-      carbs,
-      fats,
-      steps: userData.fitnessLevel === 'beginner' ? 8000 : userData.fitnessLevel === 'intermediate' ? 10000 : 12000,
-      sleep: 8,
-      workouts: userData.currentWorkoutFrequency || 3
-    };
-  };
-
   const nextStep = () => {
-    console.log('nextStep called, currentStep:', currentStep, 'goalSetupPreference:', data.goalSetupPreference);
+    const nextStepIndex = getNextStep(currentStep, data);
     
-    // After Goal Setup Preference step (step 7)
-    if (currentStep === 7) {
-      if (data.goalSetupPreference === 'guided') {
-        // For "Help me set goals" users, calculate personalized goals and go to Activity step
-        console.log('Guided setup selected, going to Activity step');
-        const calculated = calculatePersonalizedGoals(data);
-        if (calculated) {
-          updateData({ calculatedGoals: calculated });
-        }
-        setCurrentStep(8); // Go to Activity step
-      } else {
-        // For "I'll set my own goals" users, go directly to Manual Goals step
-        console.log('Manual setup selected, going to Manual Goals step');
-        setCurrentStep(9); // Go to Manual Goals step
+    // Special handling for guided setup to calculate goals
+    if (currentStep === 7 && data.goalSetupPreference === 'guided') {
+      const calculated = calculatePersonalizedGoals(data);
+      if (calculated) {
+        updateData({ calculatedGoals: calculated });
       }
     }
-    // After Manual Goals step (step 9), skip to Wearable Connection (step 10)
-    else if (currentStep === 9) {
-      setCurrentStep(10);
-    }
-    // After Activity step (step 8), go to Wearable Connection (step 10)
-    else if (currentStep === 8) {
-      setCurrentStep(10);
-    }
-    // Normal progression for other steps
-    else if (currentStep < TOTAL_STEPS - 1) {
-      setCurrentStep(prev => prev + 1);
-    }
+    
+    setCurrentStep(nextStepIndex);
   };
 
   const prevStep = () => {
-    // From Wearable Connection step (step 10)
-    if (currentStep === 10) {
-      if (data.goalSetupPreference === 'manual') {
-        setCurrentStep(9); // Go back to Manual Goals
-      } else {
-        setCurrentStep(8); // Go back to Activity
-      }
-    }
-    // From Activity step (step 8), go back to Goal Setup Preference (step 7)
-    else if (currentStep === 8) {
-      setCurrentStep(7);
-    }
-    // From Manual Goals step (step 9), go back to Goal Setup Preference (step 7)
-    else if (currentStep === 9) {
-      setCurrentStep(7);
-    }
-    // Normal progression for other steps
-    else if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-    }
+    const prevStepIndex = getPreviousStep(currentStep, data);
+    setCurrentStep(prevStepIndex);
   };
 
   const handleComplete = () => {

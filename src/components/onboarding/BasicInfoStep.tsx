@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
-import { OnboardingData } from "../OnboardingFlow";
+import { OnboardingData } from "@/types/onboarding";
 
 interface BasicInfoStepProps {
   data: Partial<OnboardingData>;

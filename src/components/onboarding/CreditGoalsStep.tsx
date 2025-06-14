@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Info } from "lucide-react";
 import { useState } from "react";
-import { OnboardingData } from "../OnboardingFlow";
+import { OnboardingData } from "@/types/onboarding";
 
 interface CreditGoalsStepProps {
   data: Partial<OnboardingData>;
