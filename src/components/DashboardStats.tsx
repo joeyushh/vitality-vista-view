@@ -88,53 +88,9 @@ export default function DashboardStats() {
     };
   };
 
-  const CircularProgress = ({ percentage, color }: { percentage: number, color: string }) => {
-    const radius = 24; // Increased radius for larger circle
-    const circumference = 2 * Math.PI * radius;
-    const strokeDasharray = circumference;
-    const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-    return (
-      <div className="relative w-16 h-16 flex items-center justify-center">
-        <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 56 56">
-          {/* Background circle */}
-          <circle
-            cx="28"
-            cy="28"
-            r={radius}
-            fill="none"
-            className={`stroke-${color}-200`}
-            strokeWidth="4"
-          />
-          {/* Progress circle */}
-          <circle
-            cx="28"
-            cy="28"
-            r={radius}
-            fill="none"
-            className={`stroke-${color}-500 transition-all duration-700 ease-out`}
-            strokeWidth="4"
-            strokeDasharray={strokeDasharray}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-            style={{
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
-            }}
-          />
-        </svg>
-        {/* Percentage text */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={`text-sm font-bold text-${color}-700`}>
-            {Math.round(percentage)}%
-          </span>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <Card className="p-4 shadow-lg animate-fade-in">
-      {/* Credits Header - Enhanced styling */}
+      {/* Credits Header */}
       <div className="flex items-center gap-3 mb-4">
         <h2 className="text-lg font-bold text-gray-800">Today's Progress</h2>
         <div className="ml-auto flex items-center gap-2">
@@ -151,13 +107,16 @@ export default function DashboardStats() {
           {isTrackedForCredits('calories') && (
             <Star size={12} className={`absolute top-2 right-2 fill-${isGoalCompleted('calories') ? 'yellow' : 'green'}-700 text-${isGoalCompleted('calories') ? 'yellow' : 'green'}-700`} />
           )}
-          <div className="flex flex-col items-center gap-3">
-            <CircularProgress percentage={getProgressPercentage('calories')} color={isGoalCompleted('calories') ? 'yellow' : 'green'} />
+          <div className="space-y-3">
             <div className="text-center">
               <div className={`text-xl font-bold ${getMetricClasses('calories', 'green').text} mb-1`}>{todaysMetrics.calories.current}</div>
               <div className="text-xs text-gray-600 mb-1">Calories</div>
               <div className={`text-xs ${getMetricClasses('calories', 'green').subtext}`}>of {todaysMetrics.calories.target}</div>
             </div>
+            <Progress 
+              value={getProgressPercentage('calories')} 
+              className="h-2"
+            />
           </div>
         </div>
 
@@ -165,13 +124,16 @@ export default function DashboardStats() {
           {isTrackedForCredits('protein') && (
             <Star size={12} className={`absolute top-2 right-2 fill-${isGoalCompleted('protein') ? 'yellow' : 'green'}-700 text-${isGoalCompleted('protein') ? 'yellow' : 'green'}-700`} />
           )}
-          <div className="flex flex-col items-center gap-3">
-            <CircularProgress percentage={getProgressPercentage('protein')} color={isGoalCompleted('protein') ? 'yellow' : 'green'} />
+          <div className="space-y-3">
             <div className="text-center">
               <div className={`text-xl font-bold ${getMetricClasses('protein', 'green').text} mb-1`}>{todaysMetrics.protein.current}g</div>
               <div className="text-xs text-gray-600 mb-1">Protein</div>
               <div className={`text-xs ${getMetricClasses('protein', 'green').subtext}`}>of {todaysMetrics.protein.target}g</div>
             </div>
+            <Progress 
+              value={getProgressPercentage('protein')} 
+              className="h-2"
+            />
           </div>
         </div>
 
@@ -179,13 +141,16 @@ export default function DashboardStats() {
           {isTrackedForCredits('carbs') && (
             <Star size={12} className={`absolute top-2 right-2 fill-${isGoalCompleted('carbs') ? 'yellow' : 'green'}-700 text-${isGoalCompleted('carbs') ? 'yellow' : 'green'}-700`} />
           )}
-          <div className="flex flex-col items-center gap-3">
-            <CircularProgress percentage={getProgressPercentage('carbs')} color={isGoalCompleted('carbs') ? 'yellow' : 'green'} />
+          <div className="space-y-3">
             <div className="text-center">
               <div className={`text-xl font-bold ${getMetricClasses('carbs', 'green').text} mb-1`}>{todaysMetrics.carbs.current}g</div>
               <div className="text-xs text-gray-600 mb-1">Carbs</div>
               <div className={`text-xs ${getMetricClasses('carbs', 'green').subtext}`}>of {todaysMetrics.carbs.target}g</div>
             </div>
+            <Progress 
+              value={getProgressPercentage('carbs')} 
+              className="h-2"
+            />
           </div>
         </div>
 
@@ -193,13 +158,16 @@ export default function DashboardStats() {
           {isTrackedForCredits('fats') && (
             <Star size={12} className={`absolute top-2 right-2 fill-${isGoalCompleted('fats') ? 'yellow' : 'green'}-700 text-${isGoalCompleted('fats') ? 'yellow' : 'green'}-700`} />
           )}
-          <div className="flex flex-col items-center gap-3">
-            <CircularProgress percentage={getProgressPercentage('fats')} color={isGoalCompleted('fats') ? 'yellow' : 'green'} />
+          <div className="space-y-3">
             <div className="text-center">
               <div className={`text-xl font-bold ${getMetricClasses('fats', 'green').text} mb-1`}>{todaysMetrics.fats.current}g</div>
               <div className="text-xs text-gray-600 mb-1">Fats</div>
               <div className={`text-xs ${getMetricClasses('fats', 'green').subtext}`}>of {todaysMetrics.fats.target}g</div>
             </div>
+            <Progress 
+              value={getProgressPercentage('fats')} 
+              className="h-2"
+            />
           </div>
         </div>
       </div>
@@ -210,13 +178,16 @@ export default function DashboardStats() {
           {isTrackedForCredits('steps') && (
             <Star size={12} className={`absolute top-2 right-2 fill-${isGoalCompleted('steps') ? 'yellow' : 'blue'}-700 text-${isGoalCompleted('steps') ? 'yellow' : 'blue'}-700`} />
           )}
-          <div className="flex flex-col items-center gap-3">
-            <CircularProgress percentage={getProgressPercentage('steps')} color={isGoalCompleted('steps') ? 'yellow' : 'blue'} />
+          <div className="space-y-3">
             <div className="text-center">
               <div className={`text-xl font-bold ${getMetricClasses('steps', 'blue').text} mb-1`}>{todaysMetrics.steps.current.toLocaleString()}</div>
               <div className="text-xs text-gray-600 mb-1">Steps</div>
               <div className={`text-xs ${getMetricClasses('steps', 'blue').subtext}`}>of {todaysMetrics.steps.target.toLocaleString()}</div>
             </div>
+            <Progress 
+              value={getProgressPercentage('steps')} 
+              className="h-2"
+            />
           </div>
         </div>
 
@@ -224,13 +195,16 @@ export default function DashboardStats() {
           {isTrackedForCredits('workoutsCompleted') && (
             <Star size={12} className={`absolute top-2 right-2 fill-${isGoalCompleted('workoutsCompleted') ? 'yellow' : 'blue'}-700 text-${isGoalCompleted('workoutsCompleted') ? 'yellow' : 'blue'}-700`} />
           )}
-          <div className="flex flex-col items-center gap-3">
-            <CircularProgress percentage={getProgressPercentage('workoutsCompleted')} color={isGoalCompleted('workoutsCompleted') ? 'yellow' : 'blue'} />
+          <div className="space-y-3">
             <div className="text-center">
               <div className={`text-xl font-bold ${getMetricClasses('workoutsCompleted', 'blue').text} mb-1`}>{todaysMetrics.workoutsCompleted.current}/{todaysMetrics.workoutsCompleted.target}</div>
               <div className="text-xs text-gray-600 mb-1">Workouts</div>
               <div className={`text-xs ${getMetricClasses('workoutsCompleted', 'blue').subtext}`}>completed</div>
             </div>
+            <Progress 
+              value={getProgressPercentage('workoutsCompleted')} 
+              className="h-2"
+            />
           </div>
         </div>
 
@@ -238,24 +212,30 @@ export default function DashboardStats() {
           {isTrackedForCredits('sleep') && (
             <Star size={12} className={`absolute top-2 right-2 fill-${isGoalCompleted('sleep') ? 'yellow' : 'purple'}-700 text-${isGoalCompleted('sleep') ? 'yellow' : 'purple'}-700`} />
           )}
-          <div className="flex flex-col items-center gap-3">
-            <CircularProgress percentage={getProgressPercentage('sleep')} color={isGoalCompleted('sleep') ? 'yellow' : 'purple'} />
+          <div className="space-y-3">
             <div className="text-center">
               <div className={`text-xl font-bold ${getMetricClasses('sleep', 'purple').text} mb-1`}>{todaysMetrics.sleep.current}hrs</div>
               <div className="text-xs text-gray-600 mb-1">Sleep</div>
               <div className={`text-xs ${getMetricClasses('sleep', 'purple').subtext}`}>of {todaysMetrics.sleep.target}hrs</div>
             </div>
+            <Progress 
+              value={getProgressPercentage('sleep')} 
+              className="h-2"
+            />
           </div>
         </div>
 
         <div className="p-4 bg-purple-50 rounded-lg border border-purple-200 relative">
-          <div className="flex flex-col items-center gap-3">
-            <CircularProgress percentage={getProgressPercentage('bodyBattery')} color="purple" />
+          <div className="space-y-3">
             <div className="text-center">
               <div className="text-xl font-bold text-purple-600 mb-1">{todaysMetrics.bodyBattery.current}%</div>
               <div className="text-xs text-gray-600 mb-1">Body Battery</div>
               <div className="text-xs text-purple-700">of {todaysMetrics.bodyBattery.target}%</div>
             </div>
+            <Progress 
+              value={getProgressPercentage('bodyBattery')} 
+              className="h-2"
+            />
           </div>
         </div>
       </div>
