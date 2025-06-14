@@ -88,6 +88,25 @@ export default function DashboardStats() {
     };
   };
 
+  const getProgressBarColor = (metricId: string, baseColor: string) => {
+    const isCompleted = isGoalCompleted(metricId);
+    if (isCompleted) {
+      return 'hsl(45, 93%, 47%)'; // Yellow color for completed goals
+    }
+    
+    // Return the appropriate color based on metric type
+    switch (baseColor) {
+      case 'green':
+        return 'hsl(142, 76%, 36%)'; // Green
+      case 'blue':
+        return 'hsl(221, 83%, 53%)'; // Blue
+      case 'purple':
+        return 'hsl(262, 83%, 58%)'; // Purple
+      default:
+        return 'hsl(221, 83%, 53%)'; // Default blue
+    }
+  };
+
   return (
     <Card className="p-4 shadow-lg animate-fade-in">
       {/* Credits Header */}
@@ -116,6 +135,9 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('calories')} 
               className="h-2"
+              style={{ 
+                '--progress-foreground': getProgressBarColor('calories', 'green')
+              } as React.CSSProperties}
             />
           </div>
         </div>
@@ -133,6 +155,9 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('protein')} 
               className="h-2"
+              style={{ 
+                '--progress-foreground': getProgressBarColor('protein', 'green')
+              } as React.CSSProperties}
             />
           </div>
         </div>
@@ -150,6 +175,9 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('carbs')} 
               className="h-2"
+              style={{ 
+                '--progress-foreground': getProgressBarColor('carbs', 'green')
+              } as React.CSSProperties}
             />
           </div>
         </div>
@@ -167,6 +195,9 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('fats')} 
               className="h-2"
+              style={{ 
+                '--progress-foreground': getProgressBarColor('fats', 'green')
+              } as React.CSSProperties}
             />
           </div>
         </div>
@@ -187,6 +218,9 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('steps')} 
               className="h-2"
+              style={{ 
+                '--progress-foreground': getProgressBarColor('steps', 'blue')
+              } as React.CSSProperties}
             />
           </div>
         </div>
@@ -204,6 +238,9 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('workoutsCompleted')} 
               className="h-2"
+              style={{ 
+                '--progress-foreground': getProgressBarColor('workoutsCompleted', 'blue')
+              } as React.CSSProperties}
             />
           </div>
         </div>
@@ -221,6 +258,9 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('sleep')} 
               className="h-2"
+              style={{ 
+                '--progress-foreground': getProgressBarColor('sleep', 'purple')
+              } as React.CSSProperties}
             />
           </div>
         </div>
@@ -235,6 +275,9 @@ export default function DashboardStats() {
             <Progress 
               value={getProgressPercentage('bodyBattery')} 
               className="h-2"
+              style={{ 
+                '--progress-foreground': getProgressBarColor('bodyBattery', 'purple')
+              } as React.CSSProperties}
             />
           </div>
         </div>
