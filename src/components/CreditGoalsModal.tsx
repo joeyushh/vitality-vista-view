@@ -36,6 +36,13 @@ export default function CreditGoalsModal({ onClose, availableGoals, currentGoals
     onClose();
   };
 
+  const getGoalDisplayText = (goal: CreditGoal) => {
+    if (goal.id === 'workouts') {
+      return 'Complete scheduled workout';
+    }
+    return `${goal.value.toLocaleString()}${goal.unit} daily`;
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -96,8 +103,7 @@ export default function CreditGoalsModal({ onClose, availableGoals, currentGoals
                       <div>
                         <div className="font-medium">{goal.name}</div>
                         <div className="text-sm text-gray-600">
-                          {goal.value.toLocaleString()}{goal.unit}
-                          {goal.id === 'workouts' ? '' : ' daily'}
+                          {getGoalDisplayText(goal)}
                         </div>
                       </div>
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${

@@ -22,26 +22,26 @@ const availableCreditGoals = [
   { id: 'protein', name: 'Protein', value: 220, unit: 'g', color: 'green' },
   { id: 'sleep', name: 'Sleep', value: 8, unit: 'hrs', color: 'purple' },
   { id: 'steps', name: 'Steps', value: 10000, unit: '', color: 'blue' },
-  { id: 'workouts', name: 'Workouts', value: 1, unit: 'per day', color: 'blue' }
+  { id: 'workouts', name: 'Workouts', value: 1, unit: 'scheduled', color: 'blue' }
 ];
 
 // User's selected credit goals (5 max)
 const userCreditGoals = [
   { id: 'calories', name: 'Calories', value: 2200, unit: '', color: 'green' },
   { id: 'protein', name: 'Protein', value: 220, unit: 'g', color: 'green' },
-  { id: 'workouts', name: 'Workouts', value: 1, unit: 'per day', color: 'blue' },
+  { id: 'workouts', name: 'Workouts', value: 1, unit: 'scheduled', color: 'blue' },
   { id: 'steps', name: 'Steps', value: 10000, unit: '', color: 'blue' },
   { id: 'sleep', name: 'Sleep', value: 8, unit: 'hrs', color: 'purple' }
 ];
 
 const weeklyProgress = [
-  { day: "Monday", caloriesHit: true, proteinHit: true, workoutDone: true, stepsHit: true, sleepHit: true, creditsEarned: 5 },
-  { day: "Tuesday", caloriesHit: true, proteinHit: false, workoutDone: true, stepsHit: true, sleepHit: false, creditsEarned: 3 },
-  { day: "Wednesday", caloriesHit: true, proteinHit: true, workoutDone: false, stepsHit: false, sleepHit: true, creditsEarned: 3 },
-  { day: "Thursday", caloriesHit: false, proteinHit: true, workoutDone: true, stepsHit: true, sleepHit: true, creditsEarned: 4 },
-  { day: "Friday", caloriesHit: true, proteinHit: true, workoutDone: true, stepsHit: true, sleepHit: true, creditsEarned: 5 },
-  { day: "Saturday", caloriesHit: true, proteinHit: false, workoutDone: false, stepsHit: false, sleepHit: false, creditsEarned: 1 },
-  { day: "Today", caloriesHit: true, proteinHit: true, workoutDone: true, stepsHit: true, sleepHit: false, creditsEarned: 4 }
+  { day: "Monday", caloriesHit: true, proteinHit: true, workoutComplete: true, stepsHit: true, sleepHit: true, creditsEarned: 5 },
+  { day: "Tuesday", caloriesHit: true, proteinHit: false, workoutComplete: false, stepsHit: true, sleepHit: false, creditsEarned: 2 },
+  { day: "Wednesday", caloriesHit: true, proteinHit: true, workoutComplete: true, stepsHit: false, sleepHit: true, creditsEarned: 4 },
+  { day: "Thursday", caloriesHit: false, proteinHit: true, workoutComplete: true, stepsHit: true, sleepHit: true, creditsEarned: 4 },
+  { day: "Friday", caloriesHit: true, proteinHit: true, workoutComplete: true, stepsHit: true, sleepHit: true, creditsEarned: 5 },
+  { day: "Saturday", caloriesHit: true, proteinHit: false, workoutComplete: false, stepsHit: false, sleepHit: false, creditsEarned: 1 },
+  { day: "Today", caloriesHit: true, proteinHit: true, workoutComplete: true, stepsHit: true, sleepHit: false, creditsEarned: 4 }
 ];
 
 const availableRewards = [
@@ -55,6 +55,23 @@ const totalCredits = weeklyProgress.reduce((sum, day) => sum + day.creditsEarned
 
 export default function Rewards() {
   const [showCreditGoalsModal, setShowCreditGoalsModal] = useState(false);
+
+  // Get workout status for today - binary based on scheduled workouts
+  const getTodayWorkoutStatus = () => {
+    const today = weeklyProgress.find(day => day.day === "Today");
+    return today?.workoutComplete ? "1/1" : "0/1";
+  };
+
+  const getStatusIndicator = (dayData: any, goalId: string) => {
+    switch(goalId) {
+      case 'calories': return dayData.caloriesHit;
+      case 'protein': return dayData.proteinHit;
+      case 'workouts': return dayData.workoutComplete;
+      case 'steps': return dayData.stepsHit;
+      case 'sleep': return dayData.sleepHit;
+      default: return false;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
@@ -94,9 +111,12 @@ export default function Rewards() {
             {userCreditGoals.slice(0, 4).map((goal, index) => (
               <div key={goal.id} className={`bg-${goal.color}-50 p-3 rounded-lg text-center`}>
                 <div className={`text-lg font-bold text-${goal.color}-600`}>
-                  {goal.value.toLocaleString()}{goal.unit}
+                  {goal.id === 'workouts' ? getTodayWorkoutStatus() : 
+                   `${goal.value.toLocaleString()}${goal.unit}`}
                 </div>
-                <div className="text-xs text-gray-600">{goal.name}</div>
+                <div className="text-xs text-gray-600">
+                  {goal.id === 'workouts' ? 'Workouts Complete' : goal.name}
+                </div>
                 <div className="text-xs text-orange-600 font-medium">+1 credit</div>
               </div>
             ))}
@@ -104,9 +124,12 @@ export default function Rewards() {
           {userCreditGoals[4] && (
             <div className={`bg-${userCreditGoals[4].color}-50 p-3 rounded-lg text-center w-full`}>
               <div className={`text-lg font-bold text-${userCreditGoals[4].color}-600`}>
-                {userCreditGoals[4].value.toLocaleString()}{userCreditGoals[4].unit}
+                {userCreditGoals[4].id === 'workouts' ? getTodayWorkoutStatus() : 
+                 `${userCreditGoals[4].value.toLocaleString()}${userCreditGoals[4].unit}`}
               </div>
-              <div className="text-xs text-gray-600">{userCreditGoals[4].name}</div>
+              <div className="text-xs text-gray-600">
+                {userCreditGoals[4].id === 'workouts' ? 'Workouts Complete' : userCreditGoals[4].name}
+              </div>
               <div className="text-xs text-orange-600 font-medium">+1 credit</div>
             </div>
           )}
@@ -127,11 +150,15 @@ export default function Rewards() {
                 <div className="font-medium text-sm">{day.day}</div>
                 <div className="flex items-center gap-3">
                   <div className="flex gap-1">
-                    <span className={`w-2 h-2 rounded-full ${day.caloriesHit ? 'bg-green-500' : 'bg-gray-300'}`}></span>
-                    <span className={`w-2 h-2 rounded-full ${day.proteinHit ? 'bg-green-500' : 'bg-gray-300'}`}></span>
-                    <span className={`w-2 h-2 rounded-full ${day.workoutDone ? 'bg-blue-500' : 'bg-gray-300'}`}></span>
-                    <span className={`w-2 h-2 rounded-full ${day.stepsHit ? 'bg-blue-500' : 'bg-gray-300'}`}></span>
-                    <span className={`w-2 h-2 rounded-full ${day.sleepHit ? 'bg-purple-500' : 'bg-gray-300'}`}></span>
+                    {userCreditGoals.map((goal) => {
+                      const isHit = getStatusIndicator(day, goal.id);
+                      return (
+                        <span 
+                          key={goal.id}
+                          className={`w-2 h-2 rounded-full ${isHit ? `bg-${goal.color}-500` : 'bg-gray-300'}`}
+                        ></span>
+                      );
+                    })}
                   </div>
                   <div className="text-sm font-medium text-orange-600">
                     +{day.creditsEarned}
