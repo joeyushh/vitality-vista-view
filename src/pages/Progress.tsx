@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { label: "Food", href: "/food", active: false },
   { label: "Workouts", href: "/workouts", active: false },
   { label: "Progress", href: "/progress", active: true },
+  { label: "Rewards", href: "/rewards", active: false },
 ];
 
 const weightData = [
