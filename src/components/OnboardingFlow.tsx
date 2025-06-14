@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,7 @@ import ManualGoalsStep from './onboarding/ManualGoalsStep';
 import ActivityStep from './onboarding/ActivityStep';
 import CreditGoalsStep from './onboarding/CreditGoalsStep';
 import SummaryStep from './onboarding/SummaryStep';
+import WearableConnectionStep from './onboarding/WearableConnectionStep';
 
 export interface OnboardingData {
   // Basic Info
@@ -43,9 +43,12 @@ export interface OnboardingData {
   hasTrackedFood: boolean;
   familiarWithMacros: boolean;
   
-  // Activity
-  currentWorkoutFrequency: number;
-  preferredActivities: string[];
+  // Activity (only for guided setup)
+  currentWorkoutFrequency?: number;
+  preferredActivities?: string[];
+  
+  // Wearable Connection
+  connectedWearable?: string;
   
   // Credit Goals
   selectedCreditGoals: Array<{
@@ -62,7 +65,7 @@ interface OnboardingFlowProps {
   onClose: () => void;
 }
 
-const TOTAL_STEPS = 10;
+const TOTAL_STEPS = 11;
 
 export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowProps) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -75,17 +78,27 @@ export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowPr
   const nextStep = () => {
     // Skip manual goals step if user chose guided setup
     if (currentStep === 5 && data.goalSetupPreference === 'guided') {
-      setCurrentStep(7); // Skip to activity step
-    } else if (currentStep < TOTAL_STEPS - 1) {
+      setCurrentStep(7); // Skip to wearable step
+    }
+    // Skip activity step if user is advanced with manual setup
+    else if (currentStep === 7 && data.fitnessLevel === 'advanced' && data.goalSetupPreference === 'manual') {
+      setCurrentStep(9); // Skip to credit goals step
+    }
+    else if (currentStep < TOTAL_STEPS - 1) {
       setCurrentStep(prev => prev + 1);
     }
   };
 
   const prevStep = () => {
-    // Handle going back from activity step - check if we skipped manual goals
+    // Handle going back from wearable step - check if we skipped manual goals
     if (currentStep === 7 && data.goalSetupPreference === 'guided') {
       setCurrentStep(5); // Go back to preference step
-    } else if (currentStep > 0) {
+    }
+    // Handle going back from credit goals step - check if we skipped activity
+    else if (currentStep === 9 && data.fitnessLevel === 'advanced' && data.goalSetupPreference === 'manual') {
+      setCurrentStep(7); // Go back to wearable step
+    }
+    else if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
     }
   };
@@ -113,10 +126,12 @@ export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowPr
       case 6:
         return <ManualGoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 7:
-        return <ActivityStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+        return <WearableConnectionStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 8:
-        return <CreditGoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+        return <ActivityStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
       case 9:
+        return <CreditGoalsStep data={data} onUpdate={updateData} onNext={nextStep} onPrev={prevStep} />;
+      case 10:
         return <SummaryStep data={data} onComplete={handleComplete} onPrev={prevStep} />;
       default:
         return null;
