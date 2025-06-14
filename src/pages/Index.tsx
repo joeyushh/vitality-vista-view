@@ -1,3 +1,4 @@
+
 import FoodTracker from "@/components/FoodTracker";
 import WorkoutTracker from "@/components/WorkoutTracker";
 import DashboardStats from "@/components/DashboardStats";
@@ -6,7 +7,8 @@ import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import PullToRefresh from "@/components/PullToRefresh";
 import DateNavigation from "@/components/DateNavigation";
-import OnboardingFlow, { OnboardingData } from "@/components/OnboardingFlow";
+import OnboardingFlow from "@/components/OnboardingFlow";
+import { OnboardingData } from "@/types/onboarding";
 import CreditGoalsModal from "@/components/CreditGoalsModal";
 import { useState } from "react";
 

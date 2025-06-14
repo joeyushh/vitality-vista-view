@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
-import { OnboardingData } from "../OnboardingFlow";
+import { OnboardingData } from "@/types/onboarding";
 
 interface TargetGoalsStepProps {
   data: Partial<OnboardingData>;
