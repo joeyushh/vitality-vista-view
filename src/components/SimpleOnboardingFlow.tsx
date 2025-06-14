@@ -3,10 +3,13 @@ import { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { SimpleOnboardingData } from '@/types/onboarding-simple';
-import { calculateGoals } from '@/utils/simple-calculations';
+import { calculateExperienceBasedGoals, getManualGoals, getAvailableCreditGoals } from '@/utils/simple-calculations';
 
 import Step1BasicInfo from './onboarding-simple/Step1BasicInfo';
-import Step2Goals from './onboarding-simple/Step2Goals';
+import Step2Method from './onboarding-simple/Step2Method';
+import Step3Experience from './onboarding-simple/Step3Experience';
+import Step3Manual from './onboarding-simple/Step3Manual';
+import Step4CreditGoals from './onboarding-simple/Step4CreditGoals';
 import Step3Summary from './onboarding-simple/Step3Summary';
 
 interface SimpleOnboardingFlowProps {
@@ -18,14 +21,29 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setData] = useState<Partial<SimpleOnboardingData>>({});
 
+  // Calculate total steps based on setup method
+  const getTotalSteps = () => {
+    if (!data.setupMethod) return 5; // Default estimate
+    return data.setupMethod === 'experience' ? 5 : 5; // Both paths have 5 steps
+  };
+
   const updateData = (stepData: Partial<SimpleOnboardingData>) => {
     const newData = { ...data, ...stepData };
     setData(newData);
     
-    // If we have enough data, calculate goals
-    if (newData.height && newData.weight && newData.age && newData.gender && newData.goal) {
-      const calculated = calculateGoals(newData);
-      setData({ ...newData, ...calculated });
+    // Calculate goals when we have enough data
+    if (newData.height && newData.weight && newData.age && newData.gender && newData.setupMethod) {
+      let calculatedGoals;
+      
+      if (newData.setupMethod === 'experience' && newData.goal && newData.activityLevel && newData.fitnessExperience) {
+        calculatedGoals = calculateExperienceBasedGoals(newData);
+      } else if (newData.setupMethod === 'manual' && newData.manualCalories && newData.manualProtein && newData.manualSteps) {
+        calculatedGoals = getManualGoals(newData);
+      }
+      
+      if (calculatedGoals) {
+        setData({ ...newData, ...calculatedGoals });
+      }
     }
   };
 
@@ -41,7 +59,8 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
     onComplete(data as SimpleOnboardingData);
   };
 
-  const progress = ((currentStep + 1) / 3) * 100;
+  const totalSteps = getTotalSteps();
+  const progress = ((currentStep + 1) / totalSteps) * 100;
 
   const renderStep = () => {
     switch (currentStep) {
@@ -57,7 +76,7 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
         );
       case 1:
         return (
-          <Step2Goals 
+          <Step2Method 
             data={data} 
             onNext={(stepData) => {
               updateData(stepData);
@@ -67,6 +86,47 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
           />
         );
       case 2:
+        if (data.setupMethod === 'experience') {
+          return (
+            <Step3Experience 
+              data={data} 
+              onNext={(stepData) => {
+                updateData(stepData);
+                nextStep();
+              }}
+              onPrev={prevStep}
+            />
+          );
+        } else {
+          return (
+            <Step3Manual 
+              data={data} 
+              onNext={(stepData) => {
+                updateData(stepData);
+                nextStep();
+              }}
+              onPrev={prevStep}
+            />
+          );
+        }
+      case 3:
+        const calculatedGoals = data.setupMethod === 'experience' 
+          ? calculateExperienceBasedGoals(data)
+          : getManualGoals(data);
+        const availableGoals = getAvailableCreditGoals(calculatedGoals);
+        
+        return (
+          <Step4CreditGoals 
+            data={data}
+            availableGoals={availableGoals}
+            onNext={(stepData) => {
+              updateData(stepData);
+              nextStep();
+            }}
+            onPrev={prevStep}
+          />
+        );
+      case 4:
         return (
           <Step3Summary 
             data={data as SimpleOnboardingData} 
@@ -81,19 +141,29 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6">
+          {/* Header with Momentum branding */}
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Welcome to Momentum
+            </h1>
+            <p className="text-gray-600">
+              Let's set up your personalized fitness journey
+            </p>
+          </div>
+
           {/* Progress Bar */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-600">
-                Step {currentStep + 1} of 3
+                Step {currentStep + 1} of {totalSteps}
               </span>
               <button
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 text-sm"
               >
-                Skip
+                Skip Setup
               </button>
             </div>
             <Progress value={progress} className="h-2" />

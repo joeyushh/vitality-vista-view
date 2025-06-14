@@ -14,20 +14,17 @@ const GOALS = [
   {
     id: 'lose_weight',
     title: 'Lose Weight',
-    description: 'Reduce body fat and get leaner',
-    emoji: '📉'
+    description: 'Reduce body fat and get leaner'
   },
   {
     id: 'gain_muscle',
     title: 'Gain Muscle',
-    description: 'Build strength and muscle mass',
-    emoji: '💪'
+    description: 'Build strength and muscle mass'
   },
   {
     id: 'maintain',
     title: 'Maintain Weight',
-    description: 'Keep current weight and stay healthy',
-    emoji: '⚖️'
+    description: 'Keep current weight and stay healthy'
   }
 ];
 
@@ -59,7 +56,6 @@ export default function Step2Goals({ data, onNext, onPrev }: Step2Props) {
             onClick={() => setSelected(goal.id)}
           >
             <div className="flex items-center space-x-4">
-              <span className="text-2xl">{goal.emoji}</span>
               <div className="flex-1">
                 <h3 className="font-semibold">{goal.title}</h3>
                 <p className="text-sm text-gray-600">{goal.description}</p>

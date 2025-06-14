@@ -11,13 +11,18 @@ interface Step3Props {
 }
 
 export default function Step3Summary({ data, onComplete, onPrev }: Step3Props) {
-  const getGoalText = (goal: string) => {
+  const getGoalText = (goal?: string) => {
     const goals = {
       lose_weight: 'Lose Weight',
       gain_muscle: 'Gain Muscle',
-      maintain: 'Maintain Weight'
+      maintain: 'Maintain Weight',
+      improve_fitness: 'Improve Fitness'
     };
-    return goals[goal as keyof typeof goals] || goal;
+    return goal ? goals[goal as keyof typeof goals] || goal : 'Custom Goals';
+  };
+
+  const getSetupMethodText = (method: string) => {
+    return method === 'experience' ? 'Experience-based calculation' : 'Manual goal setting';
   };
 
   return (
@@ -26,8 +31,8 @@ export default function Step3Summary({ data, onComplete, onPrev }: Step3Props) {
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="text-green-600" size={32} />
         </div>
-        <h2 className="text-2xl font-bold">You're all set!</h2>
-        <p className="text-gray-600 mt-2">Here are your personalized daily targets</p>
+        <h2 className="text-2xl font-bold">Setup Complete!</h2>
+        <p className="text-gray-600 mt-2">Here's your personalized Momentum profile</p>
       </div>
 
       <div className="space-y-4">
@@ -47,9 +52,15 @@ export default function Step3Summary({ data, onComplete, onPrev }: Step3Props) {
               <span className="font-medium">{data.age} years</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Goal:</span>
-              <span className="font-medium">{getGoalText(data.goal)}</span>
+              <span className="text-gray-600">Setup Method:</span>
+              <span className="font-medium">{getSetupMethodText(data.setupMethod)}</span>
             </div>
+            {data.goal && (
+              <div className="flex justify-between">
+                <span className="text-gray-600">Primary Goal:</span>
+                <span className="font-medium">{getGoalText(data.goal)}</span>
+              </div>
+            )}
           </div>
         </Card>
 
@@ -70,12 +81,18 @@ export default function Step3Summary({ data, onComplete, onPrev }: Step3Props) {
             </div>
           </div>
         </Card>
+
+        <Card className="p-4">
+          <h3 className="font-semibold mb-3">Credit Goals Selected</h3>
+          <div className="text-sm text-gray-600">
+            You'll earn credits by completing {data.selectedCreditGoals.length} daily goals
+          </div>
+        </Card>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <p className="text-sm text-blue-800 text-center">
-          🎉 These targets are calculated based on your profile and goal. 
-          You can adjust them anytime in settings!
+      <div className="bg-green-50 p-4 rounded-lg">
+        <p className="text-sm text-green-800 text-center">
+          Welcome to Momentum! Your personalized fitness journey starts now.
         </p>
       </div>
 
@@ -84,7 +101,7 @@ export default function Step3Summary({ data, onComplete, onPrev }: Step3Props) {
           Back
         </Button>
         <Button onClick={onComplete} className="flex-1 bg-gradient-to-r from-blue-500 to-green-500">
-          Complete Setup
+          Start Using Momentum
         </Button>
       </div>
     </div>
