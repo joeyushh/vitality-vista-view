@@ -1,4 +1,3 @@
-
 import { Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
@@ -12,18 +11,6 @@ const dummyWorkouts = [
 export default function WorkoutTracker() {
   const totalSets = dummyWorkouts.reduce((sum, w) => sum + w.sets, 0);
   const workoutDuration = "Not started";
-  const bodyBattery = 90;
-  const currentCarbs = 142; // Matching the main dashboard
-
-  const getEnergyTip = () => {
-    if (bodyBattery >= 80) {
-      return `You're at ${bodyBattery}% body battery! You've had ${currentCarbs}g carbs today - your body can handle pushing it for your workout.`;
-    } else if (bodyBattery >= 60) {
-      return `You're feeling a bit tired today (${bodyBattery}% body battery). With ${currentCarbs}g carbs consumed, consider adjusting your workout intensity.`;
-    } else {
-      return `Your body battery is low (${bodyBattery}%). You've only had ${currentCarbs}g carbs - consider a lighter workout or grab a banana before training.`;
-    }
-  };
 
   return (
     <Card className="p-6 shadow-lg animate-fade-in flex flex-col h-full">
@@ -45,11 +32,6 @@ export default function WorkoutTracker() {
       <div className="mb-4 p-3 bg-blue-50 rounded-lg">
         <div className="font-medium text-blue-800 mb-1">Push Day - Chest & Triceps</div>
         <div className="text-sm text-blue-600">Duration: {workoutDuration} • 0/{totalSets} sets completed</div>
-      </div>
-
-      <div className="mb-4 p-3 bg-blue-50 rounded text-sm">
-        <div className="font-medium mb-1">Energy Tip</div>
-        <div className="text-blue-700">{getEnergyTip()}</div>
       </div>
       
       <div className="overflow-x-auto rounded-lg flex-1">

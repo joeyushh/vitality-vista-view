@@ -1,4 +1,3 @@
-
 import { Utensils } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -84,11 +83,6 @@ export default function FoodTracker() {
             </PopoverContent>
           </Popover>
         ))}
-      </div>
-
-      <div className="mt-4 p-3 bg-yellow-50 rounded text-sm">
-        <div className="font-medium mb-1">Tracking Tip</div>
-        <div className="text-gray-600">Don't forget to log cooking oils and sauces - they add up quickly!</div>
       </div>
     </Card>
   );

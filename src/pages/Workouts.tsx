@@ -1,12 +1,15 @@
 import { Card } from "@/components/ui/card";
-import { Activity, Target, Calendar, Zap } from "lucide-react";
+import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
   { label: "Food", href: "/food", active: false },
   { label: "Workouts", href: "/workouts", active: true },
   { label: "Progress", href: "/progress", active: false },
+  { label: "Rewards", href: "/rewards", active: false },
 ];
 
 const weeklyGoals = {
@@ -40,10 +43,36 @@ const currentCarbs = 142;
 
 export default function Workouts() {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const handleNavClick = (href: string) => {
     if (href.startsWith("/")) {
       navigate(href);
+    }
+  };
+
+  const handlePreviousDay = () => {
+    const previousDay = new Date(currentDate);
+    previousDay.setDate(previousDay.getDate() - 1);
+    setCurrentDate(previousDay);
+    toast({
+      title: "Day Changed",
+      description: `Viewing data for ${previousDay.toLocaleDateString()}`,
+    });
+  };
+
+  const handleNextDay = () => {
+    const nextDay = new Date(currentDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    
+    // Don't allow going beyond today
+    if (nextDay <= new Date()) {
+      setCurrentDate(nextDay);
+      toast({
+        title: "Day Changed",
+        description: `Viewing data for ${nextDay.toLocaleDateString()}`,
+      });
     }
   };
 
@@ -87,6 +116,35 @@ export default function Workouts() {
       </nav>
 
       <div className="px-6 pb-8" style={{maxWidth: 1600, width: "100%", margin: "0 auto"}}>
+        {/* Date Navigation */}
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={handlePreviousDay}
+            className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+          >
+            <ChevronLeft size={20} />
+            Previous Day
+          </button>
+          
+          <h1 className="text-2xl font-bold text-blue-800">
+            {currentDate.toLocaleDateString(undefined, { 
+              weekday: 'long', 
+              month: 'long', 
+              day: 'numeric',
+              year: 'numeric'
+            })}
+          </h1>
+          
+          <button
+            onClick={handleNextDay}
+            disabled={currentDate.toDateString() === new Date().toDateString()}
+            className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next Day
+            <ChevronRight size={20} />
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Today's Workout */}
           <div className="lg:col-span-2 space-y-6">
