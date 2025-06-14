@@ -19,7 +19,7 @@ const NAV_LINKS = [
 const weeklyGoals = {
   workoutsPerWeek: 4,
   currentWorkouts: 2,
-  primaryGoal: "Muscle Gain",
+  primaryGoal: "Weight Loss",
   secondaryGoal: "Strength"
 };
 

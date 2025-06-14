@@ -39,6 +39,8 @@ export default function Progress() {
   const currentWeight = weightData[weightData.length - 1].weight;
   const startWeight = weightData[0].weight;
   const totalLoss = startWeight - currentWeight;
+  const goalWeight = 75; // Goal weight target
+  const remainingToGoal = currentWeight - goalWeight;
 
   const handleAITipsClick = () => {
     toast({
@@ -56,18 +58,24 @@ export default function Progress() {
         {/* Progress Overview */}
         <Card className="p-4">
           <h2 className="text-lg font-semibold text-red-800 mb-4">Progress Overview</h2>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3 mb-3">
             <div className="bg-red-50 rounded-lg p-3 text-center">
               <div className="text-xl font-bold text-red-800">{currentWeight} kg</div>
               <div className="text-xs text-red-600">Current</div>
             </div>
             <div className="bg-red-50 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-red-800">{goalWeight} kg</div>
+              <div className="text-xs text-red-600">Goal</div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-red-50 rounded-lg p-3 text-center">
               <div className="text-xl font-bold text-red-800">-{totalLoss.toFixed(1)} kg</div>
               <div className="text-xs text-red-600">Lost</div>
             </div>
             <div className="bg-red-50 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-red-800">{recentPhotos.length}</div>
-              <div className="text-xs text-red-600">Photos</div>
+              <div className="text-xl font-bold text-red-800">{remainingToGoal.toFixed(1)} kg</div>
+              <div className="text-xs text-red-600">To Goal</div>
             </div>
           </div>
         </Card>
