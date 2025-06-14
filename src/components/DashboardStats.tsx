@@ -9,9 +9,13 @@ const todaysStats = {
   fat: { current: 48, target: 73 },
   water: { current: 6, target: 8 },
   steps: { current: 8234, target: 10000 },
+  sleep: { current: 7.5, target: 8 },
   workoutCompleted: true,
   setsCompleted: 13,
-  targetSets: 16
+  targetSets: 16,
+  foodStreak: 12,
+  workoutStreak: 8,
+  combinedStreak: 14
 };
 
 export default function DashboardStats() {
@@ -20,6 +24,7 @@ export default function DashboardStats() {
   const carbsPercent = (todaysStats.carbs.current / todaysStats.carbs.target) * 100;
   const fatPercent = (todaysStats.fat.current / todaysStats.fat.target) * 100;
   const stepsPercent = (todaysStats.steps.current / todaysStats.steps.target) * 100;
+  const sleepPercent = (todaysStats.sleep.current / todaysStats.sleep.target) * 100;
 
   return (
     <Card className="p-6 shadow-lg">
@@ -35,9 +40,15 @@ export default function DashboardStats() {
         </div>
       </div>
       
-      {/* Food Tracking Section */}
+      {/* Food & Nutrition Section */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-green-700 mb-3">Food & Nutrition</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-semibold text-green-700">Food & Nutrition</h3>
+          <div className="bg-green-50 rounded-lg p-2 text-center">
+            <div className="text-lg font-bold text-green-600">{todaysStats.foodStreak}</div>
+            <div className="text-xs text-gray-500">food streak</div>
+          </div>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Calories */}
           <div className="bg-green-50 rounded-lg p-4 text-center">
@@ -97,10 +108,24 @@ export default function DashboardStats() {
         </div>
       </div>
 
+      {/* Combined Streak */}
+      <div className="flex justify-center mb-6">
+        <div className="bg-orange-50 rounded-lg p-4 text-center">
+          <div className="text-3xl font-bold text-orange-600">{todaysStats.combinedStreak}</div>
+          <div className="text-xs text-gray-500">day consistency streak</div>
+        </div>
+      </div>
+
       {/* Exercise & Activity Section */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-blue-700 mb-3">Exercise & Activity</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-semibold text-blue-700">Exercise & Activity</h3>
+          <div className="bg-blue-50 rounded-lg p-2 text-center">
+            <div className="text-lg font-bold text-blue-600">{todaysStats.workoutStreak}</div>
+            <div className="text-xs text-gray-500">workout streak</div>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Steps */}
           <div className="bg-blue-50 rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-blue-600">
@@ -129,6 +154,20 @@ export default function DashboardStats() {
             </div>
           </div>
 
+          {/* Sleep */}
+          <div className="bg-blue-50 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-blue-600">
+              {todaysStats.sleep.current}hrs
+            </div>
+            <div className="text-xs text-gray-500 mb-2">/ {todaysStats.sleep.target}hrs sleep</div>
+            <div className="w-full bg-blue-200 rounded-full h-2">
+              <div 
+                className="bg-blue-600 h-2 rounded-full transition-all" 
+                style={{ width: `${Math.min(sleepPercent, 100)}%` }}
+              ></div>
+            </div>
+          </div>
+
           {/* Water */}
           <div className="bg-blue-50 rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-blue-600">
@@ -145,16 +184,8 @@ export default function DashboardStats() {
         </div>
       </div>
 
-      {/* Streak */}
-      <div className="flex justify-center">
-        <div className="bg-orange-50 rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-orange-600">14</div>
-          <div className="text-xs text-gray-500">day consistency streak</div>
-        </div>
-      </div>
-
       {/* Quick Tips */}
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+      <div className="p-4 bg-gray-50 rounded-lg">
         <div className="flex items-start gap-2">
           <Clock size={16} className="text-gray-500 mt-0.5" />
           <div className="text-sm text-gray-600">

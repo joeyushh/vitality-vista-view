@@ -20,9 +20,14 @@ export default function FoodTracker() {
           <Activity size={22} className="text-green-600" />
         </span>
         <h2 className="text-2xl font-bold tracking-tight text-green-700">Food Tracker</h2>
-        <button className="ml-auto px-3 py-1 bg-green-600 text-white rounded shadow hover:scale-105 transition-transform">
-          Scan Barcode
-        </button>
+        <div className="ml-auto flex gap-2">
+          <button className="px-3 py-1 bg-green-600 text-white rounded shadow hover:scale-105 transition-transform">
+            Track Food
+          </button>
+          <button className="px-3 py-1 bg-green-100 text-green-700 border border-green-300 rounded shadow hover:scale-105 transition-transform">
+            Food Log
+          </button>
+        </div>
       </div>
       
       <div className="space-y-3 mb-4">

@@ -20,9 +20,14 @@ export default function WorkoutTracker() {
           <Activity size={22} className="text-blue-600" />
         </span>
         <h2 className="text-2xl font-bold tracking-tight text-blue-700">Today's Workout</h2>
-        <button className="ml-auto px-3 py-1 bg-blue-600 text-white rounded shadow hover:scale-105 transition-transform">
-          Start Workout
-        </button>
+        <div className="ml-auto flex gap-2">
+          <button className="px-3 py-1 bg-blue-600 text-white rounded shadow hover:scale-105 transition-transform">
+            Start Workout
+          </button>
+          <button className="px-3 py-1 bg-blue-100 text-blue-700 border border-blue-300 rounded shadow hover:scale-105 transition-transform">
+            Workout Log
+          </button>
+        </div>
       </div>
 
       <div className="mb-4 p-3 bg-blue-50 rounded-lg">
