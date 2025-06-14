@@ -1,7 +1,10 @@
+
 import { Card } from "@/components/ui/card";
-import { Star, Target, Calendar } from "lucide-react";
+import { Star, Target, Calendar, Settings } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
+import { useState } from "react";
+import CreditGoalsModal from "@/components/CreditGoalsModal";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
@@ -11,13 +14,25 @@ const NAV_LINKS = [
   { label: "Rewards", href: "/rewards", active: true },
 ];
 
-const userGoals = {
-  dailyCalories: 2200,
-  dailyProtein: 220,
-  weeklyWorkouts: 5,
-  dailySteps: 10000,
-  dailySleep: 8
-};
+// Available credit goals to choose from
+const availableCreditGoals = [
+  { id: 'calories', name: 'Calories', value: 2200, unit: '', color: 'green' },
+  { id: 'carbs', name: 'Carbs', value: 275, unit: 'g', color: 'green' },
+  { id: 'fats', name: 'Fats', value: 73, unit: 'g', color: 'green' },
+  { id: 'protein', name: 'Protein', value: 220, unit: 'g', color: 'green' },
+  { id: 'sleep', name: 'Sleep', value: 8, unit: 'hrs', color: 'purple' },
+  { id: 'steps', name: 'Steps', value: 10000, unit: '', color: 'blue' },
+  { id: 'workouts', name: 'Workouts', value: 1, unit: 'per day', color: 'blue' }
+];
+
+// User's selected credit goals (5 max)
+const userCreditGoals = [
+  { id: 'calories', name: 'Calories', value: 2200, unit: '', color: 'green' },
+  { id: 'protein', name: 'Protein', value: 220, unit: 'g', color: 'green' },
+  { id: 'workouts', name: 'Workouts', value: 1, unit: 'per day', color: 'blue' },
+  { id: 'steps', name: 'Steps', value: 10000, unit: '', color: 'blue' },
+  { id: 'sleep', name: 'Sleep', value: 8, unit: 'hrs', color: 'purple' }
+];
 
 const weeklyProgress = [
   { day: "Monday", caloriesHit: true, proteinHit: true, workoutDone: true, stepsHit: true, sleepHit: true, creditsEarned: 5 },
@@ -30,7 +45,7 @@ const weeklyProgress = [
 ];
 
 const availableRewards = [
-  { name: "Free Smoothie", location: "Local Gym", cost: 15, credits: "15 credits", available: true },
+  { name: "Free Smoothie", location: "Local Gym", cost: 15, credits: "15 credits", available: false },
   { name: "50% Off Chipotle Bowl", location: "Chipotle", cost: 8, credits: "8 credits", available: true },
   { name: "20% Off Nike Shoes", location: "Nike Store", cost: 25, credits: "25 credits", available: false },
   { name: "Free Protein Bar", location: "Supplement Store", cost: 5, credits: "5 credits", available: true }
@@ -39,6 +54,8 @@ const availableRewards = [
 const totalCredits = weeklyProgress.reduce((sum, day) => sum + day.creditsEarned, 0);
 
 export default function Rewards() {
+  const [showCreditGoalsModal, setShowCreditGoalsModal] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
       <MobileHeader title="Rewards" />
@@ -60,31 +77,41 @@ export default function Rewards() {
 
         {/* Your Goals Section - Mobile Optimized */}
         <Card className="p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Target className="text-blue-600" size={18} />
-            <h3 className="text-lg font-semibold">Daily Goals & Credits</h3>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Target className="text-blue-600" size={18} />
+              <h3 className="text-lg font-semibold">Daily Credit Goals</h3>
+            </div>
+            <button 
+              onClick={() => setShowCreditGoalsModal(true)}
+              className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100"
+            >
+              <Settings size={14} />
+              Edit
+            </button>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-green-50 p-3 rounded-lg text-center">
-              <div className="text-lg font-bold text-green-600">{userGoals.dailyCalories}</div>
-              <div className="text-xs text-gray-600">Calories</div>
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            {userCreditGoals.slice(0, 4).map((goal, index) => (
+              <div key={goal.id} className={`bg-${goal.color}-50 p-3 rounded-lg text-center`}>
+                <div className={`text-lg font-bold text-${goal.color}-600`}>
+                  {goal.value.toLocaleString()}{goal.unit}
+                </div>
+                <div className="text-xs text-gray-600">{goal.name}</div>
+                <div className="text-xs text-orange-600 font-medium">+1 credit</div>
+              </div>
+            ))}
+          </div>
+          {userCreditGoals[4] && (
+            <div className={`bg-${userCreditGoals[4].color}-50 p-3 rounded-lg text-center w-full`}>
+              <div className={`text-lg font-bold text-${userCreditGoals[4].color}-600`}>
+                {userCreditGoals[4].value.toLocaleString()}{userCreditGoals[4].unit}
+              </div>
+              <div className="text-xs text-gray-600">{userCreditGoals[4].name}</div>
               <div className="text-xs text-orange-600 font-medium">+1 credit</div>
             </div>
-            <div className="bg-green-50 p-3 rounded-lg text-center">
-              <div className="text-lg font-bold text-green-600">{userGoals.dailyProtein}g</div>
-              <div className="text-xs text-gray-600">Protein</div>
-              <div className="text-xs text-orange-600 font-medium">+1 credit</div>
-            </div>
-            <div className="bg-blue-50 p-3 rounded-lg text-center">
-              <div className="text-lg font-bold text-blue-600">{userGoals.weeklyWorkouts}</div>
-              <div className="text-xs text-gray-600">Workouts</div>
-              <div className="text-xs text-orange-600 font-medium">+1 credit</div>
-            </div>
-            <div className="bg-blue-50 p-3 rounded-lg text-center">
-              <div className="text-lg font-bold text-blue-600">{userGoals.dailySteps.toLocaleString()}</div>
-              <div className="text-xs text-gray-600">Steps</div>
-              <div className="text-xs text-orange-600 font-medium">+1 credit</div>
-            </div>
+          )}
+          <div className="mt-3 text-xs text-gray-500 text-center">
+            Max 5 credits per day • Complete goals to earn credits
           </div>
         </Card>
 
@@ -150,6 +177,14 @@ export default function Rewards() {
       </div>
       
       <BottomNavigation />
+
+      {showCreditGoalsModal && (
+        <CreditGoalsModal 
+          onClose={() => setShowCreditGoalsModal(false)}
+          availableGoals={availableCreditGoals}
+          currentGoals={userCreditGoals}
+        />
+      )}
     </div>
   );
 }
