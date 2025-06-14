@@ -65,7 +65,7 @@ export default function Step3Summary({ data, onComplete, onPrev }: Step3Props) {
         </Card>
 
         <Card className="p-4">
-          <h3 className="font-semibold mb-3">Your Daily Targets</h3>
+          <h3 className="font-semibold mb-3">Your Nutrition Targets</h3>
           <div className="space-y-2">
             <div className="flex justify-between">
               <span className="text-gray-600">Calories:</span>
@@ -73,11 +73,33 @@ export default function Step3Summary({ data, onComplete, onPrev }: Step3Props) {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Protein:</span>
-              <span className="font-medium text-blue-600">{data.dailyProtein}g</span>
+              <span className="font-medium text-green-600">{data.dailyProtein}g</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Carbs:</span>
+              <span className="font-medium text-green-600">{data.dailyCarbs}g</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Fats:</span>
+              <span className="font-medium text-green-600">{data.dailyFats}g</span>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <h3 className="font-semibold mb-3">Your Activity & Recovery Targets</h3>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Weekly Workouts:</span>
+              <span className="font-medium text-blue-600">{data.dailyWorkouts}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Daily Steps:</span>
-              <span className="font-medium text-purple-600">{data.dailySteps.toLocaleString()}</span>
+              <span className="font-medium text-blue-600">{data.dailySteps.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Sleep Hours:</span>
+              <span className="font-medium text-purple-600">{data.dailySleepHours}hrs</span>
             </div>
           </div>
         </Card>

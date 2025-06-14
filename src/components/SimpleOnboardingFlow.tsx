@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -37,7 +36,7 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
       
       if (newData.setupMethod === 'experience' && newData.goal && newData.activityLevel && newData.fitnessExperience) {
         calculatedGoals = calculateExperienceBasedGoals(newData);
-      } else if (newData.setupMethod === 'manual' && newData.manualCalories && newData.manualProtein && newData.manualSteps) {
+      } else if (newData.setupMethod === 'manual' && newData.manualCalories && newData.manualWorkouts && newData.manualSleepHours && newData.manualSteps) {
         calculatedGoals = getManualGoals(newData);
       }
       

@@ -16,7 +16,11 @@ export interface SimpleOnboardingData {
   
   // Step 3b: Manual Goals (if setupMethod === 'manual')
   manualCalories?: number;
-  manualProtein?: number;
+  manualCarbsPercentage?: number;
+  manualProteinPercentage?: number;
+  manualFatsPercentage?: number;
+  manualWorkouts?: number;
+  manualSleepHours?: number;
   manualSteps?: number;
   
   // Step 4: Credit Goals Selection
@@ -25,6 +29,10 @@ export interface SimpleOnboardingData {
   // Auto-calculated or manual results
   dailyCalories: number;
   dailyProtein: number;
+  dailyCarbs: number;
+  dailyFats: number;
+  dailyWorkouts: number;
+  dailySleepHours: number;
   dailySteps: number;
 }
 
