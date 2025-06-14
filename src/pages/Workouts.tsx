@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight } from "lucide-react";
+import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight, Edit3, Save, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -68,6 +68,8 @@ export default function Workouts() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [editingProgram, setEditingProgram] = useState(false);
+  const [programData, setProgramData] = useState(weeklyProgram);
   
   // Get day name for current date (e.g., "monday", "tuesday")
   const getDayName = (date) => {
@@ -197,6 +199,37 @@ export default function Workouts() {
     }
   };
 
+  const handleEditProgram = () => {
+    setEditingProgram(true);
+    toast({
+      title: "Edit Mode",
+      description: "You can now edit your weekly program",
+    });
+  };
+
+  const handleSaveProgram = () => {
+    setEditingProgram(false);
+    toast({
+      title: "Program Saved",
+      description: "Your weekly program has been updated",
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setProgramData(weeklyProgram);
+    setEditingProgram(false);
+    toast({
+      title: "Changes Cancelled",
+      description: "Your program remains unchanged",
+    });
+  };
+
+  const handleWorkoutChange = (index: number, newWorkout: string) => {
+    const updatedProgram = [...programData];
+    updatedProgram[index] = { ...updatedProgram[index], workout: newWorkout };
+    setProgramData(updatedProgram);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
       <MobileHeader title="Workouts" />
@@ -234,15 +267,15 @@ export default function Workouts() {
           <h2 className="text-xl font-semibold text-blue-800 mb-4">Fitness Goals</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="bg-blue-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-blue-800">{weeklyGoals.currentWorkouts}/{weeklyGoals.workoutsPerWeek}</div>
+              <div className="text-2xl font-bold text-blue-800">3/4</div>
               <div className="text-xs text-blue-600">Weekly Workouts</div>
             </div>
             <div className="bg-blue-50 rounded-lg p-4 text-center">
-              <div className="text-lg font-bold text-blue-800">{weeklyGoals.primaryGoal}</div>
+              <div className="text-lg font-bold text-blue-800">Weight Loss</div>
               <div className="text-xs text-blue-600">Primary Goal</div>
             </div>
             <div className="bg-blue-50 rounded-lg p-4 text-center">
-              <div className="text-lg font-bold text-blue-800">{weeklyGoals.secondaryGoal}</div>
+              <div className="text-lg font-bold text-blue-800">Strength</div>
               <div className="text-xs text-blue-600">Secondary Goal</div>
             </div>
           </div>
@@ -309,20 +342,59 @@ export default function Workouts() {
 
         {/* Weekly Program */}
         <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Calendar size={20} className="text-blue-600" />
-            <h2 className="text-xl font-semibold text-blue-800">Weekly Program</h2>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Calendar size={20} className="text-blue-600" />
+              <h2 className="text-xl font-semibold text-blue-800">Weekly Program</h2>
+            </div>
+            <div className="flex gap-2">
+              {!editingProgram ? (
+                <button
+                  onClick={handleEditProgram}
+                  className="flex items-center gap-2 px-3 py-2 bg-blue-100 text-blue-800 border border-blue-300 rounded-lg hover:bg-blue-200 transition-colors"
+                >
+                  <Edit3 size={16} />
+                  Edit
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={handleSaveProgram}
+                    className="flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  >
+                    <Save size={16} />
+                    Save
+                  </button>
+                  <button
+                    onClick={handleCancelEdit}
+                    className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    <X size={16} />
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
           </div>
           <div className="space-y-2">
-            {weeklyProgram.map((day, i) => (
+            {programData.map((day, i) => (
               <div key={i} className={`flex justify-between items-center p-3 rounded-lg ${
                 day.completed ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'
               }`}>
-                <div>
+                <div className="flex-1">
                   <div className="font-medium text-gray-800">{day.day}</div>
-                  <div className="text-sm text-gray-600">{day.workout}</div>
+                  {editingProgram ? (
+                    <input
+                      type="text"
+                      value={day.workout}
+                      onChange={(e) => handleWorkoutChange(i, e.target.value)}
+                      className="text-sm text-gray-600 bg-white border border-gray-300 rounded px-2 py-1 mt-1 w-full"
+                    />
+                  ) : (
+                    <div className="text-sm text-gray-600">{day.workout}</div>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 ml-4">
                   {day.exercises > 0 && (
                     <span className="text-xs text-gray-500">{day.exercises} exercises</span>
                   )}
