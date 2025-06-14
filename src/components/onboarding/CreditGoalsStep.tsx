@@ -39,8 +39,15 @@ export default function CreditGoalsStep({ data, onUpdate, onNext, onPrev }: Cred
 
   const handleNext = () => {
     console.log('Credit goals handleNext called, selectedGoals:', selectedGoals);
-    onUpdate({ selectedCreditGoals: selectedGoals });
-    onNext();
+    console.log('Selected goals length:', selectedGoals.length);
+    
+    if (selectedGoals.length > 0) {
+      onUpdate({ selectedCreditGoals: selectedGoals });
+      console.log('Updated data, calling onNext...');
+      onNext();
+    } else {
+      console.log('No goals selected, not proceeding');
+    }
   };
 
   const getGoalDisplayText = (goal: typeof AVAILABLE_GOALS[0]) => {
@@ -51,6 +58,7 @@ export default function CreditGoalsStep({ data, onUpdate, onNext, onPrev }: Cred
   };
 
   const isValid = selectedGoals.length > 0;
+  console.log('CreditGoalsStep render - isValid:', isValid, 'selectedGoals length:', selectedGoals.length);
 
   return (
     <div className="space-y-6">
@@ -119,7 +127,11 @@ export default function CreditGoalsStep({ data, onUpdate, onNext, onPrev }: Cred
         <Button variant="outline" onClick={onPrev} className="flex-1">
           Back
         </Button>
-        <Button onClick={handleNext} disabled={!isValid} className="flex-1">
+        <Button 
+          onClick={handleNext} 
+          disabled={!isValid} 
+          className="flex-1"
+        >
           Continue ({selectedGoals.length} selected)
         </Button>
       </div>

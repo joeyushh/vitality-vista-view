@@ -138,17 +138,21 @@ export default function OnboardingFlow({ onComplete, onClose }: OnboardingFlowPr
   };
 
   const nextStep = () => {
+    console.log('nextStep called, currentStep:', currentStep, 'goalSetupPreference:', data.goalSetupPreference);
+    
     // After Goal Setup Preference step (step 7)
     if (currentStep === 7) {
       if (data.goalSetupPreference === 'guided') {
-        // For guided users, calculate personalized goals and go to Activity step
+        // For "Help me set goals" users, calculate personalized goals and go to Activity step
+        console.log('Guided setup selected, going to Activity step');
         const calculated = calculatePersonalizedGoals(data);
         if (calculated) {
           updateData({ calculatedGoals: calculated });
         }
         setCurrentStep(8); // Go to Activity step
       } else {
-        // For manual users, go directly to Manual Goals step
+        // For "I'll set my own goals" users, go directly to Manual Goals step
+        console.log('Manual setup selected, going to Manual Goals step');
         setCurrentStep(9); // Go to Manual Goals step
       }
     }
