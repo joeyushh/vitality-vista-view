@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Star, Target, Calendar, Settings } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -104,7 +103,10 @@ export default function Rewards() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
-      <MobileHeader title="Rewards" />
+      <MobileHeader 
+        title="Rewards" 
+        onOpenCreditGoalsModal={() => setShowCreditGoalsModal(true)}
+      />
 
       <div className="flex-1 px-4 py-4 space-y-6">
         {/* Credits Summary */}
