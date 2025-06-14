@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -249,6 +250,17 @@ export default function Workouts() {
           </div>
         </Card>
 
+        {/* Energy Status - Moved Higher */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Zap size={20} className="text-blue-600" />
+            <h2 className="text-xl font-semibold text-blue-800">Energy Status</h2>
+          </div>
+          <div className="p-4 bg-blue-50 rounded-lg">
+            <div className="text-sm text-blue-700">{getEnergyTip()}</div>
+          </div>
+        </Card>
+
         {/* Today's Workout */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
@@ -299,17 +311,6 @@ export default function Workouts() {
 
         {/* Strength Progress Chart */}
         <StrengthProgressChart />
-
-        {/* Energy Status */}
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Zap size={20} className="text-blue-600" />
-            <h2 className="text-xl font-semibold text-blue-800">Energy Status</h2>
-          </div>
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <div className="text-sm text-blue-700">{getEnergyTip()}</div>
-          </div>
-        </Card>
 
         {/* Weekly Program */}
         <Card className="p-6">

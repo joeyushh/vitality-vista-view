@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -224,6 +225,31 @@ export default function Food() {
           </div>
         </Card>
 
+        {/* Quick Actions - Moved Higher */}
+        <Card className="p-4">
+          <h2 className="text-lg font-semibold text-green-800 mb-4">Quick Log Food</h2>
+          <div className="space-y-3">
+            <button 
+              onClick={() => setShowTrackingModal(true)}
+              className="w-full flex items-center gap-3 p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+              <Search size={20} />
+              Search & Add Food
+            </button>
+            <button 
+              onClick={() => setShowTrackingModal(true)}
+              className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
+              <Scan size={20} />
+              Scan Barcode
+            </button>
+            <button 
+              onClick={() => setShowTrackingModal(true)}
+              className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
+              <Mic size={20} />
+              Voice Log
+            </button>
+          </div>
+        </Card>
+
         {/* Today's Meals */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold text-green-800 mb-4">
@@ -262,28 +288,22 @@ export default function Food() {
           )}
         </Card>
 
-        {/* Quick Actions - Enhanced */}
-        <Card className="p-4">
-          <h2 className="text-lg font-semibold text-green-800 mb-4">Quick Actions</h2>
-          <div className="space-y-3">
-            <button 
-              onClick={() => setShowTrackingModal(true)}
-              className="w-full flex items-center gap-3 p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-              <Search size={20} />
-              Search & Add Food
-            </button>
-            <button 
-              onClick={() => setShowTrackingModal(true)}
-              className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
-              <Scan size={20} />
-              Scan Barcode
-            </button>
-            <button 
-              onClick={() => setShowTrackingModal(true)}
-              className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
-              <Mic size={20} />
-              Voice Log
-            </button>
+        {/* Tips - Moved Higher */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold text-green-800 mb-4">Tracking Tips</h2>
+          <div className="space-y-3 text-sm text-gray-600">
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Weigh Food Raw</div>
+              <div>Always weigh meat, rice, and pasta before cooking for accurate calories.</div>
+            </div>
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Measure Oils & Sauces</div>
+              <div>Cooking oils and sauces add up quickly - don't forget to log them!</div>
+            </div>
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <div className="font-medium text-yellow-800 mb-1">Stay Consistent</div>
+              <div>Track everything, even small snacks and drinks for the most accurate results.</div>
+            </div>
           </div>
         </Card>
 
@@ -300,25 +320,6 @@ export default function Food() {
                 <div className="text-sm font-semibold text-green-700">{meal.calories} cal</div>
               </div>
             ))}
-          </div>
-        </Card>
-
-        {/* Tips */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-green-800 mb-4">Tracking Tips</h2>
-          <div className="space-y-3 text-sm text-gray-600">
-            <div className="p-3 bg-yellow-50 rounded-lg">
-              <div className="font-medium text-yellow-800 mb-1">Weigh Food Raw</div>
-              <div>Always weigh meat, rice, and pasta before cooking for accurate calories.</div>
-            </div>
-            <div className="p-3 bg-yellow-50 rounded-lg">
-              <div className="font-medium text-yellow-800 mb-1">Measure Oils & Sauces</div>
-              <div>Cooking oils and sauces add up quickly - don't forget to log them!</div>
-            </div>
-            <div className="p-3 bg-yellow-50 rounded-lg">
-              <div className="font-medium text-yellow-800 mb-1">Stay Consistent</div>
-              <div>Track everything, even small snacks and drinks for the most accurate results.</div>
-            </div>
           </div>
         </Card>
       </div>
