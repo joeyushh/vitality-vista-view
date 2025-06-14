@@ -1,7 +1,6 @@
-
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { TrendingUp, ArrowLeft, TrendingDown } from "lucide-react";
+import { TrendingUp, ArrowLeft, TrendingDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 const strengthData = [
@@ -204,10 +203,11 @@ export default function StrengthProgressChart() {
 
   return (
     <Card className="p-4">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-2">
         <TrendingUp className="text-red-600" size={18} />
         <h3 className="text-lg font-semibold text-red-800">Strength Progression</h3>
       </div>
+      <p className="text-sm text-gray-600 mb-4">Click on any category below to see detailed lift progress and percentage changes</p>
       
       <div className="h-64 mb-4">
         <ResponsiveContainer width="100%" height="100%">
@@ -227,24 +227,36 @@ export default function StrengthProgressChart() {
       <div className="grid grid-cols-3 gap-3">
         <button 
           onClick={() => handleWorkoutTypeClick('push')}
-          className="text-center p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
+          className="group relative text-center p-3 bg-red-50 border-2 border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-all cursor-pointer"
         >
-          <div className="text-lg font-bold text-red-600">+{pushGrowth}%</div>
-          <div className="text-xs text-gray-600">Push Growth</div>
+          <div className="flex items-center justify-center gap-1 mb-1">
+            <div className="text-lg font-bold text-red-600">+{pushGrowth}%</div>
+            <ChevronRight className="text-red-400 group-hover:text-red-600 transition-colors" size={16} />
+          </div>
+          <div className="text-xs text-red-700 font-medium">Push Growth</div>
+          <div className="absolute inset-0 bg-red-600 opacity-0 group-hover:opacity-5 rounded-lg transition-opacity"></div>
         </button>
         <button 
           onClick={() => handleWorkoutTypeClick('pull')}
-          className="text-center p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
+          className="group relative text-center p-3 bg-blue-50 border-2 border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-all cursor-pointer"
         >
-          <div className="text-lg font-bold text-red-600">+{pullGrowth}%</div>
-          <div className="text-xs text-gray-600">Pull Growth</div>
+          <div className="flex items-center justify-center gap-1 mb-1">
+            <div className="text-lg font-bold text-blue-600">+{pullGrowth}%</div>
+            <ChevronRight className="text-blue-400 group-hover:text-blue-600 transition-colors" size={16} />
+          </div>
+          <div className="text-xs text-blue-700 font-medium">Pull Growth</div>
+          <div className="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-5 rounded-lg transition-opacity"></div>
         </button>
         <button 
           onClick={() => handleWorkoutTypeClick('legs')}
-          className="text-center p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
+          className="group relative text-center p-3 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 transition-all cursor-pointer"
         >
-          <div className="text-lg font-bold text-red-600">+{legsGrowth}%</div>
-          <div className="text-xs text-gray-600">Legs Growth</div>
+          <div className="flex items-center justify-center gap-1 mb-1">
+            <div className="text-lg font-bold text-green-600">+{legsGrowth}%</div>
+            <ChevronRight className="text-green-400 group-hover:text-green-600 transition-colors" size={16} />
+          </div>
+          <div className="text-xs text-green-700 font-medium">Legs Growth</div>
+          <div className="absolute inset-0 bg-green-600 opacity-0 group-hover:opacity-5 rounded-lg transition-opacity"></div>
         </button>
       </div>
     </Card>
