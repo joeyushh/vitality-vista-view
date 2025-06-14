@@ -25,7 +25,26 @@ const todaysMetrics = {
   bodyBattery: { current: 75, target: 100, unit: '%' }
 };
 
+// Default selected credit goals (these would come from user's onboarding choices)
+const selectedCreditGoals = ['calories', 'protein', 'workouts', 'steps', 'sleep'];
+
 export default function DashboardStats() {
+  const isTrackedForCredits = (metricId: string) => {
+    // Map metric IDs to credit goal IDs
+    const metricToCreditMap: { [key: string]: string } = {
+      'calories': 'calories',
+      'protein': 'protein',
+      'carbs': 'carbs',
+      'fats': 'fats',
+      'steps': 'steps',
+      'workoutsCompleted': 'workouts',
+      'sleep': 'sleep'
+    };
+    
+    const creditGoalId = metricToCreditMap[metricId];
+    return creditGoalId && selectedCreditGoals.includes(creditGoalId);
+  };
+
   return (
     <Card className="p-4 shadow-lg animate-fade-in">
       {/* Credits Header - Enhanced styling */}
@@ -41,25 +60,37 @@ export default function DashboardStats() {
 
       {/* Food Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200">
+        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
+          {isTrackedForCredits('calories') && (
+            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+          )}
           <div className="text-xl font-bold text-green-600">{todaysMetrics.calories.current}</div>
           <div className="text-xs text-gray-600 mb-1">Calories</div>
           <div className="text-xs text-green-700">of {todaysMetrics.calories.target}</div>
         </div>
 
-        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200">
+        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
+          {isTrackedForCredits('protein') && (
+            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+          )}
           <div className="text-xl font-bold text-green-600">{todaysMetrics.protein.current}g</div>
           <div className="text-xs text-gray-600 mb-1">Protein</div>
           <div className="text-xs text-green-700">of {todaysMetrics.protein.target}g</div>
         </div>
 
-        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200">
+        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
+          {isTrackedForCredits('carbs') && (
+            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+          )}
           <div className="text-xl font-bold text-green-600">{todaysMetrics.carbs.current}g</div>
           <div className="text-xs text-gray-600 mb-1">Carbs</div>
           <div className="text-xs text-green-700">of {todaysMetrics.carbs.target}g</div>
         </div>
 
-        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200">
+        <div className="p-3 bg-green-50 rounded-lg text-center border border-green-200 relative">
+          {isTrackedForCredits('fats') && (
+            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+          )}
           <div className="text-xl font-bold text-green-600">{todaysMetrics.fats.current}g</div>
           <div className="text-xs text-gray-600 mb-1">Fats</div>
           <div className="text-xs text-green-700">of {todaysMetrics.fats.target}g</div>
@@ -68,25 +99,34 @@ export default function DashboardStats() {
 
       {/* Activity Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="p-3 bg-blue-50 rounded-lg text-center border border-blue-200">
+        <div className="p-3 bg-blue-50 rounded-lg text-center border border-blue-200 relative">
+          {isTrackedForCredits('steps') && (
+            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+          )}
           <div className="text-xl font-bold text-blue-600">{todaysMetrics.steps.current.toLocaleString()}</div>
           <div className="text-xs text-gray-600 mb-1">Steps</div>
           <div className="text-xs text-blue-700">of {todaysMetrics.steps.target.toLocaleString()}</div>
         </div>
 
-        <div className="p-3 bg-blue-50 rounded-lg text-center border border-blue-200">
+        <div className="p-3 bg-blue-50 rounded-lg text-center border border-blue-200 relative">
+          {isTrackedForCredits('workoutsCompleted') && (
+            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+          )}
           <div className="text-xl font-bold text-blue-600">{todaysMetrics.workoutsCompleted.current}/{todaysMetrics.workoutsCompleted.target}</div>
           <div className="text-xs text-gray-600 mb-1">Workouts</div>
           <div className="text-xs text-blue-700">completed</div>
         </div>
 
-        <div className="p-3 bg-purple-50 rounded-lg text-center border border-purple-200">
+        <div className="p-3 bg-purple-50 rounded-lg text-center border border-purple-200 relative">
+          {isTrackedForCredits('sleep') && (
+            <Star size={12} className="absolute top-1 right-1 fill-yellow-500 text-yellow-500" />
+          )}
           <div className="text-xl font-bold text-purple-600">{todaysMetrics.sleep.current}hrs</div>
           <div className="text-xs text-gray-600 mb-1">Sleep</div>
           <div className="text-xs text-purple-700">of {todaysMetrics.sleep.target}hrs</div>
         </div>
 
-        <div className="p-3 bg-purple-50 rounded-lg text-center border border-purple-200">
+        <div className="p-3 bg-purple-50 rounded-lg text-center border border-purple-200 relative">
           <div className="text-xl font-bold text-purple-600">{todaysMetrics.bodyBattery.current}%</div>
           <div className="text-xs text-gray-600 mb-1">Body Battery</div>
           <div className="text-xs text-purple-700">of {todaysMetrics.bodyBattery.target}%</div>
