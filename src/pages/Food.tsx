@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -221,7 +220,7 @@ export default function Food() {
           </div>
         </Card>
 
-        {/* Quick Actions */}
+        {/* Quick Actions - Moved Higher */}
         <Card className="p-4">
           <h2 className="text-lg font-semibold text-green-800 mb-4">Quick Log Food</h2>
           <div className="space-y-3">
@@ -246,23 +245,7 @@ export default function Food() {
           </div>
         </Card>
 
-        {/* Saved Meals */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-green-800 mb-4">Saved Meals</h2>
-          <div className="space-y-2">
-            {savedMeals.map((meal, i) => (
-              <div key={i} className="flex justify-between items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer">
-                <div>
-                  <div className="font-medium text-green-800">{meal.name}</div>
-                  <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g</div>
-                </div>
-                <div className="text-sm font-semibold text-green-700">{meal.calories} cal</div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Tips - Moved to Bottom */}
+        {/* Tips - Moved Higher */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold text-green-800 mb-4">Tracking Tips</h2>
           <div className="space-y-3 text-sm text-gray-600">
@@ -278,6 +261,22 @@ export default function Food() {
               <div className="font-medium text-yellow-800 mb-1">Stay Consistent</div>
               <div>Track everything, even small snacks and drinks for the most accurate results.</div>
             </div>
+          </div>
+        </Card>
+
+        {/* Saved Meals */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold text-green-800 mb-4">Saved Meals</h2>
+          <div className="space-y-2">
+            {savedMeals.map((meal, i) => (
+              <div key={i} className="flex justify-between items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer">
+                <div>
+                  <div className="font-medium text-green-800">{meal.name}</div>
+                  <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g</div>
+                </div>
+                <div className="text-sm font-semibold text-green-700">{meal.calories} cal</div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>

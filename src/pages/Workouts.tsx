@@ -1,10 +1,12 @@
+
 import { Card } from "@/components/ui/card";
-import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight, Edit } from "lucide-react";
+import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
+import StrengthProgressChart from "@/components/StrengthProgressChart";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
@@ -15,8 +17,8 @@ const NAV_LINKS = [
 ];
 
 const weeklyGoals = {
-  workoutsPerWeek: 6, // Updated to match the weekly program
-  currentWorkouts: 3, // Updated to match completed workouts
+  workoutsPerWeek: 4,
+  currentWorkouts: 2,
   primaryGoal: "Muscle Gain",
   secondaryGoal: "Strength"
 };
@@ -197,14 +199,6 @@ export default function Workouts() {
     }
   };
 
-  const handleEditProgramme = () => {
-    toast({
-      title: "Edit Programme",
-      description: "Programme editing feature would open here",
-    });
-    console.log("Opening programme editor...");
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
       <MobileHeader title="Workouts" />
@@ -256,7 +250,7 @@ export default function Workouts() {
           </div>
         </Card>
 
-        {/* Energy Status */}
+        {/* Energy Status - Moved Higher */}
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-3">
             <Zap size={20} className="text-blue-600" />
@@ -264,45 +258,6 @@ export default function Workouts() {
           </div>
           <div className="p-4 bg-blue-50 rounded-lg">
             <div className="text-sm text-blue-700">{getEnergyTip()}</div>
-          </div>
-        </Card>
-
-        {/* Weekly Program - Moved Higher */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Calendar size={20} className="text-blue-600" />
-              <h2 className="text-xl font-semibold text-blue-800">Weekly Program</h2>
-            </div>
-            <button 
-              onClick={handleEditProgramme}
-              className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-            >
-              <Edit size={16} />
-              Edit Programme
-            </button>
-          </div>
-          <div className="space-y-2">
-            {weeklyProgram.map((day, i) => (
-              <div key={i} className={`flex justify-between items-center p-3 rounded-lg ${
-                day.completed ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'
-              }`}>
-                <div>
-                  <div className="font-medium text-gray-800">{day.day}</div>
-                  <div className="text-sm text-gray-600">{day.workout}</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {day.exercises > 0 && (
-                    <span className="text-xs text-gray-500">{day.exercises} exercises</span>
-                  )}
-                  {day.completed && (
-                    <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs">✓</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
           </div>
         </Card>
 
@@ -352,6 +307,39 @@ export default function Workouts() {
               </table>
             </div>
           )}
+        </Card>
+
+        {/* Strength Progress Chart */}
+        <StrengthProgressChart />
+
+        {/* Weekly Program */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Calendar size={20} className="text-blue-600" />
+            <h2 className="text-xl font-semibold text-blue-800">Weekly Program</h2>
+          </div>
+          <div className="space-y-2">
+            {weeklyProgram.map((day, i) => (
+              <div key={i} className={`flex justify-between items-center p-3 rounded-lg ${
+                day.completed ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'
+              }`}>
+                <div>
+                  <div className="font-medium text-gray-800">{day.day}</div>
+                  <div className="text-sm text-gray-600">{day.workout}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {day.exercises > 0 && (
+                    <span className="text-xs text-gray-500">{day.exercises} exercises</span>
+                  )}
+                  {day.completed && (
+                    <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs">✓</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </Card>
 
         {/* Workout Tips */}
