@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Star, Target, Calendar, Settings } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -184,10 +185,11 @@ export default function Rewards() {
                     {userCreditGoals.map((goal) => {
                       const isHit = getStatusIndicator(day, goal.id);
                       return (
-                        <span 
+                        <Star 
                           key={goal.id}
-                          className={`w-2 h-2 rounded-full ${isHit ? `bg-${goal.color}-500` : 'bg-gray-300'}`}
-                        ></span>
+                          size={8}
+                          className={`${isHit ? `fill-${goal.color}-500 text-${goal.color}-500` : 'fill-gray-300 text-gray-300'}`}
+                        />
                       );
                     })}
                   </div>
