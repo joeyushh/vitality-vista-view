@@ -1,11 +1,11 @@
-
 import { Card } from "@/components/ui/card";
-import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search } from "lucide-react";
+import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
+import DateNavigation from "@/components/DateNavigation";
 import EnhancedFoodModal from "@/components/EnhancedFoodModal";
 
 // Base meals data
@@ -151,6 +151,22 @@ export default function Food() {
     });
   };
 
+  const handleBarcodeClick = () => {
+    toast({
+      title: "Barcode Scanner",
+      description: "Camera access would be requested here",
+    });
+    console.log("Opening camera for barcode scanning...");
+  };
+
+  const handleVoiceClick = () => {
+    toast({
+      title: "Voice Recording",
+      description: "Microphone access would be requested here",
+    });
+    console.log("Opening microphone for voice recording...");
+  };
+
   const caloriesPercent = (todaysStats.calories.current / todaysStats.calories.target) * 100;
   const proteinPercent = (todaysStats.protein.current / todaysStats.protein.target) * 100;
   const carbsPercent = (todaysStats.carbs.current / todaysStats.carbs.target) * 100;
@@ -162,31 +178,10 @@ export default function Food() {
 
       <div className="flex-1 px-4 py-4 space-y-6">
         {/* Date Navigation */}
-        <div className="flex items-center justify-between">
-          <button
-            onClick={handlePreviousDay}
-            className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
-          >
-            <ChevronLeft size={20} />
-            Previous
-          </button>
-          
-          <h1 className="text-xl font-bold text-green-800">
-            {currentDate.toLocaleDateString(undefined, { 
-              weekday: 'short', 
-              month: 'short', 
-              day: 'numeric'
-            })}
-          </h1>
-          
-          <button
-            onClick={handleNextDay}
-            className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
-          >
-            Next
-            <ChevronRight size={20} />
-          </button>
-        </div>
+        <DateNavigation 
+          currentDate={currentDate} 
+          onDateChange={setCurrentDate}
+        />
 
         {/* Nutrition Dashboard */}
         <Card className="p-6">
@@ -236,56 +231,18 @@ export default function Food() {
               Search & Add Food
             </button>
             <button 
-              onClick={() => setShowTrackingModal(true)}
+              onClick={handleBarcodeClick}
               className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
-              <Scan size={20} />
+              <Camera size={20} />
               Scan Barcode
             </button>
             <button 
-              onClick={() => setShowTrackingModal(true)}
+              onClick={handleVoiceClick}
               className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
               <Mic size={20} />
               Voice Log
             </button>
           </div>
-        </Card>
-
-        {/* Today's Meals */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-green-800 mb-4">
-            {isFutureDate ? "No Meals Logged Yet" : "Today's Meals"}
-          </h2>
-          {isFutureDate ? (
-            <div className="p-8 bg-green-50 rounded-lg text-center">
-              <p className="text-green-600">
-                This is a future date. No meals have been logged yet.
-              </p>
-              <button className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                Pre-plan Meals
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {todaysMeals.map((meal, i) => (
-                <div key={i} className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium text-green-800">{meal.food}</span>
-                      <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">{meal.meal}</span>
-                    </div>
-                    <div className="text-sm text-gray-600 flex items-center gap-2">
-                      <Clock size={14} />
-                      {meal.time}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-semibold text-green-700">{meal.calories} cal</div>
-                    <div className="text-xs text-gray-500">P: {meal.protein}g | C: {meal.carbs}g | F: {meal.fat}g</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </Card>
 
         {/* Tips - Moved Higher */}

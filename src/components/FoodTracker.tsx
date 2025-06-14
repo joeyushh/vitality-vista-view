@@ -1,8 +1,10 @@
-import { Utensils, Plus, List } from "lucide-react";
+
+import { Utensils, Plus, List, Camera, Mic } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import EnhancedFoodModal from "./EnhancedFoodModal";
 
 const dummyFoods = [
@@ -14,6 +16,7 @@ const dummyFoods = [
 
 export default function FoodTracker() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [showTrackingModal, setShowTrackingModal] = useState(false);
   
   const handleFoodLogClick = () => {
@@ -22,6 +25,24 @@ export default function FoodTracker() {
 
   const handleTrackFoodClick = () => {
     setShowTrackingModal(true);
+  };
+
+  const handleBarcodeClick = () => {
+    toast({
+      title: "Barcode Scanner",
+      description: "Camera access would be requested here",
+    });
+    // Simulate immediate camera access
+    console.log("Opening camera for barcode scanning...");
+  };
+
+  const handleVoiceClick = () => {
+    toast({
+      title: "Voice Recording",
+      description: "Microphone access would be requested here",
+    });
+    // Simulate immediate microphone access
+    console.log("Opening microphone for voice recording...");
   };
 
   return (
@@ -38,6 +59,18 @@ export default function FoodTracker() {
               className="flex items-center gap-1 px-3 py-2 bg-green-600 text-white rounded-lg shadow-sm hover:bg-green-700 transition-colors active:scale-95">
               <Plus size={16} />
               <span className="text-sm font-medium">Add</span>
+            </button>
+            <button 
+              onClick={handleBarcodeClick}
+              className="flex items-center gap-1 px-3 py-2 bg-green-100 text-green-700 border border-green-300 rounded-lg shadow-sm hover:bg-green-200 transition-colors active:scale-95">
+              <Camera size={16} />
+              <span className="text-sm font-medium">Scan</span>
+            </button>
+            <button 
+              onClick={handleVoiceClick}
+              className="flex items-center gap-1 px-3 py-2 bg-green-100 text-green-700 border border-green-300 rounded-lg shadow-sm hover:bg-green-200 transition-colors active:scale-95">
+              <Mic size={16} />
+              <span className="text-sm font-medium">Voice</span>
             </button>
             <button 
               onClick={handleFoodLogClick}

@@ -6,10 +6,12 @@ import WeightTracker from "@/components/WeightTracker";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import PullToRefresh from "@/components/PullToRefresh";
+import DateNavigation from "@/components/DateNavigation";
 import { useState } from "react";
 
 export default function Index() {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const handleRefresh = async () => {
     // Simulate data refresh
@@ -22,6 +24,12 @@ export default function Index() {
       
       <PullToRefresh onRefresh={handleRefresh}>
         <main className="flex-1 px-4 py-4 space-y-6">
+          {/* Date Navigation */}
+          <DateNavigation 
+            currentDate={currentDate} 
+            onDateChange={setCurrentDate}
+          />
+
           {/* Dashboard Stats Overview */}
           <div className="w-full">
             <DashboardStats />

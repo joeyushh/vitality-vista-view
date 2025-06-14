@@ -1,12 +1,11 @@
 
 import { Card } from "@/components/ui/card";
-import { Star } from "lucide-react";
 
 const todaysCredits = {
-  calories: { hit: true, credits: 1 },
-  protein: { hit: true, credits: 1 },
+  calories: { hit: false, credits: 0 }, // Changed to false since 1845 < 2200
+  protein: { hit: false, credits: 0 }, // Changed to false since 120 < 150
   workout: { hit: true, credits: 1 },
-  steps: { hit: true, credits: 1 },
+  steps: { hit: false, credits: 0 }, // Changed to false since 8420 < 10000
   sleep: { hit: false, credits: 0 }
 };
 
@@ -27,15 +26,12 @@ const todaysMetrics = {
 export default function DashboardStats() {
   return (
     <Card className="p-4 shadow-lg animate-fade-in">
-      {/* Credits Header */}
+      {/* Credits Header - Neutral styling */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-purple-100 rounded-full">
-          <Star size={20} className="text-purple-600" />
-        </div>
-        <h2 className="text-lg font-bold text-purple-700">Today's Progress</h2>
+        <h2 className="text-lg font-bold text-gray-800">Today's Progress</h2>
         <div className="ml-auto flex items-center gap-1">
           <span className="text-sm text-gray-600">Credits:</span>
-          <div className="text-lg font-bold text-orange-600">{totalCreditsToday}</div>
+          <div className="text-lg font-bold text-gray-800">{totalCreditsToday}</div>
         </div>
       </div>
 
