@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight, Edit3, Save, X, Edit } from "lucide-react";
+import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight, Edit3, Save, X, Edit, HelpCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -129,34 +129,34 @@ export default function Workouts() {
   const [secondaryGoal, setSecondaryGoal] = useState("Strength");
   const [editingGoals, setEditingGoals] = useState(false);
   
-  // Enhanced state for managing exercises with detailed suggestions
+  // Enhanced state for managing exercises with cleaner suggestions
   const [dayExercises, setDayExercises] = useState({
     monday: [
-      { name: "Bench Press", sets: 4, restTime: "2-3min", lastWeight: "80kg/6", suggestedWeight: "82.5kg/6-8", suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for strength focus. Weight change: +5.0% (80kg → 82.5kg)." },
-      { name: "Incline DB Press", sets: 3, restTime: "90s", lastWeight: "30kg/8", suggestedWeight: "31kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (30kg → 31kg)." },
-      { name: "Cable Flyes", sets: 3, restTime: "60s", lastWeight: "25kg/10", suggestedWeight: "25.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (25kg → 25.5kg)." },
-      { name: "Tricep Pushdowns", sets: 3, restTime: "60s", lastWeight: "40kg/12", suggestedWeight: "41kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (40kg → 41kg)." },
+      { name: "Bench Press", sets: 4, restTime: "2-3min", lastWeight: "80kg/6", suggestedWeight: "82.5kg/6-8", suggestedExplanation: "80kg → 82.5kg (+5% for strength)" },
+      { name: "Incline DB Press", sets: 3, restTime: "90s", lastWeight: "30kg/8", suggestedWeight: "31kg/8-10", suggestedExplanation: "30kg → 31kg (+2.5% for hypertrophy)" },
+      { name: "Cable Flyes", sets: 3, restTime: "60s", lastWeight: "25kg/10", suggestedWeight: "25.5kg/8-10", suggestedExplanation: "25kg → 25.5kg (+2.5% for hypertrophy)" },
+      { name: "Tricep Pushdowns", sets: 3, restTime: "60s", lastWeight: "40kg/12", suggestedWeight: "41kg/8-10", suggestedExplanation: "40kg → 41kg (+2.5% for hypertrophy)" },
     ],
     wednesday: [
-      { name: "Pull-ups", sets: 4, restTime: "2min", lastWeight: "BW/8", suggestedWeight: "BW/7-9", suggestedExplanation: "Body battery: 90%. Try for 1-2 extra reps." },
-      { name: "Bent Over Rows", sets: 3, restTime: "2min", lastWeight: "70kg/8", suggestedWeight: "71.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (70kg → 71.5kg)." },
-      { name: "Lat Pulldowns", sets: 3, restTime: "90s", lastWeight: "65kg/10", suggestedWeight: "66.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (65kg → 66.5kg)." },
-      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "36kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (35kg → 36kg)." },
-      { name: "Bicep Curls", sets: 3, restTime: "60s", lastWeight: "17.5kg/10", suggestedWeight: "18kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (17.5kg → 18kg)." },
+      { name: "Pull-ups", sets: 4, restTime: "2min", lastWeight: "BW/8", suggestedWeight: "BW/7-9", suggestedExplanation: "Try for 1-2 extra reps" },
+      { name: "Bent Over Rows", sets: 3, restTime: "2min", lastWeight: "70kg/8", suggestedWeight: "71.5kg/8-10", suggestedExplanation: "70kg → 71.5kg (+2.5% for hypertrophy)" },
+      { name: "Lat Pulldowns", sets: 3, restTime: "90s", lastWeight: "65kg/10", suggestedWeight: "66.5kg/8-10", suggestedExplanation: "65kg → 66.5kg (+2.5% for hypertrophy)" },
+      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "36kg/8-10", suggestedExplanation: "35kg → 36kg (+2.5% for hypertrophy)" },
+      { name: "Bicep Curls", sets: 3, restTime: "60s", lastWeight: "17.5kg/10", suggestedWeight: "18kg/8-10", suggestedExplanation: "17.5kg → 18kg (+2.5% for hypertrophy)" },
     ],
     thursday: [
-      { name: "Squats", sets: 4, restTime: "3min", lastWeight: "100kg/6", suggestedWeight: "105kg/6-8", suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for strength focus. Weight change: +5.0% (100kg → 105kg)." },
-      { name: "Romanian Deadlifts", sets: 3, restTime: "2min", lastWeight: "80kg/8", suggestedWeight: "82kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (80kg → 82kg)." },
-      { name: "Bulgarian Split Squats", sets: 3, restTime: "90s", lastWeight: "25kg/10", suggestedWeight: "25.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (25kg → 25.5kg)." },
-      { name: "Leg Press", sets: 3, restTime: "90s", lastWeight: "180kg/12", suggestedWeight: "184.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (180kg → 184.5kg)." },
-      { name: "Calf Raises", sets: 4, restTime: "60s", lastWeight: "60kg/15", suggestedWeight: "61.5kg/12-15", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (60kg → 61.5kg)." },
-      { name: "Leg Curls", sets: 3, restTime: "60s", lastWeight: "45kg/12", suggestedWeight: "46kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (45kg → 46kg)." },
+      { name: "Squats", sets: 4, restTime: "3min", lastWeight: "100kg/6", suggestedWeight: "105kg/6-8", suggestedExplanation: "100kg → 105kg (+5% for strength)" },
+      { name: "Romanian Deadlifts", sets: 3, restTime: "2min", lastWeight: "80kg/8", suggestedWeight: "82kg/8-10", suggestedExplanation: "80kg → 82kg (+2.5% for hypertrophy)" },
+      { name: "Bulgarian Split Squats", sets: 3, restTime: "90s", lastWeight: "25kg/10", suggestedWeight: "25.5kg/8-10", suggestedExplanation: "25kg → 25.5kg (+2.5% for hypertrophy)" },
+      { name: "Leg Press", sets: 3, restTime: "90s", lastWeight: "180kg/12", suggestedWeight: "184.5kg/8-10", suggestedExplanation: "180kg → 184.5kg (+2.5% for hypertrophy)" },
+      { name: "Calf Raises", sets: 4, restTime: "60s", lastWeight: "60kg/15", suggestedWeight: "61.5kg/12-15", suggestedExplanation: "60kg → 61.5kg (+2.5% for hypertrophy)" },
+      { name: "Leg Curls", sets: 3, restTime: "60s", lastWeight: "45kg/12", suggestedWeight: "46kg/8-10", suggestedExplanation: "45kg → 46kg (+2.5% for hypertrophy)" },
     ],
     saturday: [
-      { name: "Overhead Press", sets: 4, restTime: "2-3min", lastWeight: "50kg/6", suggestedWeight: "52.5kg/6-8", suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for strength focus. Weight change: +5.0% (50kg → 52.5kg)." },
-      { name: "Lateral Raises", sets: 3, restTime: "90s", lastWeight: "12.5kg/12", suggestedWeight: "13kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (12.5kg → 13kg)." },
-      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "36kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (35kg → 36kg)." },
-      { name: "Tricep Extensions", sets: 3, restTime: "60s", lastWeight: "30kg/12", suggestedWeight: "31kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (30kg → 31kg)." },
+      { name: "Overhead Press", sets: 4, restTime: "2-3min", lastWeight: "50kg/6", suggestedWeight: "52.5kg/6-8", suggestedExplanation: "50kg → 52.5kg (+5% for strength)" },
+      { name: "Lateral Raises", sets: 3, restTime: "90s", lastWeight: "12.5kg/12", suggestedWeight: "13kg/8-10", suggestedExplanation: "12.5kg → 13kg (+2.5% for hypertrophy)" },
+      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "36kg/8-10", suggestedExplanation: "35kg → 36kg (+2.5% for hypertrophy)" },
+      { name: "Tricep Extensions", sets: 3, restTime: "60s", lastWeight: "30kg/12", suggestedWeight: "31kg/8-10", suggestedExplanation: "30kg → 31kg (+2.5% for hypertrophy)" },
     ]
   });
   
@@ -377,14 +377,19 @@ export default function Workouts() {
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-blue-800">Fitness Goals</h2>
-              {!editingGoals && (
-                <button
-                  onClick={handleEditGoals}
-                  className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
-                >
-                  <Edit size={16} />
+              <div className="flex gap-2">
+                {!editingGoals && (
+                  <button
+                    onClick={handleEditGoals}
+                    className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                  >
+                    <Edit size={16} />
+                  </button>
+                )}
+                <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors">
+                  <HelpCircle size={16} />
                 </button>
-              )}
+              </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="bg-blue-50 rounded-lg p-4 text-center">
@@ -444,29 +449,39 @@ export default function Workouts() {
             )}
           </Card>
 
-          {/* Energy Status - Moved Higher */}
+          {/* Energy Status */}
           <Card className="p-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Zap size={20} className="text-blue-600" />
-              <h2 className="text-xl font-semibold text-blue-800">Energy Status</h2>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Zap size={20} className="text-blue-600" />
+                <h2 className="text-xl font-semibold text-blue-800">Energy Status</h2>
+              </div>
+              <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors">
+                <HelpCircle size={16} />
+              </button>
             </div>
             <div className="p-4 bg-blue-50 rounded-lg">
               <div className="text-sm text-blue-700">{getEnergyTip()}</div>
             </div>
           </Card>
 
-          {/* Today's Workout - Updated with enhanced exercise management */}
+          {/* Today's Workout */}
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-blue-800">{workoutName}</h2>
-              {!isRestDay && (
-                <button 
-                  onClick={handleStartWorkoutClick}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Start Workout
+              <div className="flex gap-2">
+                {!isRestDay && (
+                  <button 
+                    onClick={handleStartWorkoutClick}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Start Workout
+                  </button>
+                )}
+                <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors">
+                  <HelpCircle size={16} />
                 </button>
-              )}
+              </div>
             </div>
             
             {isRestDay ? (
@@ -484,8 +499,7 @@ export default function Workouts() {
                       <tr>
                         <th className="px-4 py-3 text-left">Exercise</th>
                         <th className="px-4 py-3 text-center">Sets</th>
-                        <th className="px-4 py-3 text-center">Last Weight</th>
-                        <th className="px-4 py-3 text-center">Suggested</th>
+                        <th className="px-4 py-3 text-center">Last → Target</th>
                         <th className="px-4 py-3 text-center">Rest</th>
                       </tr>
                     </thead>
@@ -496,9 +510,13 @@ export default function Workouts() {
                             <div className="font-medium text-blue-800">{item.name}</div>
                           </td>
                           <td className="px-4 py-3 text-center text-blue-700">{item.sets}</td>
-                          <td className="px-4 py-3 text-center font-mono text-xs text-blue-700">{item.lastWeight}</td>
-                          <td className="px-4 py-3 text-center font-mono text-xs text-green-700 font-medium">
-                            {item.suggestedWeight || 'Calculate'}
+                          <td className="px-4 py-3 text-center">
+                            <div className="text-xs font-mono">
+                              <span className="text-gray-600">{item.lastWeight}</span>
+                              <span className="text-gray-400 mx-1">→</span>
+                              <span className="text-green-700 font-medium">{item.suggestedWeight}</span>
+                            </div>
+                            <div className="text-xs text-green-600 mt-1">{item.suggestedExplanation}</div>
                           </td>
                           <td className="px-4 py-3 text-center text-xs text-gray-500">{item.restTime}</td>
                         </tr>
@@ -507,7 +525,6 @@ export default function Workouts() {
                   </table>
                 </div>
                 
-                {/* Exercise management section */}
                 {editingProgram && (
                   <div className="mt-4 p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-medium text-blue-800 mb-2">Manage Today's Exercises</h3>
@@ -524,7 +541,7 @@ export default function Workouts() {
             )}
           </Card>
 
-          {/* Weekly Program - Enhanced with exercise management */}
+          {/* Weekly Program */}
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -533,13 +550,18 @@ export default function Workouts() {
               </div>
               <div className="flex gap-2">
                 {!editingProgram ? (
-                  <button
-                    onClick={handleEditProgram}
-                    className="flex items-center gap-2 px-3 py-2 bg-blue-100 text-blue-800 border border-blue-300 rounded-lg hover:bg-blue-200 transition-colors"
-                  >
-                    <Edit3 size={16} />
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      onClick={handleEditProgram}
+                      className="flex items-center gap-2 px-3 py-2 bg-blue-100 text-blue-800 border border-blue-300 rounded-lg hover:bg-blue-200 transition-colors"
+                    >
+                      <Edit3 size={16} />
+                      Edit
+                    </button>
+                    <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors">
+                      <HelpCircle size={16} />
+                    </button>
+                  </>
                 ) : (
                   <>
                     <button
@@ -560,6 +582,7 @@ export default function Workouts() {
                 )}
               </div>
             </div>
+            
             <div className="space-y-3">
               {programData.map((day, i) => {
                 const dayKey = day.day.toLowerCase();
@@ -595,7 +618,6 @@ export default function Workouts() {
                       </div>
                     </div>
                     
-                    {/* Exercise List */}
                     {dayExerciseList.length > 0 && (
                       <div className="mt-3">
                         <div className="text-xs text-gray-500 mb-2">Planned Exercises:</div>
@@ -616,13 +638,12 @@ export default function Workouts() {
                       </div>
                     )}
                     
-                    {/* Exercise Manager for each day */}
                     {editingProgram && dayExerciseList.length >= 0 && day.workout !== "Rest Day" && (
                       <ExerciseManager
                         dayName={day.workout}
                         exercises={dayExerciseList}
                         onExercisesChange={(exercises) => handleDayExercisesChange(dayKey, exercises)}
-                        bodyBattery={85} // Default battery for planning
+                        bodyBattery={85}
                         isEditing={editingProgram}
                       />
                     )}
@@ -634,9 +655,15 @@ export default function Workouts() {
 
           {/* Workout Tips */}
           <Card className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Target size={20} className="text-blue-600" />
-              <h2 className="text-xl font-semibold text-blue-800">Workout Tips</h2>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Target size={20} className="text-blue-600" />
+                <h2 className="text-xl font-semibold text-blue-800">Workout Tips</h2>
+              </div>
+              <button className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition-colors">
+                <HelpCircle size={16} />
+                Need more tips?
+              </button>
             </div>
             <div className="space-y-3 text-sm text-gray-600">
               <div className="p-3 bg-yellow-50 rounded-lg">

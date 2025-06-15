@@ -40,6 +40,39 @@ const defaultRestTimes = {
   cardio: '30-60s'
 };
 
+// Extract body battery logic into a cleaner function
+const getBodyBatteryRecommendation = (bodyBattery: number) => {
+  if (bodyBattery >= 90) {
+    return { 
+      percentage: 5, 
+      repRange: '6-8', 
+      focus: 'strength',
+      description: 'Excellent energy - push for strength gains'
+    };
+  } else if (bodyBattery >= 80) {
+    return { 
+      percentage: 2.5, 
+      repRange: '8-10', 
+      focus: 'hypertrophy',
+      description: 'Good energy - ideal for muscle building'
+    };
+  } else if (bodyBattery >= 70) {
+    return { 
+      percentage: 0, 
+      repRange: '8-12', 
+      focus: 'maintenance',
+      description: 'Moderate energy - maintain current levels'
+    };
+  } else {
+    return { 
+      percentage: -2.5, 
+      repRange: '10-12', 
+      focus: 'recovery',
+      description: 'Low energy - focus on recovery'
+    };
+  }
+};
+
 export default function ExerciseManager({ 
   dayName, 
   exercises, 
@@ -69,6 +102,8 @@ export default function ExerciseManager({
   const calculateSuggestedWeight = (lastWeight: string, bodyBattery: number) => {
     if (!lastWeight) return { weight: '', explanation: '' };
     
+    const recommendation = getBodyBatteryRecommendation(bodyBattery);
+    
     // Parse different weight formats
     const kgMatch = lastWeight.match(/(\d+(?:\.\d+)?)kg(?:\/(\d+))?/);
     const lbMatch = lastWeight.match(/(\d+(?:\.\d+)?)lb(?:\/(\d+))?/);
@@ -89,45 +124,23 @@ export default function ExerciseManager({
     } else if (bwMatch) {
       reps = parseInt(bwMatch[1]) || 8;
       return { 
-        weight: `BW/${Math.max(reps - 1, 6)}-${reps + 1}`, 
-        explanation: `Body battery: ${bodyBattery}%. ${bodyBattery >= 80 ? 'Try for 1-2 extra reps' : bodyBattery >= 70 ? 'Maintain rep range' : 'Focus on form, slightly fewer reps'}.`
+        weight: `BW/${recommendation.repRange}`, 
+        explanation: `${recommendation.description}. Try for ${recommendation.repRange} reps.`
       };
     } else {
       return { weight: lastWeight, explanation: 'Enter weight in format: 60kg/10 or 60lb/10' };
     }
     
-    let percentageIncrease = 0;
-    let repAdjustment = '';
-    let explanation = '';
+    const newWeight = weight * (1 + recommendation.percentage / 100);
+    const roundedWeight = unit === 'kg' ? Math.round(newWeight * 2) / 2 : Math.round(newWeight * 4) / 4;
     
-    if (bodyBattery >= 90) {
-      percentageIncrease = 0.05; // 5% increase
-      repAdjustment = '6-8';
-      explanation = `Body battery: ${bodyBattery}% (Excellent). 5% weight increase for strength focus.`;
-    } else if (bodyBattery >= 80) {
-      percentageIncrease = 0.025; // 2.5% increase
-      repAdjustment = '8-10';
-      explanation = `Body battery: ${bodyBattery}% (Good). 2.5% weight increase for hypertrophy.`;
-    } else if (bodyBattery >= 70) {
-      percentageIncrease = 0; // No increase
-      repAdjustment = '8-12';
-      explanation = `Body battery: ${bodyBattery}% (Moderate). Maintain weight, focus on rep quality.`;
-    } else {
-      percentageIncrease = -0.025; // 2.5% decrease
-      repAdjustment = '10-12';
-      explanation = `Body battery: ${bodyBattery}% (Low). 2.5% weight decrease, higher reps for recovery.`;
-    }
-    
-    const newWeight = weight * (1 + percentageIncrease);
-    const roundedWeight = unit === 'kg' ? Math.round(newWeight * 2) / 2 : Math.round(newWeight * 4) / 4; // Round to nearest 0.5kg or 0.25lb
-    
-    const weightChange = percentageIncrease !== 0 ? 
-      `${percentageIncrease > 0 ? '+' : ''}${(percentageIncrease * 100).toFixed(1)}%` : 
-      'No change';
-    
+    const explanation = recommendation.percentage !== 0 
+      ? `${weight}${unit} → ${roundedWeight}${unit} (+${recommendation.percentage}% for ${recommendation.focus})`
+      : `Maintain ${weight}${unit} (${recommendation.description})`;
+
     return {
-      weight: `${roundedWeight}${unit}/${repAdjustment}`,
-      explanation: `${explanation} Weight change: ${weightChange} (${weight}${unit} → ${roundedWeight}${unit}).`
+      weight: `${roundedWeight}${unit}/${recommendation.repRange}`,
+      explanation
     };
   };
 
@@ -194,6 +207,7 @@ export default function ExerciseManager({
 
   const workoutType = getWorkoutType(dayName);
   const suggestedExercises = commonExercises[workoutType] || commonExercises.push;
+  const recommendation = getBodyBatteryRecommendation(bodyBattery);
 
   if (!isEditing) {
     return null;
@@ -201,6 +215,22 @@ export default function ExerciseManager({
 
   return (
     <div className="mt-4 space-y-3">
+      {/* Body Battery Summary - Show once at the top */}
+      <div className="bg-blue-100 border border-blue-300 rounded-lg p-3 mb-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-medium text-blue-800">Body Battery: {bodyBattery}%</div>
+            <div className="text-xs text-blue-600">{recommendation.description}</div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-medium text-blue-800">
+              {recommendation.percentage > 0 ? '+' : ''}{recommendation.percentage}% weight adjustment
+            </div>
+            <div className="text-xs text-blue-600">Target: {recommendation.repRange} reps</div>
+          </div>
+        </div>
+      </div>
+
       {exercises.map((exercise, index) => (
         <div key={index} className="bg-white border border-gray-200 rounded-lg p-3">
           <div className="flex items-center justify-between mb-2">
@@ -261,7 +291,7 @@ export default function ExerciseManager({
           </div>
           
           <div className="bg-green-50 border border-green-200 rounded p-2">
-            <div className="text-xs text-gray-500 mb-1">Suggested This Session</div>
+            <div className="text-xs text-gray-500 mb-1">This Session Target</div>
             <div className="text-sm font-mono text-green-700 font-medium mb-1">
               {exercise.suggestedWeight || 'Enter last weight for suggestion'}
             </div>

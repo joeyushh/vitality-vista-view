@@ -1,19 +1,17 @@
 
-import { Activity, Play, List, Clock } from "lucide-react";
+import { Activity, Play, List, Clock, HelpCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import TrackingModal from "./TrackingModal";
 
 // This should sync with the exercise data from Workouts page
-// For now, using the enhanced data structure with suggestions
 const todaysWorkout = [
   { 
     name: "Bench Press", 
     sets: 4, 
     lastWeight: "80kg/6", 
     suggestedWeight: "82.5kg/6-8",
-    suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for strength focus. Weight change: +5.0% (80kg → 82.5kg).",
     restTime: "2-3min", 
     completed: 0 
   },
@@ -22,7 +20,6 @@ const todaysWorkout = [
     sets: 3, 
     lastWeight: "30kg/8", 
     suggestedWeight: "31kg/8-10",
-    suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for hypertrophy. Weight change: +5.0% (30kg → 31kg).",
     restTime: "90s", 
     completed: 0 
   },
@@ -31,7 +28,6 @@ const todaysWorkout = [
     sets: 3, 
     lastWeight: "25kg/10", 
     suggestedWeight: "25.5kg/8-10",
-    suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (25kg → 25.5kg).",
     restTime: "60s", 
     completed: 0 
   },
@@ -40,11 +36,24 @@ const todaysWorkout = [
     sets: 3, 
     lastWeight: "40kg/12", 
     suggestedWeight: "41kg/8-10",
-    suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (40kg → 41kg).",
     restTime: "60s", 
     completed: 0 
   },
 ];
+
+const bodyBattery = 90;
+
+const getBodyBatteryRecommendation = (bodyBattery: number) => {
+  if (bodyBattery >= 90) {
+    return { percentage: 5, description: 'Excellent energy - push for strength gains' };
+  } else if (bodyBattery >= 80) {
+    return { percentage: 2.5, description: 'Good energy - ideal for muscle building' };
+  } else if (bodyBattery >= 70) {
+    return { percentage: 0, description: 'Moderate energy - maintain current levels' };
+  } else {
+    return { percentage: -2.5, description: 'Low energy - focus on recovery' };
+  }
+};
 
 export default function WorkoutTracker() {
   const navigate = useNavigate();
@@ -52,6 +61,7 @@ export default function WorkoutTracker() {
   
   const totalSets = todaysWorkout.reduce((sum, w) => sum + w.sets, 0);
   const completedSets = todaysWorkout.reduce((sum, w) => sum + w.completed, 0);
+  const recommendation = getBodyBatteryRecommendation(bodyBattery);
 
   const handleWorkoutLogClick = () => {
     navigate("/workouts");
@@ -85,7 +95,7 @@ export default function WorkoutTracker() {
           </div>
         </div>
 
-        {/* Workout Info */}
+        {/* Workout Info with Body Battery Summary */}
         <div className="mb-4 p-3 bg-blue-50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
             <h3 className="font-medium text-blue-800">Push Day - Chest & Triceps</h3>
@@ -94,6 +104,21 @@ export default function WorkoutTracker() {
               <span>Ready to start</span>
             </div>
           </div>
+          
+          {/* Body Battery Summary */}
+          <div className="flex items-center justify-between mb-2 p-2 bg-blue-100 rounded">
+            <div>
+              <span className="text-xs text-blue-600">Body Battery: </span>
+              <span className="text-sm font-medium text-blue-800">{bodyBattery}%</span>
+            </div>
+            <div className="text-right">
+              <div className="text-xs text-blue-600">{recommendation.description}</div>
+              <div className="text-xs font-medium text-blue-800">
+                {recommendation.percentage > 0 ? '+' : ''}{recommendation.percentage}% weight increase
+              </div>
+            </div>
+          </div>
+          
           <div className="text-xs text-blue-600">
             Progress: {completedSets}/{totalSets} sets completed
           </div>
@@ -105,7 +130,7 @@ export default function WorkoutTracker() {
           </div>
         </div>
         
-        {/* Exercise List - Read-only for starting workout */}
+        {/* Exercise List - Clean, read-only view for workout launching */}
         <div className="space-y-3">
           {todaysWorkout.map((item, i) => (
             <div key={i} className="bg-white border border-blue-200 rounded-lg p-3 active:bg-blue-50 transition-colors">
@@ -119,21 +144,16 @@ export default function WorkoutTracker() {
                 </div>
               </div>
               
-              {/* Last vs Suggested Weight Comparison */}
-              <div className="grid grid-cols-2 gap-2 mb-2">
+              {/* Cleaner Weight Display */}
+              <div className="flex items-center justify-between mb-2">
                 <div className="text-xs">
-                  <div className="text-gray-500">Last Time</div>
-                  <div className="font-mono text-gray-700">{item.lastWeight}</div>
+                  <span className="text-gray-500">Last: </span>
+                  <span className="font-mono text-gray-700">{item.lastWeight}</span>
                 </div>
                 <div className="text-xs">
-                  <div className="text-gray-500">Today's Target</div>
-                  <div className="font-mono text-green-700 font-medium">{item.suggestedWeight}</div>
+                  <span className="text-gray-500">Target: </span>
+                  <span className="font-mono text-green-700 font-medium">{item.suggestedWeight}</span>
                 </div>
-              </div>
-              
-              {/* Suggestion Explanation */}
-              <div className="text-xs text-green-600 bg-green-50 rounded p-2 mb-2">
-                {item.suggestedExplanation}
               </div>
               
               <div className="flex items-center justify-between">
@@ -162,6 +182,14 @@ export default function WorkoutTracker() {
             <div className="text-lg font-bold text-blue-600">Ready</div>
             <div className="text-xs text-gray-600">Status</div>
           </div>
+        </div>
+
+        {/* Help Button */}
+        <div className="mt-4 flex justify-center">
+          <button className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 transition-colors">
+            <HelpCircle size={14} />
+            Need more tips?
+          </button>
         </div>
       </Card>
 
