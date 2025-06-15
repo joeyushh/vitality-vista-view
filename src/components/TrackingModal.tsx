@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Minus, Clock, CheckCircle, Save } from 'lucide-react';
+import { X, Plus, Minus, Clock, CheckCircle, Save, Weight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 
@@ -14,7 +13,7 @@ interface Exercise {
 }
 
 interface TrackingModalProps {
-  type: 'food' | 'workout';
+  type: 'food' | 'workout' | 'weight';
   onClose: () => void;
   prefilledWorkout?: Exercise[];
 }
@@ -27,6 +26,7 @@ export default function TrackingModal({ type, onClose, prefilledWorkout }: Track
   const [restTimer, setRestTimer] = useState(0);
   const [isResting, setIsResting] = useState(false);
   const [workoutStartTime] = useState(new Date());
+  const [weightValue, setWeightValue] = useState('');
 
   // Initialize with prefilled workout data
   useEffect(() => {
@@ -120,11 +120,98 @@ export default function TrackingModal({ type, onClose, prefilledWorkout }: Track
     setRestTimer(0);
   };
 
+  const handleWeightSave = () => {
+    if (!weightValue) {
+      toast({
+        title: "Please enter a weight",
+        description: "Weight value is required",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    toast({
+      title: "Weight Logged!",
+      description: `Successfully logged ${weightValue} kg`,
+    });
+    onClose();
+  };
+
+  // Rest timer logic
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isResting && restTimer > 0) {
+      interval = setInterval(() => {
+        setRestTimer(prev => {
+          if (prev <= 1) {
+            setIsResting(false);
+            toast({
+              title: "Rest Complete!",
+              description: "Time for your next set",
+            });
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isResting, restTimer, toast]);
+
   const totalSets = workoutData.reduce((sum, ex) => sum + ex.sets, 0);
   const completedSets = workoutData.reduce((sum, ex) => sum + ex.completed, 0);
   const workoutProgress = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
 
   const currentExercise = workoutData[currentExerciseIndex];
+
+  if (type === 'weight') {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <Card className="w-full max-w-md bg-white rounded-lg shadow-xl">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-full">
+                  <Weight size={20} className="text-red-600" />
+                </div>
+                <h2 className="text-xl font-bold text-red-800">Log Weight</h2>
+              </div>
+              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Current Weight (kg)
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={weightValue}
+                  onChange={(e) => setWeightValue(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  placeholder="78.5"
+                />
+              </div>
+              
+              <div className="text-sm text-gray-600 bg-red-50 p-3 rounded-lg">
+                💡 For best results, weigh yourself at the same time each day
+              </div>
+              
+              <button
+                onClick={handleWeightSave}
+                className="w-full py-3 px-4 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors active:scale-95"
+              >
+                Save Weight
+              </button>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   if (type === 'food') {
     return (
