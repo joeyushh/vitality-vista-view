@@ -23,13 +23,55 @@ const weeklyGoals = {
 };
 
 const weeklyProgram = [
-  { day: "Monday", workout: "Push Day - Chest & Triceps", completed: true, exercises: 4 },
-  { day: "Tuesday", workout: "Rest Day", completed: true, exercises: 0 },
-  { day: "Wednesday", workout: "Pull Day - Back & Biceps", completed: true, exercises: 5 },
-  { day: "Thursday", workout: "Legs & Glutes", completed: false, exercises: 6 },
-  { day: "Friday", workout: "Rest Day", completed: false, exercises: 0 },
-  { day: "Saturday", workout: "Push Day - Shoulders", completed: false, exercises: 4 },
-  { day: "Sunday", workout: "Rest Day", completed: false, exercises: 0 },
+  { 
+    day: "Monday", 
+    workout: "Push Day - Chest & Triceps", 
+    completed: true, 
+    exercises: 4,
+    exerciseList: ["Bench Press", "Incline DB Press", "Cable Flyes", "Tricep Pushdowns"]
+  },
+  { 
+    day: "Tuesday", 
+    workout: "Rest Day", 
+    completed: true, 
+    exercises: 0,
+    exerciseList: []
+  },
+  { 
+    day: "Wednesday", 
+    workout: "Pull Day - Back & Biceps", 
+    completed: true, 
+    exercises: 5,
+    exerciseList: ["Pull-ups", "Bent Over Rows", "Lat Pulldowns", "Face Pulls", "Bicep Curls"]
+  },
+  { 
+    day: "Thursday", 
+    workout: "Legs & Glutes", 
+    completed: false, 
+    exercises: 6,
+    exerciseList: ["Squats", "Romanian Deadlifts", "Bulgarian Split Squats", "Leg Press", "Calf Raises", "Leg Curls"]
+  },
+  { 
+    day: "Friday", 
+    workout: "Rest Day", 
+    completed: false, 
+    exercises: 0,
+    exerciseList: []
+  },
+  { 
+    day: "Saturday", 
+    workout: "Push Day - Shoulders", 
+    completed: false, 
+    exercises: 4,
+    exerciseList: ["Overhead Press", "Lateral Raises", "Face Pulls", "Tricep Extensions"]
+  },
+  { 
+    day: "Sunday", 
+    workout: "Rest Day", 
+    completed: false, 
+    exercises: 0,
+    exerciseList: []
+  },
 ];
 
 const workoutVariations = {
@@ -467,34 +509,57 @@ export default function Workouts() {
                 )}
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {programData.map((day, i) => (
-                <div key={i} className={`flex justify-between items-center p-3 rounded-lg ${
-                  day.completed ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'
+                <div key={i} className={`p-4 rounded-lg border-2 ${
+                  day.completed ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'
                 }`}>
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-800">{day.day}</div>
-                    {editingProgram ? (
-                      <input
-                        type="text"
-                        value={day.workout}
-                        onChange={(e) => handleWorkoutChange(i, e.target.value)}
-                        className="text-sm text-gray-600 bg-white border border-gray-300 rounded px-2 py-1 mt-1 w-full"
-                      />
-                    ) : (
-                      <div className="text-sm text-gray-600">{day.workout}</div>
-                    )}
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-800">{day.day}</div>
+                      {editingProgram ? (
+                        <input
+                          type="text"
+                          value={day.workout}
+                          onChange={(e) => handleWorkoutChange(i, e.target.value)}
+                          className="text-sm text-gray-600 bg-white border border-gray-300 rounded px-2 py-1 mt-1 w-full"
+                        />
+                      ) : (
+                        <div className="text-sm text-gray-600">{day.workout}</div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 ml-4">
+                      {day.exercises > 0 && (
+                        <span className="text-xs text-gray-500">{day.exercises} exercises</span>
+                      )}
+                      {day.completed && (
+                        <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">✓</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 ml-4">
-                    {day.exercises > 0 && (
-                      <span className="text-xs text-gray-500">{day.exercises} exercises</span>
-                    )}
-                    {day.completed && (
-                      <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs">✓</span>
-                      </span>
-                    )}
-                  </div>
+                  
+                  {/* Exercise List */}
+                  {day.exerciseList && day.exerciseList.length > 0 && (
+                    <div className="mt-3">
+                      <div className="text-xs text-gray-500 mb-2">Planned Exercises:</div>
+                      <div className="flex flex-wrap gap-2">
+                        {day.exerciseList.map((exercise, exerciseIndex) => (
+                          <span
+                            key={exerciseIndex}
+                            className={`text-xs px-2 py-1 rounded-full ${
+                              day.completed 
+                                ? 'bg-green-100 text-green-700 border border-green-200' 
+                                : 'bg-blue-100 text-blue-700 border border-blue-200'
+                            }`}
+                          >
+                            {exercise}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
