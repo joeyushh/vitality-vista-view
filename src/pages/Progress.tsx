@@ -1,6 +1,5 @@
-
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Camera, Calendar, Target, Upload, MessageCircle } from "lucide-react";
+import { TrendingUp, Camera, Calendar, Target, Upload, MessageCircle, Edit } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import StrengthProgressChart from "@/components/StrengthProgressChart";
@@ -31,6 +30,9 @@ const recentPhotos = [
 
 export default function Progress() {
   const [viewMode, setViewMode] = useState<"yearly" | "monthly">("yearly");
+  const [goalWeight, setGoalWeight] = useState(75);
+  const [editingGoalWeight, setEditingGoalWeight] = useState(false);
+  const [tempGoalWeight, setTempGoalWeight] = useState(goalWeight);
   const { toast } = useToast();
 
   const maxWeight = Math.max(...weightData.map(w => w.weight));
@@ -39,7 +41,6 @@ export default function Progress() {
   const currentWeight = weightData[weightData.length - 1].weight;
   const startWeight = weightData[0].weight;
   const totalLoss = startWeight - currentWeight;
-  const goalWeight = 75; // Goal weight target
   const remainingToGoal = currentWeight - goalWeight;
 
   const handleAITipsClick = () => {
@@ -48,6 +49,25 @@ export default function Progress() {
       description: "AI chatbot for progress tips would open here",
     });
     console.log("Opening AI chatbot for progress tips...");
+  };
+
+  const handleGoalWeightEdit = () => {
+    setTempGoalWeight(goalWeight);
+    setEditingGoalWeight(true);
+  };
+
+  const handleGoalWeightSave = () => {
+    setGoalWeight(tempGoalWeight);
+    setEditingGoalWeight(false);
+    toast({
+      title: "Goal Updated",
+      description: `Your goal weight has been updated to ${tempGoalWeight} kg`,
+    });
+  };
+
+  const handleGoalWeightCancel = () => {
+    setTempGoalWeight(goalWeight);
+    setEditingGoalWeight(false);
   };
 
   return (
@@ -63,8 +83,42 @@ export default function Progress() {
               <div className="text-xl font-bold text-red-800">{currentWeight} kg</div>
               <div className="text-xs text-red-600">Current</div>
             </div>
-            <div className="bg-red-50 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-red-800">{goalWeight} kg</div>
+            <div className="bg-red-50 rounded-lg p-3 text-center relative">
+              {editingGoalWeight ? (
+                <div className="space-y-2">
+                  <input
+                    type="number"
+                    value={tempGoalWeight}
+                    onChange={(e) => setTempGoalWeight(Number(e.target.value))}
+                    className="text-xl font-bold text-red-800 bg-transparent text-center w-full border-b border-red-300 outline-none"
+                    step="0.1"
+                  />
+                  <div className="flex gap-1 justify-center">
+                    <button
+                      onClick={handleGoalWeightSave}
+                      className="text-xs bg-green-600 text-white px-2 py-1 rounded"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={handleGoalWeightCancel}
+                      className="text-xs bg-gray-400 text-white px-2 py-1 rounded"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="text-xl font-bold text-red-800">{goalWeight} kg</div>
+                  <button
+                    onClick={handleGoalWeightEdit}
+                    className="absolute top-1 right-1 p-1 text-red-400 hover:text-red-600 transition-colors"
+                  >
+                    <Edit size={12} />
+                  </button>
+                </>
+              )}
               <div className="text-xs text-red-600">Goal</div>
             </div>
           </div>

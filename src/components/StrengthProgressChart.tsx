@@ -1,6 +1,7 @@
+
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { TrendingUp, ArrowLeft, TrendingDown, ChevronRight } from "lucide-react";
+import { TrendingUp, ArrowLeft, TrendingDown, ChevronRight, Info } from "lucide-react";
 import { useState } from "react";
 
 const strengthData = [
@@ -157,6 +158,14 @@ export default function StrengthProgressChart() {
           <h3 className="text-lg font-semibold text-red-800">{workoutTypeName} Exercise Progress</h3>
         </div>
 
+        <div className="mb-4 p-3 bg-blue-50 rounded-lg flex items-center gap-2">
+          <Info className="text-blue-600" size={16} />
+          <div className="text-sm text-blue-700">
+            <div className="font-medium">Projected 1RM Based</div>
+            <div className="text-xs">Percentage increases calculated from estimated one-rep max improvements</div>
+          </div>
+        </div>
+
         <div className="space-y-3 mb-4">
           {exercises.map((exercise, i) => (
             <div key={i} className="p-4 bg-red-50 rounded-lg border border-red-200">
@@ -173,6 +182,7 @@ export default function StrengthProgressChart() {
                   }`}>
                     {exercise.trend === 'up' ? '+' : '-'}{exercise.change}%
                   </span>
+                  <span className="text-xs text-gray-500">1RM</span>
                 </div>
               </div>
               <div className="space-y-1 text-sm text-gray-600">
@@ -183,7 +193,7 @@ export default function StrengthProgressChart() {
                 </div>
                 <div className="flex justify-between items-center">
                   <div>
-                    <span className="font-medium">Calculated 1RM:</span> {exercise.start1RM}kg → {exercise.current1RM}kg
+                    <span className="font-medium">Projected 1RM:</span> {exercise.start1RM}kg → {exercise.current1RM}kg
                   </div>
                 </div>
               </div>
@@ -207,7 +217,7 @@ export default function StrengthProgressChart() {
         <TrendingUp className="text-red-600" size={18} />
         <h3 className="text-lg font-semibold text-red-800">Strength Progression</h3>
       </div>
-      <p className="text-sm text-gray-600 mb-4">Click on any category below to see detailed lift progress and percentage changes</p>
+      <p className="text-sm text-gray-600 mb-4">Click on any category below to see detailed lift progress and percentage changes based on projected 1RM</p>
       
       <div className="h-64 mb-4">
         <ResponsiveContainer width="100%" height="100%">

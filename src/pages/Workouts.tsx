@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight, Edit3, Save, X } from "lucide-react";
+import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight, Edit3, Save, X, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -65,6 +65,16 @@ const workoutVariations = {
 const bodyBattery = 90;
 const currentCarbs = 142;
 
+const goalOptions = [
+  "Weight Loss",
+  "Muscle Gain", 
+  "Strength",
+  "Endurance",
+  "General Fitness",
+  "Toning",
+  "Athletic Performance"
+];
+
 export default function Workouts() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -72,6 +82,9 @@ export default function Workouts() {
   const [editingProgram, setEditingProgram] = useState(false);
   const [programData, setProgramData] = useState(weeklyProgram);
   const [showTrackingModal, setShowTrackingModal] = useState(false);
+  const [primaryGoal, setPrimaryGoal] = useState("Weight Loss");
+  const [secondaryGoal, setSecondaryGoal] = useState("Strength");
+  const [editingGoals, setEditingGoals] = useState(false);
   
   // Get day name for current date (e.g., "monday", "tuesday")
   const getDayName = (date) => {
@@ -236,6 +249,22 @@ export default function Workouts() {
     setProgramData(updatedProgram);
   };
 
+  const handleEditGoals = () => {
+    setEditingGoals(true);
+  };
+
+  const handleSaveGoals = () => {
+    setEditingGoals(false);
+    toast({
+      title: "Goals Updated",
+      description: "Your fitness goals have been updated",
+    });
+  };
+
+  const handleCancelGoalsEdit = () => {
+    setEditingGoals(false);
+  };
+
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col pb-20">
@@ -271,21 +300,73 @@ export default function Workouts() {
 
           {/* Fitness Goals */}
           <Card className="p-6">
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">Fitness Goals</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-blue-800">Fitness Goals</h2>
+              {!editingGoals && (
+                <button
+                  onClick={handleEditGoals}
+                  className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                >
+                  <Edit size={16} />
+                </button>
+              )}
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="bg-blue-50 rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold text-blue-800">3/4</div>
                 <div className="text-xs text-blue-600">Weekly Workouts</div>
               </div>
               <div className="bg-blue-50 rounded-lg p-4 text-center">
-                <div className="text-lg font-bold text-blue-800">Weight Loss</div>
+                {editingGoals ? (
+                  <select
+                    value={primaryGoal}
+                    onChange={(e) => setPrimaryGoal(e.target.value)}
+                    className="text-lg font-bold text-blue-800 bg-transparent text-center w-full outline-none"
+                  >
+                    {goalOptions.map(goal => (
+                      <option key={goal} value={goal}>{goal}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="text-lg font-bold text-blue-800">{primaryGoal}</div>
+                )}
                 <div className="text-xs text-blue-600">Primary Goal</div>
               </div>
               <div className="bg-blue-50 rounded-lg p-4 text-center">
-                <div className="text-lg font-bold text-blue-800">Strength</div>
+                {editingGoals ? (
+                  <select
+                    value={secondaryGoal}
+                    onChange={(e) => setSecondaryGoal(e.target.value)}
+                    className="text-lg font-bold text-blue-800 bg-transparent text-center w-full outline-none"
+                  >
+                    {goalOptions.map(goal => (
+                      <option key={goal} value={goal}>{goal}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="text-lg font-bold text-blue-800">{secondaryGoal}</div>
+                )}
                 <div className="text-xs text-blue-600">Secondary Goal</div>
               </div>
             </div>
+            {editingGoals && (
+              <div className="flex gap-2 mt-4 justify-center">
+                <button
+                  onClick={handleSaveGoals}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  <Save size={16} />
+                  Save
+                </button>
+                <button
+                  onClick={handleCancelGoalsEdit}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  <X size={16} />
+                  Cancel
+                </button>
+              </div>
+            )}
           </Card>
 
           {/* Energy Status - Moved Higher */}
