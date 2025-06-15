@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -257,9 +258,9 @@ export default function Food() {
             </button>
             <button 
               onClick={() => setShowSavedMealsModal(true)}
-              className="w-full flex items-center gap-3 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              className="w-full flex items-center gap-3 p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
               <Utensils size={20} />
-              Log Saved Meal
+              Create Saved Meal
             </button>
             <button 
               onClick={handleBarcodeClick}
