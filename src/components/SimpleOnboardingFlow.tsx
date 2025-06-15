@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -5,11 +6,12 @@ import { SimpleOnboardingData } from '@/types/onboarding-simple';
 import { calculateExperienceBasedGoals, getManualGoals, getAvailableCreditGoals } from '@/utils/simple-calculations';
 
 import Step1BasicInfo from './onboarding-simple/Step1BasicInfo';
-import Step2Method from './onboarding-simple/Step2Method';
-import Step3Experience from './onboarding-simple/Step3Experience';
-import Step3Manual from './onboarding-simple/Step3Manual';
-import Step4CreditGoals from './onboarding-simple/Step4CreditGoals';
-import Step3Summary from './onboarding-simple/Step3Summary';
+import Step2DeviceLinking from './onboarding-simple/Step2DeviceLinking';
+import Step3Method from './onboarding-simple/Step2Method';
+import Step4Experience from './onboarding-simple/Step3Experience';
+import Step4Manual from './onboarding-simple/Step3Manual';
+import Step5CreditGoals from './onboarding-simple/Step4CreditGoals';
+import Step6Summary from './onboarding-simple/Step3Summary';
 
 interface SimpleOnboardingFlowProps {
   onComplete: (data: SimpleOnboardingData) => void;
@@ -22,8 +24,8 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
 
   // Calculate total steps based on setup method
   const getTotalSteps = () => {
-    if (!data.setupMethod) return 5; // Default estimate
-    return data.setupMethod === 'experience' ? 5 : 5; // Both paths have 5 steps
+    if (!data.setupMethod) return 6; // Default estimate
+    return data.setupMethod === 'experience' ? 6 : 6; // Both paths have 6 steps
   };
 
   const updateData = (stepData: Partial<SimpleOnboardingData>) => {
@@ -75,7 +77,7 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
         );
       case 1:
         return (
-          <Step2Method 
+          <Step2DeviceLinking 
             data={data} 
             onNext={(stepData) => {
               updateData(stepData);
@@ -85,9 +87,20 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
           />
         );
       case 2:
+        return (
+          <Step3Method 
+            data={data} 
+            onNext={(stepData) => {
+              updateData(stepData);
+              nextStep();
+            }}
+            onPrev={prevStep}
+          />
+        );
+      case 3:
         if (data.setupMethod === 'experience') {
           return (
-            <Step3Experience 
+            <Step4Experience 
               data={data} 
               onNext={(stepData) => {
                 updateData(stepData);
@@ -98,7 +111,7 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
           );
         } else {
           return (
-            <Step3Manual 
+            <Step4Manual 
               data={data} 
               onNext={(stepData) => {
                 updateData(stepData);
@@ -108,14 +121,14 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
             />
           );
         }
-      case 3:
+      case 4:
         const calculatedGoals = data.setupMethod === 'experience' 
           ? calculateExperienceBasedGoals(data)
           : getManualGoals(data);
         const availableGoals = getAvailableCreditGoals(calculatedGoals);
         
         return (
-          <Step4CreditGoals 
+          <Step5CreditGoals 
             data={data}
             availableGoals={availableGoals}
             onNext={(stepData) => {
@@ -125,9 +138,9 @@ export default function SimpleOnboardingFlow({ onComplete, onClose }: SimpleOnbo
             onPrev={prevStep}
           />
         );
-      case 4:
+      case 5:
         return (
-          <Step3Summary 
+          <Step6Summary 
             data={data as SimpleOnboardingData} 
             onComplete={handleComplete}
             onPrev={prevStep}

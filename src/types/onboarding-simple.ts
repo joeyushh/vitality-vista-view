@@ -6,15 +6,18 @@ export interface SimpleOnboardingData {
   age: number;
   gender: 'male' | 'female' | 'other';
   
-  // Step 2: Experience vs Manual Choice
+  // Step 2: Device Linking (optional)
+  connectedDevices?: string[];
+  
+  // Step 3: Experience vs Manual Choice
   setupMethod: 'experience' | 'manual';
   
-  // Step 3a: Experience-based (if setupMethod === 'experience')
+  // Step 4a: Experience-based (if setupMethod === 'experience')
   fitnessExperience?: 'beginner' | 'intermediate' | 'advanced';
   activityLevel?: 'sedentary' | 'lightly_active' | 'moderately_active' | 'very_active';
   goal?: 'lose_weight' | 'gain_muscle' | 'maintain' | 'improve_fitness';
   
-  // Step 3b: Manual Goals (if setupMethod === 'manual')
+  // Step 4b: Manual Goals (if setupMethod === 'manual')
   manualCalories?: number;
   manualCarbsPercentage?: number;
   manualProteinPercentage?: number;
@@ -23,7 +26,7 @@ export interface SimpleOnboardingData {
   manualSleepHours?: number;
   manualSteps?: number;
   
-  // Step 4: Credit Goals Selection
+  // Step 5: Credit Goals Selection
   selectedCreditGoals: string[];
   
   // Auto-calculated or manual results
