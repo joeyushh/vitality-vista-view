@@ -1,298 +1,282 @@
 
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { X, Plus, Minus } from "lucide-react";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import React, { useState, useEffect } from 'react';
+import { X, Plus, Minus, Clock, CheckCircle, Save } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
-interface TrackingModalProps {
-  type: "food" | "workout" | "weight";
-  onClose: () => void;
+interface Exercise {
+  name: string;
+  sets: number;
+  lastWeight: string;
+  suggestedWeight: string;
+  restTime: string;
+  completed: number;
 }
 
-export default function TrackingModal({ type, onClose }: TrackingModalProps) {
+interface TrackingModalProps {
+  type: 'food' | 'workout';
+  onClose: () => void;
+  prefilledWorkout?: Exercise[];
+}
+
+export default function TrackingModal({ type, onClose, prefilledWorkout }: TrackingModalProps) {
   const { toast } = useToast();
-  const [weight, setWeight] = useState("");
-  const [foodItems, setFoodItems] = useState([{ name: "", calories: "", protein: "" }]);
-  const [workoutExercises, setWorkoutExercises] = useState([{ 
-    name: "", 
-    sets: [{ weight: "", reps: "" }] 
-  }]);
+  const [workoutData, setWorkoutData] = useState<Exercise[]>([]);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const [currentSet, setCurrentSet] = useState(1);
+  const [restTimer, setRestTimer] = useState(0);
+  const [isResting, setIsResting] = useState(false);
+  const [workoutStartTime] = useState(new Date());
 
-  const handleWeightSubmit = () => {
-    if (!weight) return;
-    toast({
-      title: "Weight Logged",
-      description: `${weight} kg recorded for today`,
-    });
-    onClose();
+  // Initialize with prefilled workout data
+  useEffect(() => {
+    if (prefilledWorkout && prefilledWorkout.length > 0) {
+      setWorkoutData(prefilledWorkout.map(exercise => ({
+        ...exercise,
+        completed: 0
+      })));
+    }
+  }, [prefilledWorkout]);
+
+  // Rest timer logic
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isResting && restTimer > 0) {
+      interval = setInterval(() => {
+        setRestTimer(prev => {
+          if (prev <= 1) {
+            setIsResting(false);
+            toast({
+              title: "Rest Complete!",
+              description: "Time for your next set",
+            });
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isResting, restTimer, toast]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleFoodSubmit = () => {
-    const validItems = foodItems.filter(item => item.name && item.calories);
-    if (validItems.length === 0) return;
+  const getRestTimeInSeconds = (restTime: string) => {
+    if (restTime.includes('min')) {
+      const mins = parseInt(restTime.match(/(\d+)/)?.[1] || '2');
+      return mins * 60;
+    }
+    return parseInt(restTime.match(/(\d+)/)?.[1] || '90');
+  };
+
+  const completeSet = () => {
+    const currentExercise = workoutData[currentExerciseIndex];
     
-    const totalCalories = validItems.reduce((sum, item) => sum + parseInt(item.calories || "0"), 0);
-    const totalProtein = validItems.reduce((sum, item) => sum + parseInt(item.protein || "0"), 0);
-    
-    toast({
-      title: "Food Logged",
-      description: `${validItems.length} items logged: ${totalCalories} calories, ${totalProtein}g protein`,
-    });
-    onClose();
-  };
+    // Update completed sets
+    const updatedWorkout = [...workoutData];
+    updatedWorkout[currentExerciseIndex] = {
+      ...currentExercise,
+      completed: Math.min(currentExercise.completed + 1, currentExercise.sets)
+    };
+    setWorkoutData(updatedWorkout);
 
-  const handleWorkoutSubmit = () => {
-    const validExercises = workoutExercises.filter(ex => ex.name && ex.sets.some(set => set.reps));
-    if (validExercises.length === 0) return;
-    
-    const totalSets = validExercises.reduce((sum, ex) => sum + ex.sets.length, 0);
-    
-    toast({
-      title: "Workout Logged",
-      description: `${validExercises.length} exercises, ${totalSets} sets completed`,
-    });
-    onClose();
-  };
-
-  const addFoodItem = () => {
-    setFoodItems([...foodItems, { name: "", calories: "", protein: "" }]);
-  };
-
-  const removeFoodItem = (index: number) => {
-    setFoodItems(foodItems.filter((_, i) => i !== index));
-  };
-
-  const updateFoodItem = (index: number, field: string, value: string) => {
-    const updated = foodItems.map((item, i) => 
-      i === index ? { ...item, [field]: value } : item
-    );
-    setFoodItems(updated);
-  };
-
-  const addExercise = () => {
-    setWorkoutExercises([...workoutExercises, { name: "", sets: [{ weight: "", reps: "" }] }]);
-  };
-
-  const removeExercise = (index: number) => {
-    setWorkoutExercises(workoutExercises.filter((_, i) => i !== index));
-  };
-
-  const updateExercise = (index: number, field: string, value: string) => {
-    const updated = workoutExercises.map((ex, i) => 
-      i === index ? { ...ex, [field]: value } : ex
-    );
-    setWorkoutExercises(updated);
-  };
-
-  const addSet = (exerciseIndex: number) => {
-    const updated = workoutExercises.map((ex, i) => 
-      i === exerciseIndex ? { ...ex, sets: [...ex.sets, { weight: "", reps: "" }] } : ex
-    );
-    setWorkoutExercises(updated);
-  };
-
-  const removeSet = (exerciseIndex: number, setIndex: number) => {
-    const updated = workoutExercises.map((ex, i) => 
-      i === exerciseIndex ? { 
-        ...ex, 
-        sets: ex.sets.filter((_, si) => si !== setIndex) 
-      } : ex
-    );
-    setWorkoutExercises(updated);
-  };
-
-  const updateSet = (exerciseIndex: number, setIndex: number, field: string, value: string) => {
-    const updated = workoutExercises.map((ex, i) => 
-      i === exerciseIndex ? {
-        ...ex,
-        sets: ex.sets.map((set, si) => 
-          si === setIndex ? { ...set, [field]: value } : set
-        )
-      } : ex
-    );
-    setWorkoutExercises(updated);
-  };
-
-  const getTitle = () => {
-    switch (type) {
-      case "food": return "Track Food";
-      case "workout": return "Log Workout";
-      case "weight": return "Log Weight";
+    // Check if exercise is complete
+    if (currentSet >= currentExercise.sets) {
+      // Move to next exercise
+      if (currentExerciseIndex < workoutData.length - 1) {
+        setCurrentExerciseIndex(currentExerciseIndex + 1);
+        setCurrentSet(1);
+        toast({
+          title: "Exercise Complete!",
+          description: `${currentExercise.name} finished. Moving to next exercise.`,
+        });
+      } else {
+        // Workout complete
+        toast({
+          title: "Workout Complete!",
+          description: "Great job! All exercises finished.",
+        });
+      }
+    } else {
+      // Start rest timer for next set
+      const restSeconds = getRestTimeInSeconds(currentExercise.restTime);
+      setRestTimer(restSeconds);
+      setIsResting(true);
+      setCurrentSet(currentSet + 1);
+      
+      toast({
+        title: "Set Complete!",
+        description: `Rest for ${currentExercise.restTime}, then continue.`,
+      });
     }
   };
 
+  const skipRest = () => {
+    setIsResting(false);
+    setRestTimer(0);
+  };
+
+  const totalSets = workoutData.reduce((sum, ex) => sum + ex.sets, 0);
+  const completedSets = workoutData.reduce((sum, ex) => sum + ex.completed, 0);
+  const workoutProgress = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
+
+  const currentExercise = workoutData[currentExerciseIndex];
+
+  if (type === 'food') {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <Card className="w-full max-w-md bg-white rounded-lg shadow-xl">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-800">Log Food</h2>
+              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
+                <X size={20} />
+              </button>
+            </div>
+            <p className="text-gray-600">Food tracking functionality coming soon...</p>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <Card className="w-full max-w-md bg-white rounded-lg shadow-xl max-h-[90vh] overflow-auto">
         <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">{getTitle()}</h2>
-            <button 
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-full"
-            >
-              <X size={24} />
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-blue-800">Workout Session</h2>
+            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
+              <X size={20} />
             </button>
           </div>
 
-          {type === "weight" && (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Weight (kg)</label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  placeholder="78.5"
-                  className="w-full"
-                />
+          {/* Progress Overview */}
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-blue-800">Overall Progress</span>
+              <span className="text-sm text-blue-600">{completedSets}/{totalSets} sets</span>
+            </div>
+            <div className="w-full bg-blue-200 rounded-full h-2">
+              <div 
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                style={{ width: `${workoutProgress}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Current Exercise */}
+          {currentExercise && (
+            <div className="mb-6">
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-bold text-blue-800">{currentExercise.name}</h3>
+                <p className="text-sm text-gray-600">
+                  Set {currentSet} of {currentExercise.sets}
+                </p>
               </div>
+
+              {/* Weight Info */}
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                <div className="text-sm text-green-800">
+                  <div className="font-medium mb-1">Target Weight</div>
+                  <div className="font-mono text-lg">{currentExercise.suggestedWeight}</div>
+                  <div className="text-xs text-green-600 mt-1">
+                    Last session: {currentExercise.lastWeight}
+                  </div>
+                </div>
+              </div>
+
+              {/* Rest Timer */}
+              {isResting && (
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4 text-center">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Clock size={20} className="text-orange-600" />
+                    <span className="text-sm font-medium text-orange-800">Rest Time</span>
+                  </div>
+                  <div className="text-2xl font-bold text-orange-600 mb-2">
+                    {formatTime(restTimer)}
+                  </div>
+                  <button
+                    onClick={skipRest}
+                    className="text-sm text-orange-600 hover:text-orange-800 underline"
+                  >
+                    Skip Rest
+                  </button>
+                </div>
+              )}
+
+              {/* Action Button */}
               <button
-                onClick={handleWeightSubmit}
-                className="w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                onClick={completeSet}
+                disabled={isResting}
+                className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
+                  isResting 
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
+                    : 'bg-green-600 text-white hover:bg-green-700 active:scale-95'
+                }`}
               >
-                Log Weight
+                {isResting ? 'Resting...' : 
+                 currentSet > currentExercise.sets ? 'Exercise Complete' : 
+                 'Complete Set'}
               </button>
             </div>
           )}
 
-          {type === "food" && (
-            <div className="space-y-4">
-              {foodItems.map((item, index) => (
-                <div key={index} className="p-4 border rounded-lg space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium">Food Item {index + 1}</h3>
-                    {foodItems.length > 1 && (
-                      <button
-                        onClick={() => removeFoodItem(index)}
-                        className="p-1 text-red-500 hover:bg-red-50 rounded"
-                      >
-                        <Minus size={16} />
-                      </button>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium mb-1">Food Name</label>
-                      <Input
-                        value={item.name}
-                        onChange={(e) => updateFoodItem(index, "name", e.target.value)}
-                        placeholder="Chicken Breast"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium mb-1">Calories</label>
-                      <Input
-                        type="number"
-                        value={item.calories}
-                        onChange={(e) => updateFoodItem(index, "calories", e.target.value)}
-                        placeholder="250"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium mb-1">Protein (g)</label>
-                      <Input
-                        type="number"
-                        value={item.protein}
-                        onChange={(e) => updateFoodItem(index, "protein", e.target.value)}
-                        placeholder="25"
-                      />
+          {/* Exercise List */}
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Today's Exercises</h4>
+            {workoutData.map((exercise, index) => (
+              <div 
+                key={index} 
+                className={`p-3 rounded-lg border-2 transition-colors ${
+                  index === currentExerciseIndex 
+                    ? 'border-blue-300 bg-blue-50' 
+                    : exercise.completed >= exercise.sets
+                    ? 'border-green-300 bg-green-50'
+                    : 'border-gray-200 bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="font-medium text-sm text-gray-800">{exercise.name}</div>
+                    <div className="text-xs text-gray-500">
+                      {exercise.completed}/{exercise.sets} sets • {exercise.restTime}
                     </div>
                   </div>
+                  {exercise.completed >= exercise.sets && (
+                    <CheckCircle size={16} className="text-green-600" />
+                  )}
                 </div>
-              ))}
-              <button
-                onClick={addFoodItem}
-                className="w-full py-2 border-2 border-dashed border-green-300 text-green-600 rounded-lg hover:bg-green-50"
-              >
-                <Plus size={16} className="inline mr-2" />
-                Add Food Item
-              </button>
-              <button
-                onClick={handleFoodSubmit}
-                className="w-full py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-              >
-                Log Food
-              </button>
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
 
-          {type === "workout" && (
-            <div className="space-y-4">
-              {workoutExercises.map((exercise, exerciseIndex) => (
-                <div key={exerciseIndex} className="p-4 border rounded-lg space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium">Exercise {exerciseIndex + 1}</h3>
-                    {workoutExercises.length > 1 && (
-                      <button
-                        onClick={() => removeExercise(exerciseIndex)}
-                        className="p-1 text-red-500 hover:bg-red-50 rounded"
-                      >
-                        <Minus size={16} />
-                      </button>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium mb-1">Exercise Name</label>
-                    <Input
-                      value={exercise.name}
-                      onChange={(e) => updateExercise(exerciseIndex, "name", e.target.value)}
-                      placeholder="Bench Press"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-xs font-medium">Sets</label>
-                    {exercise.sets.map((set, setIndex) => (
-                      <div key={setIndex} className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500 w-8">#{setIndex + 1}</span>
-                        <Input
-                          placeholder="Weight (kg)"
-                          value={set.weight}
-                          onChange={(e) => updateSet(exerciseIndex, setIndex, "weight", e.target.value)}
-                          className="flex-1"
-                        />
-                        <Input
-                          placeholder="Reps"
-                          value={set.reps}
-                          onChange={(e) => updateSet(exerciseIndex, setIndex, "reps", e.target.value)}
-                          className="flex-1"
-                        />
-                        {exercise.sets.length > 1 && (
-                          <button
-                            onClick={() => removeSet(exerciseIndex, setIndex)}
-                            className="p-1 text-red-500 hover:bg-red-50 rounded"
-                          >
-                            <Minus size={16} />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                    <button
-                      onClick={() => addSet(exerciseIndex)}
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      + Add Set
-                    </button>
-                  </div>
+          {/* Workout Summary */}
+          <div className="mt-6 pt-4 border-t">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div className="text-lg font-bold text-blue-600">{completedSets}</div>
+                <div className="text-xs text-gray-600">Sets Done</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-blue-600">
+                  {Math.round((Date.now() - workoutStartTime.getTime()) / 60000)}m
                 </div>
-              ))}
-              <button
-                onClick={addExercise}
-                className="w-full py-2 border-2 border-dashed border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50"
-              >
-                <Plus size={16} className="inline mr-2" />
-                Add Exercise
-              </button>
-              <button
-                onClick={handleWorkoutSubmit}
-                className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                Log Workout
-              </button>
+                <div className="text-xs text-gray-600">Duration</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-blue-600">
+                  {Math.round(workoutProgress)}%
+                </div>
+                <div className="text-xs text-gray-600">Complete</div>
+              </div>
             </div>
-          )}
+          </div>
         </div>
       </Card>
     </div>
