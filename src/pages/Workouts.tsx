@@ -129,34 +129,34 @@ export default function Workouts() {
   const [secondaryGoal, setSecondaryGoal] = useState("Strength");
   const [editingGoals, setEditingGoals] = useState(false);
   
-  // New state for managing exercises with detailed info
+  // Enhanced state for managing exercises with detailed suggestions
   const [dayExercises, setDayExercises] = useState({
     monday: [
-      { name: "Bench Press", sets: 4, restTime: "2-3min", lastWeight: "80kg/6", suggestedWeight: "" },
-      { name: "Incline DB Press", sets: 3, restTime: "90s", lastWeight: "30kg/8", suggestedWeight: "" },
-      { name: "Cable Flyes", sets: 3, restTime: "60s", lastWeight: "25kg/10", suggestedWeight: "" },
-      { name: "Tricep Pushdowns", sets: 3, restTime: "60s", lastWeight: "40kg/12", suggestedWeight: "" },
+      { name: "Bench Press", sets: 4, restTime: "2-3min", lastWeight: "80kg/6", suggestedWeight: "82.5kg/6-8", suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for strength focus. Weight change: +5.0% (80kg → 82.5kg)." },
+      { name: "Incline DB Press", sets: 3, restTime: "90s", lastWeight: "30kg/8", suggestedWeight: "31kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (30kg → 31kg)." },
+      { name: "Cable Flyes", sets: 3, restTime: "60s", lastWeight: "25kg/10", suggestedWeight: "25.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (25kg → 25.5kg)." },
+      { name: "Tricep Pushdowns", sets: 3, restTime: "60s", lastWeight: "40kg/12", suggestedWeight: "41kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (40kg → 41kg)." },
     ],
     wednesday: [
-      { name: "Pull-ups", sets: 4, restTime: "2min", lastWeight: "BW/8", suggestedWeight: "" },
-      { name: "Bent Over Rows", sets: 3, restTime: "2min", lastWeight: "70kg/8", suggestedWeight: "" },
-      { name: "Lat Pulldowns", sets: 3, restTime: "90s", lastWeight: "65kg/10", suggestedWeight: "" },
-      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "" },
-      { name: "Bicep Curls", sets: 3, restTime: "60s", lastWeight: "17.5kg/10", suggestedWeight: "" },
+      { name: "Pull-ups", sets: 4, restTime: "2min", lastWeight: "BW/8", suggestedWeight: "BW/7-9", suggestedExplanation: "Body battery: 90%. Try for 1-2 extra reps." },
+      { name: "Bent Over Rows", sets: 3, restTime: "2min", lastWeight: "70kg/8", suggestedWeight: "71.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (70kg → 71.5kg)." },
+      { name: "Lat Pulldowns", sets: 3, restTime: "90s", lastWeight: "65kg/10", suggestedWeight: "66.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (65kg → 66.5kg)." },
+      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "36kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (35kg → 36kg)." },
+      { name: "Bicep Curls", sets: 3, restTime: "60s", lastWeight: "17.5kg/10", suggestedWeight: "18kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (17.5kg → 18kg)." },
     ],
     thursday: [
-      { name: "Squats", sets: 4, restTime: "3min", lastWeight: "100kg/6", suggestedWeight: "" },
-      { name: "Romanian Deadlifts", sets: 3, restTime: "2min", lastWeight: "80kg/8", suggestedWeight: "" },
-      { name: "Bulgarian Split Squats", sets: 3, restTime: "90s", lastWeight: "25kg/10", suggestedWeight: "" },
-      { name: "Leg Press", sets: 3, restTime: "90s", lastWeight: "180kg/12", suggestedWeight: "" },
-      { name: "Calf Raises", sets: 4, restTime: "60s", lastWeight: "60kg/15", suggestedWeight: "" },
-      { name: "Leg Curls", sets: 3, restTime: "60s", lastWeight: "45kg/12", suggestedWeight: "" },
+      { name: "Squats", sets: 4, restTime: "3min", lastWeight: "100kg/6", suggestedWeight: "105kg/6-8", suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for strength focus. Weight change: +5.0% (100kg → 105kg)." },
+      { name: "Romanian Deadlifts", sets: 3, restTime: "2min", lastWeight: "80kg/8", suggestedWeight: "82kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (80kg → 82kg)." },
+      { name: "Bulgarian Split Squats", sets: 3, restTime: "90s", lastWeight: "25kg/10", suggestedWeight: "25.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (25kg → 25.5kg)." },
+      { name: "Leg Press", sets: 3, restTime: "90s", lastWeight: "180kg/12", suggestedWeight: "184.5kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (180kg → 184.5kg)." },
+      { name: "Calf Raises", sets: 4, restTime: "60s", lastWeight: "60kg/15", suggestedWeight: "61.5kg/12-15", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (60kg → 61.5kg)." },
+      { name: "Leg Curls", sets: 3, restTime: "60s", lastWeight: "45kg/12", suggestedWeight: "46kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (45kg → 46kg)." },
     ],
     saturday: [
-      { name: "Overhead Press", sets: 4, restTime: "2-3min", lastWeight: "50kg/6", suggestedWeight: "" },
-      { name: "Lateral Raises", sets: 3, restTime: "90s", lastWeight: "12.5kg/12", suggestedWeight: "" },
-      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "" },
-      { name: "Tricep Extensions", sets: 3, restTime: "60s", lastWeight: "30kg/12", suggestedWeight: "" },
+      { name: "Overhead Press", sets: 4, restTime: "2-3min", lastWeight: "50kg/6", suggestedWeight: "52.5kg/6-8", suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for strength focus. Weight change: +5.0% (50kg → 52.5kg)." },
+      { name: "Lateral Raises", sets: 3, restTime: "90s", lastWeight: "12.5kg/12", suggestedWeight: "13kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (12.5kg → 13kg)." },
+      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "36kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (35kg → 36kg)." },
+      { name: "Tricep Extensions", sets: 3, restTime: "60s", lastWeight: "30kg/12", suggestedWeight: "31kg/8-10", suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (30kg → 31kg)." },
     ]
   });
   

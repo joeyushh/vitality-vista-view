@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Plus, Trash2, Edit3, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -9,6 +8,7 @@ interface Exercise {
   restTime: string;
   lastWeight: string;
   suggestedWeight: string;
+  suggestedExplanation?: string;
 }
 
 interface ExerciseManagerProps {
@@ -54,7 +54,8 @@ export default function ExerciseManager({
     sets: 3,
     restTime: '90s',
     lastWeight: '',
-    suggestedWeight: ''
+    suggestedWeight: '',
+    suggestedExplanation: ''
   });
 
   const getWorkoutType = (dayName: string) => {
@@ -66,28 +67,68 @@ export default function ExerciseManager({
   };
 
   const calculateSuggestedWeight = (lastWeight: string, bodyBattery: number) => {
-    if (!lastWeight) return '';
+    if (!lastWeight) return { weight: '', explanation: '' };
     
-    const match = lastWeight.match(/(\d+(?:\.\d+)?)kg/);
-    if (!match) return lastWeight;
+    // Parse different weight formats
+    const kgMatch = lastWeight.match(/(\d+(?:\.\d+)?)kg(?:\/(\d+))?/);
+    const lbMatch = lastWeight.match(/(\d+(?:\.\d+)?)lb(?:\/(\d+))?/);
+    const bwMatch = lastWeight.match(/BW(?:\/(\d+))?/);
     
-    const weight = parseFloat(match[1]);
-    let increase = 0;
+    let weight = 0;
+    let reps = 0;
+    let unit = 'kg';
     
-    if (bodyBattery >= 90) {
-      increase = weight * 0.05; // 5% increase for high battery
-    } else if (bodyBattery >= 80) {
-      increase = weight * 0.025; // 2.5% increase for good battery
-    } else if (bodyBattery >= 70) {
-      increase = 0; // No increase for moderate battery
+    if (kgMatch) {
+      weight = parseFloat(kgMatch[1]);
+      reps = parseInt(kgMatch[2]) || 10;
+      unit = 'kg';
+    } else if (lbMatch) {
+      weight = parseFloat(lbMatch[1]);
+      reps = parseInt(lbMatch[2]) || 10;
+      unit = 'lb';
+    } else if (bwMatch) {
+      reps = parseInt(bwMatch[1]) || 8;
+      return { 
+        weight: `BW/${Math.max(reps - 1, 6)}-${reps + 1}`, 
+        explanation: `Body battery: ${bodyBattery}%. ${bodyBattery >= 80 ? 'Try for 1-2 extra reps' : bodyBattery >= 70 ? 'Maintain rep range' : 'Focus on form, slightly fewer reps'}.`
+      };
     } else {
-      increase = -weight * 0.025; // 2.5% decrease for low battery
+      return { weight: lastWeight, explanation: 'Enter weight in format: 60kg/10 or 60lb/10' };
     }
     
-    const newWeight = Math.round((weight + increase) * 2) / 2; // Round to nearest 0.5
-    const repsAdjustment = increase > 0 ? '8-10' : increase < 0 ? '10-12' : '8-10';
+    let percentageIncrease = 0;
+    let repAdjustment = '';
+    let explanation = '';
     
-    return `${newWeight}kg/${repsAdjustment}`;
+    if (bodyBattery >= 90) {
+      percentageIncrease = 0.05; // 5% increase
+      repAdjustment = '6-8';
+      explanation = `Body battery: ${bodyBattery}% (Excellent). 5% weight increase for strength focus.`;
+    } else if (bodyBattery >= 80) {
+      percentageIncrease = 0.025; // 2.5% increase
+      repAdjustment = '8-10';
+      explanation = `Body battery: ${bodyBattery}% (Good). 2.5% weight increase for hypertrophy.`;
+    } else if (bodyBattery >= 70) {
+      percentageIncrease = 0; // No increase
+      repAdjustment = '8-12';
+      explanation = `Body battery: ${bodyBattery}% (Moderate). Maintain weight, focus on rep quality.`;
+    } else {
+      percentageIncrease = -0.025; // 2.5% decrease
+      repAdjustment = '10-12';
+      explanation = `Body battery: ${bodyBattery}% (Low). 2.5% weight decrease, higher reps for recovery.`;
+    }
+    
+    const newWeight = weight * (1 + percentageIncrease);
+    const roundedWeight = unit === 'kg' ? Math.round(newWeight * 2) / 2 : Math.round(newWeight * 4) / 4; // Round to nearest 0.5kg or 0.25lb
+    
+    const weightChange = percentageIncrease !== 0 ? 
+      `${percentageIncrease > 0 ? '+' : ''}${(percentageIncrease * 100).toFixed(1)}%` : 
+      'No change';
+    
+    return {
+      weight: `${roundedWeight}${unit}/${repAdjustment}`,
+      explanation: `${explanation} Weight change: ${weightChange} (${weight}${unit} → ${roundedWeight}${unit}).`
+    };
   };
 
   const addExercise = () => {
@@ -100,11 +141,12 @@ export default function ExerciseManager({
       return;
     }
 
-    const suggestedWeight = calculateSuggestedWeight(newExercise.lastWeight, bodyBattery);
+    const { weight: suggestedWeight, explanation } = calculateSuggestedWeight(newExercise.lastWeight, bodyBattery);
     
     const exerciseToAdd = {
       ...newExercise,
-      suggestedWeight
+      suggestedWeight,
+      suggestedExplanation: explanation
     };
 
     onExercisesChange([...exercises, exerciseToAdd]);
@@ -114,7 +156,8 @@ export default function ExerciseManager({
       sets: 3,
       restTime: '90s',
       lastWeight: '',
-      suggestedWeight: ''
+      suggestedWeight: '',
+      suggestedExplanation: ''
     });
     
     setShowAddForm(false);
@@ -141,7 +184,9 @@ export default function ExerciseManager({
     
     // Recalculate suggested weight if last weight changes
     if (field === 'lastWeight') {
-      updatedExercises[index].suggestedWeight = calculateSuggestedWeight(value as string, bodyBattery);
+      const { weight, explanation } = calculateSuggestedWeight(value as string, bodyBattery);
+      updatedExercises[index].suggestedWeight = weight;
+      updatedExercises[index].suggestedExplanation = explanation;
     }
     
     onExercisesChange(updatedExercises);
@@ -202,25 +247,29 @@ export default function ExerciseManager({
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 mb-2">
             <div>
               <label className="text-xs text-gray-500">Last Performance</label>
               <input
                 type="text"
                 value={exercise.lastWeight}
                 onChange={(e) => updateExercise(index, 'lastWeight', e.target.value)}
-                placeholder="e.g., 60kg/10"
+                placeholder="e.g., 60kg/10, 130lb/8, BW/12"
                 className="w-full text-sm border border-gray-300 rounded px-2 py-1 font-mono"
               />
             </div>
-            <div>
-              <label className="text-xs text-gray-500">
-                Suggested (Battery: {bodyBattery}%)
-              </label>
-              <div className="text-sm font-mono text-green-700 bg-green-50 border border-green-200 rounded px-2 py-1">
-                {exercise.suggestedWeight || 'Enter last weight'}
-              </div>
+          </div>
+          
+          <div className="bg-green-50 border border-green-200 rounded p-2">
+            <div className="text-xs text-gray-500 mb-1">Suggested This Session</div>
+            <div className="text-sm font-mono text-green-700 font-medium mb-1">
+              {exercise.suggestedWeight || 'Enter last weight for suggestion'}
             </div>
+            {exercise.suggestedExplanation && (
+              <div className="text-xs text-green-600">
+                {exercise.suggestedExplanation}
+              </div>
+            )}
           </div>
         </div>
       ))}

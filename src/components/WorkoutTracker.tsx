@@ -5,19 +5,53 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import TrackingModal from "./TrackingModal";
 
-const dummyWorkouts = [
-  { ex: "Bench Press", sets: 4, weightReps: "80kg/6, 75kg/7, 70kg/8, 65kg/9", restTime: "2-3min", completed: 0 },
-  { ex: "Incline DB Press", sets: 3, weightReps: "30kg/8, 27.5kg/9, 25kg/10", restTime: "90s", completed: 0 },
-  { ex: "Cable Flyes", sets: 3, weightReps: "25kg/10, 22.5kg/12, 20kg/11", restTime: "60s", completed: 0 },
-  { ex: "Tricep Pushdowns", sets: 3, weightReps: "40kg/12, 37.5kg/13, 35kg/15", restTime: "60s", completed: 0 },
+// This should sync with the exercise data from Workouts page
+// For now, using the enhanced data structure with suggestions
+const todaysWorkout = [
+  { 
+    name: "Bench Press", 
+    sets: 4, 
+    lastWeight: "80kg/6", 
+    suggestedWeight: "82.5kg/6-8",
+    suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for strength focus. Weight change: +5.0% (80kg → 82.5kg).",
+    restTime: "2-3min", 
+    completed: 0 
+  },
+  { 
+    name: "Incline DB Press", 
+    sets: 3, 
+    lastWeight: "30kg/8", 
+    suggestedWeight: "31kg/8-10",
+    suggestedExplanation: "Body battery: 90% (Excellent). 5% weight increase for hypertrophy. Weight change: +5.0% (30kg → 31kg).",
+    restTime: "90s", 
+    completed: 0 
+  },
+  { 
+    name: "Cable Flyes", 
+    sets: 3, 
+    lastWeight: "25kg/10", 
+    suggestedWeight: "25.5kg/8-10",
+    suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (25kg → 25.5kg).",
+    restTime: "60s", 
+    completed: 0 
+  },
+  { 
+    name: "Tricep Pushdowns", 
+    sets: 3, 
+    lastWeight: "40kg/12", 
+    suggestedWeight: "41kg/8-10",
+    suggestedExplanation: "Body battery: 90% (Excellent). 2.5% weight increase for hypertrophy. Weight change: +2.5% (40kg → 41kg).",
+    restTime: "60s", 
+    completed: 0 
+  },
 ];
 
 export default function WorkoutTracker() {
   const navigate = useNavigate();
   const [showTrackingModal, setShowTrackingModal] = useState(false);
   
-  const totalSets = dummyWorkouts.reduce((sum, w) => sum + w.sets, 0);
-  const completedSets = dummyWorkouts.reduce((sum, w) => sum + w.completed, 0);
+  const totalSets = todaysWorkout.reduce((sum, w) => sum + w.sets, 0);
+  const completedSets = todaysWorkout.reduce((sum, w) => sum + w.completed, 0);
 
   const handleWorkoutLogClick = () => {
     navigate("/workouts");
@@ -46,7 +80,7 @@ export default function WorkoutTracker() {
               onClick={handleWorkoutLogClick}
               className="flex items-center gap-1 px-3 py-2 bg-blue-100 text-blue-700 border border-blue-300 rounded-lg shadow-sm hover:bg-blue-200 transition-colors active:scale-95">
               <List size={16} />
-              <span className="text-sm font-medium">Log</span>
+              <span className="text-sm font-medium">Edit</span>
             </button>
           </div>
         </div>
@@ -57,7 +91,7 @@ export default function WorkoutTracker() {
             <h3 className="font-medium text-blue-800">Push Day - Chest & Triceps</h3>
             <div className="ml-auto flex items-center gap-1 text-xs text-blue-600">
               <Clock size={12} />
-              <span>Not started</span>
+              <span>Ready to start</span>
             </div>
           </div>
           <div className="text-xs text-blue-600">
@@ -71,12 +105,12 @@ export default function WorkoutTracker() {
           </div>
         </div>
         
-        {/* Exercise List - Mobile Optimized */}
+        {/* Exercise List - Read-only for starting workout */}
         <div className="space-y-3">
-          {dummyWorkouts.map((item, i) => (
+          {todaysWorkout.map((item, i) => (
             <div key={i} className="bg-white border border-blue-200 rounded-lg p-3 active:bg-blue-50 transition-colors">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-medium text-blue-800 text-sm">{item.ex}</h4>
+                <h4 className="font-medium text-blue-800 text-sm">{item.name}</h4>
                 <div className="flex items-center gap-2">
                   <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
                     {item.sets} sets
@@ -84,9 +118,24 @@ export default function WorkoutTracker() {
                   <span className="text-xs text-gray-500">{item.restTime}</span>
                 </div>
               </div>
-              <div className="text-xs text-gray-600 font-mono mb-2">
-                {item.weightReps}
+              
+              {/* Last vs Suggested Weight Comparison */}
+              <div className="grid grid-cols-2 gap-2 mb-2">
+                <div className="text-xs">
+                  <div className="text-gray-500">Last Time</div>
+                  <div className="font-mono text-gray-700">{item.lastWeight}</div>
+                </div>
+                <div className="text-xs">
+                  <div className="text-gray-500">Today's Target</div>
+                  <div className="font-mono text-green-700 font-medium">{item.suggestedWeight}</div>
+                </div>
               </div>
+              
+              {/* Suggestion Explanation */}
+              <div className="text-xs text-green-600 bg-green-50 rounded p-2 mb-2">
+                {item.suggestedExplanation}
+              </div>
+              
               <div className="flex items-center justify-between">
                 <div className="text-xs text-blue-600">
                   {item.completed}/{item.sets} completed
