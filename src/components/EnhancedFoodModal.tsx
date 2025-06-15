@@ -8,11 +8,14 @@ import SavedMealsManager from "./SavedMealsManager";
 
 interface EnhancedFoodModalProps {
   onClose: () => void;
+  initialMode?: "search" | "saved" | "barcode" | "voice" | "mealBuilder";
 }
 
-export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
+export default function EnhancedFoodModal({ onClose, initialMode = "search" }: EnhancedFoodModalProps) {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState<"search" | "saved" | "barcode" | "voice">("search");
+  const [activeTab, setActiveTab] = useState<"search" | "saved" | "barcode" | "voice">(
+    initialMode === "mealBuilder" ? "search" : initialMode
+  );
   const [isScanning, setIsScanning] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -67,7 +70,9 @@ export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
         <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Track Food</h2>
+              <h2 className="text-2xl font-bold">
+                {initialMode === "mealBuilder" ? "Create Saved Meal" : "Track Food"}
+              </h2>
               <button 
                 onClick={onClose}
                 className="p-2 hover:bg-gray-100 rounded-full"
@@ -76,131 +81,152 @@ export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
               </button>
             </div>
 
-            {/* Tab Navigation */}
-            <div className="flex gap-2 mb-6 overflow-x-auto">
-              <button
-                onClick={() => setActiveTab("search")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
-                  activeTab === "search" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
-                }`}
-              >
-                <Search size={16} />
-                Search
-              </button>
-              <button
-                onClick={() => setActiveTab("saved")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
-                  activeTab === "saved" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
-                }`}
-              >
-                <Utensils size={16} />
-                Saved Meals
-              </button>
-              <button
-                onClick={() => setActiveTab("barcode")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
-                  activeTab === "barcode" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
-                }`}
-              >
-                <Camera size={16} />
-                Scan
-              </button>
-              <button
-                onClick={() => setActiveTab("voice")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
-                  activeTab === "voice" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
-                }`}
-              >
-                <Mic size={16} />
-                Voice
-              </button>
-            </div>
-
-            {/* Search Tab */}
-            {activeTab === "search" && (
+            {initialMode === "mealBuilder" ? (
+              // Direct to meal builder mode
               <div className="space-y-4 text-center">
                 <div className="p-8 bg-gray-50 rounded-lg">
                   <Search size={48} className="mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-600 mb-4">Build your saved meal by searching and selecting multiple foods</p>
                   <button
                     onClick={handleSearchClick}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
                   >
-                    Search Food Database
+                    Start Building Meal
                   </button>
-                  <p className="text-sm text-gray-600 mt-2">Find foods and build custom meals</p>
                 </div>
               </div>
-            )}
-
-            {/* Saved Meals Tab */}
-            {activeTab === "saved" && (
-              <div className="space-y-4 text-center">
-                <div className="p-8 bg-gray-50 rounded-lg">
-                  <Utensils size={48} className="mx-auto text-gray-400 mb-4" />
+            ) : (
+              <>
+                {/* Tab Navigation */}
+                <div className="flex gap-2 mb-6 overflow-x-auto">
                   <button
-                    onClick={handleSavedMealsClick}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    onClick={() => setActiveTab("search")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
+                      activeTab === "search" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
+                    }`}
                   >
-                    View Saved Meals
+                    <Search size={16} />
+                    Search
                   </button>
-                  <p className="text-sm text-gray-600 mt-2">Quick log your favorite meals</p>
+                  <button
+                    onClick={() => setActiveTab("saved")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
+                      activeTab === "saved" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    <Utensils size={16} />
+                    Saved Meals
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("barcode")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
+                      activeTab === "barcode" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    <Camera size={16} />
+                    Scan
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("voice")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
+                      activeTab === "voice" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    <Mic size={16} />
+                    Voice
+                  </button>
                 </div>
-              </div>
-            )}
 
-            {/* Barcode Tab */}
-            {activeTab === "barcode" && (
-              <div className="space-y-4 text-center">
-                <div className="p-8 bg-gray-50 rounded-lg">
-                  {isScanning ? (
-                    <div>
-                      <div className="animate-pulse">📱 Scanning...</div>
-                      <p className="text-sm text-gray-600 mt-2">Point camera at barcode</p>
-                    </div>
-                  ) : (
-                    <div>
-                      <Camera size={48} className="mx-auto text-gray-400 mb-4" />
+                {/* Search Tab */}
+                {activeTab === "search" && (
+                  <div className="space-y-4 text-center">
+                    <div className="p-8 bg-gray-50 rounded-lg">
+                      <Search size={48} className="mx-auto text-gray-400 mb-4" />
                       <button
-                        onClick={handleBarcodeStart}
+                        onClick={handleSearchClick}
                         className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
                       >
-                        Start Scanning
+                        Search Food Database
                       </button>
+                      <p className="text-sm text-gray-600 mt-2">Find foods and build custom meals</p>
                     </div>
-                  )}
-                </div>
-              </div>
-            )}
+                  </div>
+                )}
 
-            {/* Voice Tab */}
-            {activeTab === "voice" && (
-              <div className="space-y-4 text-center">
-                <div className="p-8 bg-gray-50 rounded-lg">
-                  {isRecording ? (
-                    <div>
-                      <div className="animate-pulse text-red-500">🎤 Recording...</div>
-                      <p className="text-sm text-gray-600 mt-2">Describe what you ate</p>
-                    </div>
-                  ) : (
-                    <div>
-                      <Mic size={48} className="mx-auto text-gray-400 mb-4" />
+                {/* Saved Meals Tab */}
+                {activeTab === "saved" && (
+                  <div className="space-y-4 text-center">
+                    <div className="p-8 bg-gray-50 rounded-lg">
+                      <Utensils size={48} className="mx-auto text-gray-400 mb-4" />
                       <button
-                        onClick={handleVoiceStart}
+                        onClick={handleSavedMealsClick}
                         className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
                       >
-                        Start Recording
+                        View Saved Meals
                       </button>
+                      <p className="text-sm text-gray-600 mt-2">Quick log your favorite meals</p>
                     </div>
-                  )}
-                </div>
-              </div>
+                  </div>
+                )}
+
+                {/* Barcode Tab */}
+                {activeTab === "barcode" && (
+                  <div className="space-y-4 text-center">
+                    <div className="p-8 bg-gray-50 rounded-lg">
+                      {isScanning ? (
+                        <div>
+                          <div className="animate-pulse">📱 Scanning...</div>
+                          <p className="text-sm text-gray-600 mt-2">Point camera at barcode</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <Camera size={48} className="mx-auto text-gray-400 mb-4" />
+                          <button
+                            onClick={handleBarcodeStart}
+                            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                          >
+                            Start Scanning
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Voice Tab */}
+                {activeTab === "voice" && (
+                  <div className="space-y-4 text-center">
+                    <div className="p-8 bg-gray-50 rounded-lg">
+                      {isRecording ? (
+                        <div>
+                          <div className="animate-pulse text-red-500">🎤 Recording...</div>
+                          <p className="text-sm text-gray-600 mt-2">Describe what you ate</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <Mic size={48} className="mx-auto text-gray-400 mb-4" />
+                          <button
+                            onClick={handleVoiceStart}
+                            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                          >
+                            Start Recording
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </Card>
       </div>
 
       {showSearchModal && (
-        <FoodSearchModal onClose={() => setShowSearchModal(false)} />
+        <FoodSearchModal 
+          onClose={() => setShowSearchModal(false)} 
+          mode={initialMode === "mealBuilder" ? "mealBuilder" : "normal"}
+        />
       )}
 
       {showSavedMeals && (

@@ -7,6 +7,7 @@ import SavedMealBuilder from "./SavedMealBuilder";
 
 interface FoodSearchModalProps {
   onClose: () => void;
+  mode?: "normal" | "mealBuilder";
 }
 
 interface FoodItem {
@@ -80,7 +81,7 @@ const foodDatabase: FoodItem[] = [
 
 const mealCategories = ["Breakfast", "Lunch", "Dinner", "Snack"];
 
-export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
+export default function FoodSearchModal({ onClose, mode = "normal" }: FoodSearchModalProps) {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
@@ -154,6 +155,11 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
   const handleAddFood = () => {
     if (!selectedFood) return;
 
+    if (mode === "mealBuilder") {
+      handleAddToMealBuilder();
+      return;
+    }
+
     const nutrition = calculateNutrition(selectedFood, parseFloat(servingAmount), servingUnit);
     
     toast({
@@ -205,9 +211,11 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Add Food</h2>
+            <h2 className="text-2xl font-bold">
+              {mode === "mealBuilder" ? "Build Saved Meal" : "Add Food"}
+            </h2>
             <div className="flex items-center gap-2">
-              {mealBuilder.length > 0 && (
+              {(mealBuilder.length > 0 || mode === "mealBuilder") && (
                 <button
                   onClick={handleOpenMealBuilder}
                   className="flex items-center gap-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
@@ -243,13 +251,13 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
                 <div className="p-3 bg-blue-50 rounded-lg">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-blue-700">
-                      Building meal: {mealBuilder.length} item{mealBuilder.length !== 1 ? 's' : ''} selected
+                      {mode === "mealBuilder" ? "Creating meal" : "Building meal"}: {mealBuilder.length} item{mealBuilder.length !== 1 ? 's' : ''} selected
                     </span>
                     <button
                       onClick={handleOpenMealBuilder}
                       className="text-sm text-blue-600 hover:text-blue-800"
                     >
-                      View & Save →
+                      {mode === "mealBuilder" ? "Review & Save" : "View & Save"} →
                     </button>
                   </div>
                 </div>
@@ -303,19 +311,21 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
                 <p className="text-sm text-green-600">{selectedFood.brand}</p>
               </div>
 
-              {/* Meal Category */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Meal Category</label>
-                <select
-                  value={selectedMeal}
-                  onChange={(e) => setSelectedMeal(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                >
-                  {mealCategories.map(meal => (
-                    <option key={meal} value={meal}>{meal}</option>
-                  ))}
-                </select>
-              </div>
+              {/* Meal Category - Only show for normal mode */}
+              {mode === "normal" && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">Meal Category</label>
+                  <select
+                    value={selectedMeal}
+                    onChange={(e) => setSelectedMeal(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                  >
+                    {mealCategories.map(meal => (
+                      <option key={meal} value={meal}>{meal}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               {/* Serving Size */}
               <div>
@@ -391,19 +401,21 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
 
               {/* Action Buttons */}
               <div className="flex gap-3">
-                <button
-                  onClick={handleAddToMealBuilder}
-                  className="flex-1 py-3 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium"
-                >
-                  <Plus size={16} className="inline mr-2" />
-                  Add to Meal Builder
-                </button>
+                {mode === "normal" && (
+                  <button
+                    onClick={handleAddToMealBuilder}
+                    className="flex-1 py-3 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium"
+                  >
+                    <Plus size={16} className="inline mr-2" />
+                    Add to Meal Builder
+                  </button>
+                )}
                 <button
                   onClick={handleAddFood}
                   className="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
                 >
                   <Plus size={16} className="inline mr-2" />
-                  Log to {selectedMeal}
+                  {mode === "mealBuilder" ? "Add to Meal" : `Log to ${selectedMeal}`}
                 </button>
               </div>
             </div>

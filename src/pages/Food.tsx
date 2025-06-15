@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -73,6 +72,7 @@ export default function Food() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showTrackingModal, setShowTrackingModal] = useState(false);
   const [showSavedMealsModal, setShowSavedMealsModal] = useState(false);
+  const [showMealBuilderModal, setShowMealBuilderModal] = useState(false);
 
   // Get the day name for the current date
   const getDayName = (date) => {
@@ -193,6 +193,10 @@ export default function Food() {
     });
   };
 
+  const handleCreateSavedMeal = () => {
+    setShowMealBuilderModal(true);
+  };
+
   const caloriesPercent = (todaysStats.calories.current / todaysStats.calories.target) * 100;
   const proteinPercent = (todaysStats.protein.current / todaysStats.protein.target) * 100;
   const carbsPercent = (todaysStats.carbs.current / todaysStats.carbs.target) * 100;
@@ -257,7 +261,7 @@ export default function Food() {
               Search & Add Food
             </button>
             <button 
-              onClick={() => setShowSavedMealsModal(true)}
+              onClick={handleCreateSavedMeal}
               className="w-full flex items-center gap-3 p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
               <Utensils size={20} />
               Create Saved Meal
@@ -344,6 +348,13 @@ export default function Food() {
 
       {showTrackingModal && (
         <EnhancedFoodModal onClose={() => setShowTrackingModal(false)} />
+      )}
+      
+      {showMealBuilderModal && (
+        <EnhancedFoodModal 
+          onClose={() => setShowMealBuilderModal(false)} 
+          initialMode="mealBuilder"
+        />
       )}
       
       {showSavedMealsModal && (
