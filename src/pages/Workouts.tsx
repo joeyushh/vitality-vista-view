@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight, Edit3, Save, X, Edit, HelpCircle } from "lucide-react";
+import { Activity, Target, Calendar, Zap, ChevronLeft, ChevronRight, Edit3, Save, X, Edit, HelpCircle, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -216,6 +216,16 @@ export default function Workouts() {
 
   const handleStartWorkoutClick = () => {
     setShowTrackingModal(true);
+  };
+
+  // Convert today's workout to the format expected by TrackingModal
+  const getPrefilledWorkout = () => {
+    return todaysWorkout.map(exercise => ({
+      name: exercise.name,
+      sets: exercise.sets,
+      suggestedWeight: exercise.suggestedWeight,
+      restTime: exercise.restTime
+    }));
   };
 
   // Get different body battery values based on the day
@@ -473,9 +483,10 @@ export default function Workouts() {
                 {!isRestDay && (
                   <button 
                     onClick={handleStartWorkoutClick}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 transition-colors active:scale-95"
                   >
-                    Start Workout
+                    <Play size={16} />
+                    <span className="text-sm font-medium">Start</span>
                   </button>
                 )}
                 <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors">
@@ -688,7 +699,8 @@ export default function Workouts() {
       {showTrackingModal && (
         <TrackingModal 
           type="workout" 
-          onClose={() => setShowTrackingModal(false)} 
+          onClose={() => setShowTrackingModal(false)}
+          prefilledWorkout={getPrefilledWorkout()}
         />
       )}
     </>
