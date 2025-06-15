@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import TrackingModal from "@/components/TrackingModal";
+import ExerciseManager from "@/components/ExerciseManager";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
@@ -128,22 +129,46 @@ export default function Workouts() {
   const [secondaryGoal, setSecondaryGoal] = useState("Strength");
   const [editingGoals, setEditingGoals] = useState(false);
   
+  // New state for managing exercises with detailed info
+  const [dayExercises, setDayExercises] = useState({
+    monday: [
+      { name: "Bench Press", sets: 4, restTime: "2-3min", lastWeight: "80kg/6", suggestedWeight: "" },
+      { name: "Incline DB Press", sets: 3, restTime: "90s", lastWeight: "30kg/8", suggestedWeight: "" },
+      { name: "Cable Flyes", sets: 3, restTime: "60s", lastWeight: "25kg/10", suggestedWeight: "" },
+      { name: "Tricep Pushdowns", sets: 3, restTime: "60s", lastWeight: "40kg/12", suggestedWeight: "" },
+    ],
+    wednesday: [
+      { name: "Pull-ups", sets: 4, restTime: "2min", lastWeight: "BW/8", suggestedWeight: "" },
+      { name: "Bent Over Rows", sets: 3, restTime: "2min", lastWeight: "70kg/8", suggestedWeight: "" },
+      { name: "Lat Pulldowns", sets: 3, restTime: "90s", lastWeight: "65kg/10", suggestedWeight: "" },
+      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "" },
+      { name: "Bicep Curls", sets: 3, restTime: "60s", lastWeight: "17.5kg/10", suggestedWeight: "" },
+    ],
+    thursday: [
+      { name: "Squats", sets: 4, restTime: "3min", lastWeight: "100kg/6", suggestedWeight: "" },
+      { name: "Romanian Deadlifts", sets: 3, restTime: "2min", lastWeight: "80kg/8", suggestedWeight: "" },
+      { name: "Bulgarian Split Squats", sets: 3, restTime: "90s", lastWeight: "25kg/10", suggestedWeight: "" },
+      { name: "Leg Press", sets: 3, restTime: "90s", lastWeight: "180kg/12", suggestedWeight: "" },
+      { name: "Calf Raises", sets: 4, restTime: "60s", lastWeight: "60kg/15", suggestedWeight: "" },
+      { name: "Leg Curls", sets: 3, restTime: "60s", lastWeight: "45kg/12", suggestedWeight: "" },
+    ],
+    saturday: [
+      { name: "Overhead Press", sets: 4, restTime: "2-3min", lastWeight: "50kg/6", suggestedWeight: "" },
+      { name: "Lateral Raises", sets: 3, restTime: "90s", lastWeight: "12.5kg/12", suggestedWeight: "" },
+      { name: "Face Pulls", sets: 3, restTime: "60s", lastWeight: "35kg/15", suggestedWeight: "" },
+      { name: "Tricep Extensions", sets: 3, restTime: "60s", lastWeight: "30kg/12", suggestedWeight: "" },
+    ]
+  });
+  
   // Get day name for current date (e.g., "monday", "tuesday")
   const getDayName = (date) => {
     return date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
   };
 
-  // Select workout based on day
+  // Updated to use new exercise data structure
   const getWorkoutForDay = (day) => {
     const dayName = getDayName(day);
-    
-    switch(dayName) {
-      case 'monday': return workoutVariations.monday;
-      case 'wednesday': return workoutVariations.wednesday;
-      case 'thursday': return workoutVariations.thursday;
-      case 'saturday': return workoutVariations.saturday;
-      default: return [];
-    }
+    return dayExercises[dayName] || [];
   };
   
   // Get workout name based on day
@@ -264,7 +289,7 @@ export default function Workouts() {
     setEditingProgram(true);
     toast({
       title: "Edit Mode",
-      description: "You can now edit your weekly program",
+      description: "You can now edit your weekly program and exercises",
     });
   };
 
@@ -272,7 +297,7 @@ export default function Workouts() {
     setEditingProgram(false);
     toast({
       title: "Program Saved",
-      description: "Your weekly program has been updated",
+      description: "Your weekly program and exercises have been updated",
     });
   };
 
@@ -305,6 +330,14 @@ export default function Workouts() {
 
   const handleCancelGoalsEdit = () => {
     setEditingGoals(false);
+  };
+
+  // New function to handle exercise changes for specific days
+  const handleDayExercisesChange = (dayKey: string, exercises: any[]) => {
+    setDayExercises(prev => ({
+      ...prev,
+      [dayKey]: exercises
+    }));
   };
 
   return (
@@ -422,7 +455,7 @@ export default function Workouts() {
             </div>
           </Card>
 
-          {/* Today's Workout */}
+          {/* Today's Workout - Updated with enhanced exercise management */}
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-blue-800">{workoutName}</h2>
@@ -444,36 +477,54 @@ export default function Workouts() {
                 </p>
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-lg">
-                <table className="min-w-full bg-white border border-gray-200 text-sm">
-                  <thead className="bg-blue-50 text-gray-600">
-                    <tr>
-                      <th className="px-4 py-3 text-left">Exercise</th>
-                      <th className="px-4 py-3 text-center">Sets</th>
-                      <th className="px-4 py-3 text-center">Weight/Reps</th>
-                      <th className="px-4 py-3 text-center">Rest</th>
-                      <th className="px-4 py-3 text-center">Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {todaysWorkout.map((item, i) => (
-                      <tr key={i} className="border-t border-gray-200 hover:bg-blue-50 transition-colors">
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-blue-800">{item.ex}</div>
-                        </td>
-                        <td className="px-4 py-3 text-center text-blue-700">{item.sets}</td>
-                        <td className="px-4 py-3 text-center font-mono text-xs text-blue-700">{item.weightReps}</td>
-                        <td className="px-4 py-3 text-center text-xs text-gray-500">{item.restTime}</td>
-                        <td className="px-4 py-3 text-center text-xs text-gray-500">{item.notes || "-"}</td>
+              <>
+                <div className="overflow-x-auto rounded-lg">
+                  <table className="min-w-full bg-white border border-gray-200 text-sm">
+                    <thead className="bg-blue-50 text-gray-600">
+                      <tr>
+                        <th className="px-4 py-3 text-left">Exercise</th>
+                        <th className="px-4 py-3 text-center">Sets</th>
+                        <th className="px-4 py-3 text-center">Last Weight</th>
+                        <th className="px-4 py-3 text-center">Suggested</th>
+                        <th className="px-4 py-3 text-center">Rest</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {todaysWorkout.map((item, i) => (
+                        <tr key={i} className="border-t border-gray-200 hover:bg-blue-50 transition-colors">
+                          <td className="px-4 py-3">
+                            <div className="font-medium text-blue-800">{item.name}</div>
+                          </td>
+                          <td className="px-4 py-3 text-center text-blue-700">{item.sets}</td>
+                          <td className="px-4 py-3 text-center font-mono text-xs text-blue-700">{item.lastWeight}</td>
+                          <td className="px-4 py-3 text-center font-mono text-xs text-green-700 font-medium">
+                            {item.suggestedWeight || 'Calculate'}
+                          </td>
+                          <td className="px-4 py-3 text-center text-xs text-gray-500">{item.restTime}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                
+                {/* Exercise management section */}
+                {editingProgram && (
+                  <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                    <h3 className="text-lg font-medium text-blue-800 mb-2">Manage Today's Exercises</h3>
+                    <ExerciseManager
+                      dayName={workoutName}
+                      exercises={todaysWorkout}
+                      onExercisesChange={(exercises) => handleDayExercisesChange(getDayName(currentDate), exercises)}
+                      bodyBattery={getBodyBatteryForDay()}
+                      isEditing={editingProgram}
+                    />
+                  </div>
+                )}
+              </>
             )}
           </Card>
 
-          {/* Weekly Program */}
+          {/* Weekly Program - Enhanced with exercise management */}
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -510,58 +561,74 @@ export default function Workouts() {
               </div>
             </div>
             <div className="space-y-3">
-              {programData.map((day, i) => (
-                <div key={i} className={`p-4 rounded-lg border-2 ${
-                  day.completed ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'
-                }`}>
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-800">{day.day}</div>
-                      {editingProgram ? (
-                        <input
-                          type="text"
-                          value={day.workout}
-                          onChange={(e) => handleWorkoutChange(i, e.target.value)}
-                          className="text-sm text-gray-600 bg-white border border-gray-300 rounded px-2 py-1 mt-1 w-full"
-                        />
-                      ) : (
-                        <div className="text-sm text-gray-600">{day.workout}</div>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 ml-4">
-                      {day.exercises > 0 && (
-                        <span className="text-xs text-gray-500">{day.exercises} exercises</span>
-                      )}
-                      {day.completed && (
-                        <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-xs">✓</span>
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Exercise List */}
-                  {day.exerciseList && day.exerciseList.length > 0 && (
-                    <div className="mt-3">
-                      <div className="text-xs text-gray-500 mb-2">Planned Exercises:</div>
-                      <div className="flex flex-wrap gap-2">
-                        {day.exerciseList.map((exercise, exerciseIndex) => (
-                          <span
-                            key={exerciseIndex}
-                            className={`text-xs px-2 py-1 rounded-full ${
-                              day.completed 
-                                ? 'bg-green-100 text-green-700 border border-green-200' 
-                                : 'bg-blue-100 text-blue-700 border border-blue-200'
-                            }`}
-                          >
-                            {exercise}
+              {programData.map((day, i) => {
+                const dayKey = day.day.toLowerCase();
+                const dayExerciseList = dayExercises[dayKey] || [];
+                
+                return (
+                  <div key={i} className={`p-4 rounded-lg border-2 ${
+                    day.completed ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'
+                  }`}>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-800">{day.day}</div>
+                        {editingProgram ? (
+                          <input
+                            type="text"
+                            value={day.workout}
+                            onChange={(e) => handleWorkoutChange(i, e.target.value)}
+                            className="text-sm text-gray-600 bg-white border border-gray-300 rounded px-2 py-1 mt-1 w-full"
+                          />
+                        ) : (
+                          <div className="text-sm text-gray-600">{day.workout}</div>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 ml-4">
+                        {dayExerciseList.length > 0 && (
+                          <span className="text-xs text-gray-500">{dayExerciseList.length} exercises</span>
+                        )}
+                        {day.completed && (
+                          <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs">✓</span>
                           </span>
-                        ))}
+                        )}
                       </div>
                     </div>
-                  )}
-                </div>
-              ))}
+                    
+                    {/* Exercise List */}
+                    {dayExerciseList.length > 0 && (
+                      <div className="mt-3">
+                        <div className="text-xs text-gray-500 mb-2">Planned Exercises:</div>
+                        <div className="flex flex-wrap gap-2">
+                          {dayExerciseList.map((exercise, exerciseIndex) => (
+                            <span
+                              key={exerciseIndex}
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                day.completed 
+                                  ? 'bg-green-100 text-green-700 border border-green-200' 
+                                  : 'bg-blue-100 text-blue-700 border border-blue-200'
+                              }`}
+                            >
+                              {exercise.name} ({exercise.sets} sets)
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Exercise Manager for each day */}
+                    {editingProgram && dayExerciseList.length >= 0 && day.workout !== "Rest Day" && (
+                      <ExerciseManager
+                        dayName={day.workout}
+                        exercises={dayExerciseList}
+                        onExercisesChange={(exercises) => handleDayExercisesChange(dayKey, exercises)}
+                        bodyBattery={85} // Default battery for planning
+                        isEditing={editingProgram}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </Card>
 
