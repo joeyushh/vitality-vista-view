@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { X, Plus, Minus } from "lucide-react";
@@ -8,16 +7,29 @@ import { useToast } from "@/hooks/use-toast";
 interface TrackingModalProps {
   type: "food" | "workout" | "weight";
   onClose: () => void;
+  prefilledWorkout?: {
+    name: string;
+    sets: number;
+    suggestedWeight: string;
+    restTime: string;
+  }[];
 }
 
-export default function TrackingModal({ type, onClose }: TrackingModalProps) {
+export default function TrackingModal({ type, onClose, prefilledWorkout = [] }: TrackingModalProps) {
   const { toast } = useToast();
   const [weight, setWeight] = useState("");
   const [foodItems, setFoodItems] = useState([{ name: "", calories: "", protein: "" }]);
-  const [workoutExercises, setWorkoutExercises] = useState([{ 
-    name: "", 
-    sets: [{ weight: "", reps: "" }] 
-  }]);
+  
+  // Initialize workout exercises with prefilled data or empty array
+  const [workoutExercises, setWorkoutExercises] = useState(() => {
+    if (type === "workout" && prefilledWorkout.length > 0) {
+      return prefilledWorkout.map(exercise => ({
+        name: exercise.name,
+        sets: Array(exercise.sets).fill(null).map(() => ({ weight: "", reps: "" }))
+      }));
+    }
+    return [{ name: "", sets: [{ weight: "", reps: "" }] }];
+  });
 
   const handleWeightSubmit = () => {
     if (!weight) return;
@@ -136,6 +148,16 @@ export default function TrackingModal({ type, onClose }: TrackingModalProps) {
             </button>
           </div>
 
+          {/* Show prefilled workout info if available */}
+          {type === "workout" && prefilledWorkout.length > 0 && (
+            <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+              <div className="text-sm font-medium text-blue-800 mb-1">Today's Planned Workout</div>
+              <div className="text-xs text-blue-600">
+                {prefilledWorkout.length} exercises loaded with suggested weights
+              </div>
+            </div>
+          )}
+
           {type === "weight" && (
             <div className="space-y-4">
               <div>
@@ -242,6 +264,20 @@ export default function TrackingModal({ type, onClose }: TrackingModalProps) {
                       placeholder="Bench Press"
                     />
                   </div>
+                  
+                  {/* Show suggested weight if this is a prefilled exercise */}
+                  {prefilledWorkout[exerciseIndex] && (
+                    <div className="p-2 bg-green-50 border border-green-200 rounded">
+                      <div className="text-xs text-green-600 mb-1">Suggested for today:</div>
+                      <div className="text-sm font-mono text-green-700">
+                        {prefilledWorkout[exerciseIndex].suggestedWeight}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        Rest: {prefilledWorkout[exerciseIndex].restTime}
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="space-y-2">
                     <label className="block text-xs font-medium">Sets</label>
                     {exercise.sets.map((set, setIndex) => (

@@ -71,6 +71,16 @@ export default function WorkoutTracker() {
     setShowTrackingModal(true);
   };
 
+  // Convert today's workout to the format expected by TrackingModal
+  const getPrefilledWorkout = () => {
+    return todaysWorkout.map(exercise => ({
+      name: exercise.name,
+      sets: exercise.sets,
+      suggestedWeight: exercise.suggestedWeight,
+      restTime: exercise.restTime
+    }));
+  };
+
   return (
     <>
       <Card className="p-4 shadow-lg animate-fade-in">
@@ -196,7 +206,8 @@ export default function WorkoutTracker() {
       {showTrackingModal && (
         <TrackingModal 
           type="workout" 
-          onClose={() => setShowTrackingModal(false)} 
+          onClose={() => setShowTrackingModal(false)}
+          prefilledWorkout={getPrefilledWorkout()}
         />
       )}
     </>
