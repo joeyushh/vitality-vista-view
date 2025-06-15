@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Utensils, Scan, Clock, Target, ChevronLeft, ChevronRight, Mic, Search, Camera, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +7,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import DateNavigation from "@/components/DateNavigation";
 import EnhancedFoodModal from "@/components/EnhancedFoodModal";
+import SavedMealsManager from "@/components/SavedMealsManager";
 
 // Base meals data
 const baseMeals = [
@@ -60,10 +60,10 @@ const mealVariations = {
 
 // Same saved meals as before
 const savedMeals = [
-  { name: "Post-workout Shake", calories: 350, protein: 40, carbs: 25, fat: 8 },
-  { name: "Chicken & Rice", calories: 520, protein: 42, carbs: 48, fat: 14 },
-  { name: "Greek Yogurt Bowl", calories: 280, protein: 20, carbs: 32, fat: 9 },
-  { name: "Salmon & Vegetables", calories: 420, protein: 38, carbs: 15, fat: 22 },
+  { id: "1", name: "Post-workout Shake", calories: 350, protein: 40, carbs: 25, fat: 8, ingredients: 3 },
+  { id: "2", name: "Chicken & Rice", calories: 520, protein: 42, carbs: 48, fat: 14, ingredients: 4 },
+  { id: "3", name: "Greek Yogurt Bowl", calories: 280, protein: 20, carbs: 32, fat: 9, ingredients: 5 },
+  { id: "4", name: "Salmon & Vegetables", calories: 420, protein: 38, carbs: 15, fat: 22, ingredients: 3 },
 ];
 
 export default function Food() {
@@ -71,6 +71,7 @@ export default function Food() {
   const { toast } = useToast();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showTrackingModal, setShowTrackingModal] = useState(false);
+  const [showSavedMealsModal, setShowSavedMealsModal] = useState(false);
 
   // Get the day name for the current date
   const getDayName = (date) => {
@@ -176,6 +177,21 @@ export default function Food() {
     console.log("Opening AI chatbot for nutrition tips...");
   };
 
+  const handleSavedMealClick = (meal: any) => {
+    toast({
+      title: "Saved Meal Selected",
+      description: `${meal.name} - ${meal.calories} calories`,
+    });
+    setShowSavedMealsModal(true);
+  };
+
+  const handleLogSavedMeal = (meal: any, category: string) => {
+    toast({
+      title: "Meal Logged",
+      description: `${meal.name} added to ${category}`,
+    });
+  };
+
   const caloriesPercent = (todaysStats.calories.current / todaysStats.calories.target) * 100;
   const proteinPercent = (todaysStats.protein.current / todaysStats.protein.target) * 100;
   const carbsPercent = (todaysStats.carbs.current / todaysStats.carbs.target) * 100;
@@ -240,6 +256,12 @@ export default function Food() {
               Search & Add Food
             </button>
             <button 
+              onClick={() => setShowSavedMealsModal(true)}
+              className="w-full flex items-center gap-3 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <Utensils size={20} />
+              Log Saved Meal
+            </button>
+            <button 
               onClick={handleBarcodeClick}
               className="w-full flex items-center gap-3 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg hover:bg-green-200 transition-colors">
               <Camera size={20} />
@@ -256,17 +278,36 @@ export default function Food() {
 
         {/* Saved Meals */}
         <Card className="p-6">
-          <h2 className="text-xl font-semibold text-green-800 mb-4">Saved Meals</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold text-green-800">Saved Meals</h2>
+            <button 
+              onClick={() => setShowSavedMealsModal(true)}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              View All →
+            </button>
+          </div>
           <div className="space-y-2">
-            {savedMeals.map((meal, i) => (
-              <div key={i} className="flex justify-between items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer">
-                <div>
+            {savedMeals.slice(0, 3).map((meal, i) => (
+              <button
+                key={i}
+                onClick={() => handleSavedMealClick(meal)}
+                className="w-full flex justify-between items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+              >
+                <div className="text-left">
                   <div className="font-medium text-green-800">{meal.name}</div>
-                  <div className="text-xs text-gray-500">P: {meal.protein}g • C: {meal.carbs}g • F: {meal.fat}g</div>
+                  <div className="text-xs text-gray-500">
+                    {meal.ingredients} ingredients • P: {meal.protein}g • C: {meal.carbs}g • F: {meal.fat}g
+                  </div>
                 </div>
                 <div className="text-sm font-semibold text-green-700">{meal.calories} cal</div>
-              </div>
+              </button>
             ))}
+            {savedMeals.length > 3 && (
+              <div className="text-center text-xs text-gray-500 pt-2">
+                +{savedMeals.length - 3} more saved meals
+              </div>
+            )}
           </div>
         </Card>
 
@@ -302,6 +343,13 @@ export default function Food() {
 
       {showTrackingModal && (
         <EnhancedFoodModal onClose={() => setShowTrackingModal(false)} />
+      )}
+      
+      {showSavedMealsModal && (
+        <SavedMealsManager 
+          onClose={() => setShowSavedMealsModal(false)}
+          onLogMeal={handleLogSavedMeal}
+        />
       )}
       
       <BottomNavigation />

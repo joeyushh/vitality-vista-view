@@ -1,10 +1,10 @@
-
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { X, Plus, Minus, Camera, Mic, Search } from "lucide-react";
+import { X, Plus, Minus, Camera, Mic, Search, Utensils } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import FoodSearchModal from "./FoodSearchModal";
+import SavedMealsManager from "./SavedMealsManager";
 
 interface EnhancedFoodModalProps {
   onClose: () => void;
@@ -12,10 +12,11 @@ interface EnhancedFoodModalProps {
 
 export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState<"search" | "barcode" | "voice">("search");
+  const [activeTab, setActiveTab] = useState<"search" | "saved" | "barcode" | "voice">("search");
   const [isScanning, setIsScanning] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
+  const [showSavedMeals, setShowSavedMeals] = useState(false);
 
   const handleBarcodeStart = () => {
     setIsScanning(true);
@@ -51,6 +52,15 @@ export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
     setShowSearchModal(true);
   };
 
+  const handleSavedMealsClick = () => {
+    setShowSavedMeals(true);
+  };
+
+  const handleLogSavedMeal = (meal: any, category: string) => {
+    // In a real app, this would log the meal to the user's diary
+    console.log("Logging saved meal:", meal, "to", category);
+  };
+
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -67,10 +77,10 @@ export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex gap-2 mb-6">
+            <div className="flex gap-2 mb-6 overflow-x-auto">
               <button
                 onClick={() => setActiveTab("search")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
                   activeTab === "search" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
                 }`}
               >
@@ -78,8 +88,17 @@ export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
                 Search
               </button>
               <button
+                onClick={() => setActiveTab("saved")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
+                  activeTab === "saved" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                <Utensils size={16} />
+                Saved Meals
+              </button>
+              <button
                 onClick={() => setActiveTab("barcode")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
                   activeTab === "barcode" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
                 }`}
               >
@@ -88,7 +107,7 @@ export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
               </button>
               <button
                 onClick={() => setActiveTab("voice")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap ${
                   activeTab === "voice" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600"
                 }`}
               >
@@ -108,7 +127,23 @@ export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
                   >
                     Search Food Database
                   </button>
-                  <p className="text-sm text-gray-600 mt-2">Find foods with detailed nutrition info</p>
+                  <p className="text-sm text-gray-600 mt-2">Find foods and build custom meals</p>
+                </div>
+              </div>
+            )}
+
+            {/* Saved Meals Tab */}
+            {activeTab === "saved" && (
+              <div className="space-y-4 text-center">
+                <div className="p-8 bg-gray-50 rounded-lg">
+                  <Utensils size={48} className="mx-auto text-gray-400 mb-4" />
+                  <button
+                    onClick={handleSavedMealsClick}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  >
+                    View Saved Meals
+                  </button>
+                  <p className="text-sm text-gray-600 mt-2">Quick log your favorite meals</p>
                 </div>
               </div>
             )}
@@ -166,6 +201,13 @@ export default function EnhancedFoodModal({ onClose }: EnhancedFoodModalProps) {
 
       {showSearchModal && (
         <FoodSearchModal onClose={() => setShowSearchModal(false)} />
+      )}
+
+      {showSavedMeals && (
+        <SavedMealsManager 
+          onClose={() => setShowSavedMeals(false)}
+          onLogMeal={handleLogSavedMeal}
+        />
       )}
     </>
   );

@@ -1,9 +1,9 @@
-
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { X, Plus, Search } from "lucide-react";
+import { X, Plus, Search, ShoppingCart, Save } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import SavedMealBuilder from "./SavedMealBuilder";
 
 interface FoodSearchModalProps {
   onClose: () => void;
@@ -18,6 +18,11 @@ interface FoodItem {
   carbsPer100g: number;
   fatPer100g: number;
   servingSize?: string;
+}
+
+interface SelectedFood extends FoodItem {
+  amount: number;
+  unit: string;
 }
 
 const foodDatabase: FoodItem[] = [
@@ -82,6 +87,8 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
   const [servingAmount, setServingAmount] = useState("100");
   const [servingUnit, setServingUnit] = useState("g");
   const [selectedMeal, setSelectedMeal] = useState("Breakfast");
+  const [mealBuilder, setMealBuilder] = useState<SelectedFood[]>([]);
+  const [showMealBuilder, setShowMealBuilder] = useState(false);
 
   const filteredFoods = foodDatabase.filter(food =>
     food.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -124,6 +131,26 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
     }
   };
 
+  const handleAddToMealBuilder = () => {
+    if (!selectedFood) return;
+
+    const foodWithServing: SelectedFood = {
+      ...selectedFood,
+      amount: parseFloat(servingAmount) || 0,
+      unit: servingUnit,
+    };
+
+    setMealBuilder(prev => [...prev, foodWithServing]);
+    setSelectedFood(null);
+    setServingAmount("100");
+    setServingUnit("g");
+    
+    toast({
+      title: "Added to Meal Builder",
+      description: `${selectedFood.name} added. Total items: ${mealBuilder.length + 1}`,
+    });
+  };
+
   const handleAddFood = () => {
     if (!selectedFood) return;
 
@@ -137,7 +164,41 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
     onClose();
   };
 
+  const handleOpenMealBuilder = () => {
+    setShowMealBuilder(true);
+  };
+
+  const handleSaveMeal = (mealName: string, foods: SelectedFood[]) => {
+    // In a real app, this would save to a database or state management
+    console.log("Saving meal:", mealName, foods);
+    setMealBuilder([]);
+    setShowMealBuilder(false);
+    onClose();
+  };
+
+  const handleRemoveFromMealBuilder = (index: number) => {
+    setMealBuilder(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleUpdateMealBuilderAmount = (index: number, amount: number, unit: string) => {
+    setMealBuilder(prev => prev.map((food, i) => 
+      i === index ? { ...food, amount, unit } : food
+    ));
+  };
+
   const nutrition = selectedFood ? calculateNutrition(selectedFood, parseFloat(servingAmount) || 0, servingUnit) : null;
+
+  if (showMealBuilder) {
+    return (
+      <SavedMealBuilder
+        selectedFoods={mealBuilder}
+        onSave={handleSaveMeal}
+        onClose={() => setShowMealBuilder(false)}
+        onRemoveFood={handleRemoveFromMealBuilder}
+        onUpdateAmount={handleUpdateMealBuilderAmount}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -145,12 +206,23 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Add Food</h2>
-            <button 
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-full"
-            >
-              <X size={24} />
-            </button>
+            <div className="flex items-center gap-2">
+              {mealBuilder.length > 0 && (
+                <button
+                  onClick={handleOpenMealBuilder}
+                  className="flex items-center gap-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+                >
+                  <ShoppingCart size={16} />
+                  <span className="text-sm">{mealBuilder.length}</span>
+                </button>
+              )}
+              <button 
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <X size={24} />
+              </button>
+            </div>
           </div>
 
           {!selectedFood ? (
@@ -165,6 +237,23 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
                   className="pl-10"
                 />
               </div>
+              
+              {/* Meal Builder Status */}
+              {mealBuilder.length > 0 && (
+                <div className="p-3 bg-blue-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-blue-700">
+                      Building meal: {mealBuilder.length} item{mealBuilder.length !== 1 ? 's' : ''} selected
+                    </span>
+                    <button
+                      onClick={handleOpenMealBuilder}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      View & Save →
+                    </button>
+                  </div>
+                </div>
+              )}
               
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {filteredFoods.map((food) => (
@@ -300,13 +389,23 @@ export default function FoodSearchModal({ onClose }: FoodSearchModalProps) {
                 </div>
               )}
 
-              <button
-                onClick={handleAddFood}
-                className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
-              >
-                <Plus size={16} className="inline mr-2" />
-                Add to {selectedMeal}
-              </button>
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleAddToMealBuilder}
+                  className="flex-1 py-3 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium"
+                >
+                  <Plus size={16} className="inline mr-2" />
+                  Add to Meal Builder
+                </button>
+                <button
+                  onClick={handleAddFood}
+                  className="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                >
+                  <Plus size={16} className="inline mr-2" />
+                  Log to {selectedMeal}
+                </button>
+              </div>
             </div>
           )}
         </div>
