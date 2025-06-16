@@ -24,7 +24,7 @@ const weeklyGoals = {
   secondaryGoal: "Strength"
 };
 
-const weeklyProgram = [
+const initialWeeklyProgram = [
   { 
     day: "Monday", 
     workout: "Push Day - Chest & Triceps", 
@@ -129,6 +129,7 @@ export default function Workouts() {
   const [primaryGoal, setPrimaryGoal] = useState("Weight Loss");
   const [secondaryGoal, setSecondaryGoal] = useState("Strength");
   const [editingGoals, setEditingGoals] = useState(false);
+  const [programData, setProgramData] = useState(initialWeeklyProgram);
   
   // Enhanced state for managing exercises with cleaner suggestions
   const [dayExercises, setDayExercises] = useState({
@@ -299,7 +300,7 @@ export default function Workouts() {
   };
 
   const handleCancelEdit = () => {
-    setProgramData(weeklyProgram);
+    setProgramData(initialWeeklyProgram);
     setEditingProgram(false);
     toast({
       title: "Changes Cancelled",
