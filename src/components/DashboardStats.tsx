@@ -1,21 +1,34 @@
-
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Star } from "lucide-react";
-import { useAppData } from "@/hooks/useAppData";
+
+const todaysCredits = {
+  calories: { hit: false, credits: 0 }, // Changed to false since 1845 < 2200
+  protein: { hit: false, credits: 0 }, // Changed to false since 120 < 150
+  workout: { hit: true, credits: 1 },
+  steps: { hit: false, credits: 0 }, // Changed to false since 8420 < 10000
+  sleep: { hit: false, credits: 0 }
+};
+
+const totalCreditsToday = Object.values(todaysCredits).reduce((sum, item) => sum + item.credits, 0);
+
+// Key metrics data
+const todaysMetrics = {
+  calories: { current: 1845, target: 2200, unit: 'cal' },
+  protein: { current: 120, target: 150, unit: 'g' },
+  carbs: { current: 180, target: 250, unit: 'g' },
+  fats: { current: 65, target: 80, unit: 'g' },
+  steps: { current: 8420, target: 10000, unit: '' },
+  workoutsCompleted: { current: 1, target: 1 },
+  sleep: { current: 6.5, target: 8, unit: 'hrs' },
+  bodyBattery: { current: 75, target: 100, unit: '%' }
+};
 
 // Default selected credit goals (these would come from user's onboarding choices)
 const selectedCreditGoals = ['calories', 'protein', 'workouts', 'steps', 'sleep'];
 
 export default function DashboardStats() {
-  const { getDailyStats, getGoalStatus, targets } = useAppData();
-  const today = new Date().toISOString().split('T')[0];
-  const todaysStats = getDailyStats(today);
-  const goalStatus = getGoalStatus(today);
-  
-  const totalCreditsToday = Object.values(goalStatus).reduce((sum, item) => sum + item.credits, 0);
-
   const isTrackedForCredits = (metricId: string) => {
     // Map metric IDs to credit goal IDs
     const metricToCreditMap: { [key: string]: string } = {
@@ -33,25 +46,21 @@ export default function DashboardStats() {
   };
 
   const isGoalCompleted = (metricId: string) => {
-    const metricValue = todaysStats[metricId as keyof typeof todaysStats];
-    const target = targets[metricId as keyof typeof targets];
-    
-    if (typeof metricValue !== 'number' || typeof target !== 'number') return false;
+    const metric = todaysMetrics[metricId as keyof typeof todaysMetrics];
+    if (!metric) return false;
     
     // Special case for workouts - exact match
     if (metricId === 'workoutsCompleted') {
-      return metricValue >= target;
+      return metric.current >= metric.target;
     }
     
-    return metricValue >= target;
+    return metric.current >= metric.target;
   };
 
   const getProgressPercentage = (metricId: string) => {
-    const metricValue = todaysStats[metricId as keyof typeof todaysStats];
-    const target = targets[metricId as keyof typeof targets];
-    
-    if (typeof metricValue !== 'number' || typeof target !== 'number') return 0;
-    return Math.min((metricValue / target) * 100, 100);
+    const metric = todaysMetrics[metricId as keyof typeof todaysMetrics];
+    if (!metric) return 0;
+    return Math.min((metric.current / metric.target) * 100, 100);
   };
 
   const getMetricClasses = (metricId: string, baseColor: string) => {
@@ -118,9 +127,9 @@ export default function DashboardStats() {
           )}
           <div className="space-y-3">
             <div className="text-center">
-              <div className={`text-xl font-bold ${getMetricClasses('calories', 'green').text} mb-1`}>{Math.round(todaysStats.calories)}</div>
+              <div className={`text-xl font-bold ${getMetricClasses('calories', 'green').text} mb-1`}>{todaysMetrics.calories.current}</div>
               <div className="text-xs text-gray-600 mb-1">Calories</div>
-              <div className={`text-xs ${getMetricClasses('calories', 'green').subtext}`}>of {targets.calories}</div>
+              <div className={`text-xs ${getMetricClasses('calories', 'green').subtext}`}>of {todaysMetrics.calories.target}</div>
             </div>
             <Progress 
               value={getProgressPercentage('calories')} 
@@ -136,9 +145,9 @@ export default function DashboardStats() {
           )}
           <div className="space-y-3">
             <div className="text-center">
-              <div className={`text-xl font-bold ${getMetricClasses('protein', 'green').text} mb-1`}>{Math.round(todaysStats.protein)}g</div>
+              <div className={`text-xl font-bold ${getMetricClasses('protein', 'green').text} mb-1`}>{todaysMetrics.protein.current}g</div>
               <div className="text-xs text-gray-600 mb-1">Protein</div>
-              <div className={`text-xs ${getMetricClasses('protein', 'green').subtext}`}>of {targets.protein}g</div>
+              <div className={`text-xs ${getMetricClasses('protein', 'green').subtext}`}>of {todaysMetrics.protein.target}g</div>
             </div>
             <Progress 
               value={getProgressPercentage('protein')} 
@@ -154,9 +163,9 @@ export default function DashboardStats() {
           )}
           <div className="space-y-3">
             <div className="text-center">
-              <div className={`text-xl font-bold ${getMetricClasses('carbs', 'green').text} mb-1`}>{Math.round(todaysStats.carbs)}g</div>
+              <div className={`text-xl font-bold ${getMetricClasses('carbs', 'green').text} mb-1`}>{todaysMetrics.carbs.current}g</div>
               <div className="text-xs text-gray-600 mb-1">Carbs</div>
-              <div className={`text-xs ${getMetricClasses('carbs', 'green').subtext}`}>of {targets.carbs}g</div>
+              <div className={`text-xs ${getMetricClasses('carbs', 'green').subtext}`}>of {todaysMetrics.carbs.target}g</div>
             </div>
             <Progress 
               value={getProgressPercentage('carbs')} 
@@ -172,9 +181,9 @@ export default function DashboardStats() {
           )}
           <div className="space-y-3">
             <div className="text-center">
-              <div className={`text-xl font-bold ${getMetricClasses('fats', 'green').text} mb-1`}>{Math.round(todaysStats.fats)}g</div>
+              <div className={`text-xl font-bold ${getMetricClasses('fats', 'green').text} mb-1`}>{todaysMetrics.fats.current}g</div>
               <div className="text-xs text-gray-600 mb-1">Fats</div>
-              <div className={`text-xs ${getMetricClasses('fats', 'green').subtext}`}>of {targets.fats}g</div>
+              <div className={`text-xs ${getMetricClasses('fats', 'green').subtext}`}>of {todaysMetrics.fats.target}g</div>
             </div>
             <Progress 
               value={getProgressPercentage('fats')} 
@@ -193,9 +202,9 @@ export default function DashboardStats() {
           )}
           <div className="space-y-3">
             <div className="text-center">
-              <div className={`text-xl font-bold ${getMetricClasses('steps', 'blue').text} mb-1`}>{todaysStats.steps.toLocaleString()}</div>
+              <div className={`text-xl font-bold ${getMetricClasses('steps', 'blue').text} mb-1`}>{todaysMetrics.steps.current.toLocaleString()}</div>
               <div className="text-xs text-gray-600 mb-1">Steps</div>
-              <div className={`text-xs ${getMetricClasses('steps', 'blue').subtext}`}>of {targets.steps.toLocaleString()}</div>
+              <div className={`text-xs ${getMetricClasses('steps', 'blue').subtext}`}>of {todaysMetrics.steps.target.toLocaleString()}</div>
             </div>
             <Progress 
               value={getProgressPercentage('steps')} 
@@ -211,7 +220,7 @@ export default function DashboardStats() {
           )}
           <div className="space-y-3">
             <div className="text-center">
-              <div className={`text-xl font-bold ${getMetricClasses('workoutsCompleted', 'blue').text} mb-1`}>{todaysStats.workoutsCompleted}/{targets.workouts}</div>
+              <div className={`text-xl font-bold ${getMetricClasses('workoutsCompleted', 'blue').text} mb-1`}>{todaysMetrics.workoutsCompleted.current}/{todaysMetrics.workoutsCompleted.target}</div>
               <div className="text-xs text-gray-600 mb-1">Workouts</div>
               <div className={`text-xs ${getMetricClasses('workoutsCompleted', 'blue').subtext}`}>completed</div>
             </div>
@@ -229,9 +238,9 @@ export default function DashboardStats() {
           )}
           <div className="space-y-3">
             <div className="text-center">
-              <div className={`text-xl font-bold ${getMetricClasses('sleep', 'purple').text} mb-1`}>{todaysStats.sleep}hrs</div>
+              <div className={`text-xl font-bold ${getMetricClasses('sleep', 'purple').text} mb-1`}>{todaysMetrics.sleep.current}hrs</div>
               <div className="text-xs text-gray-600 mb-1">Sleep</div>
-              <div className={`text-xs ${getMetricClasses('sleep', 'purple').subtext}`}>of {targets.sleep}hrs</div>
+              <div className={`text-xs ${getMetricClasses('sleep', 'purple').subtext}`}>of {todaysMetrics.sleep.target}hrs</div>
             </div>
             <Progress 
               value={getProgressPercentage('sleep')} 
@@ -244,12 +253,12 @@ export default function DashboardStats() {
         <div className="p-4 bg-purple-50 rounded-lg border border-purple-200 relative">
           <div className="space-y-3">
             <div className="text-center">
-              <div className="text-xl font-bold text-purple-600 mb-1">{todaysStats.bodyBattery}%</div>
+              <div className="text-xl font-bold text-purple-600 mb-1">{todaysMetrics.bodyBattery.current}%</div>
               <div className="text-xs text-gray-600 mb-1">Body Battery</div>
-              <div className="text-xs text-purple-700">of 100%</div>
+              <div className="text-xs text-purple-700">of {todaysMetrics.bodyBattery.target}%</div>
             </div>
             <Progress 
-              value={todaysStats.bodyBattery} 
+              value={getProgressPercentage('bodyBattery')} 
               className="h-2"
               indicatorColor={getProgressBarColor('bodyBattery', 'purple')}
             />

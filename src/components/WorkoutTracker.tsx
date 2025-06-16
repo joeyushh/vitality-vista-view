@@ -2,81 +2,65 @@
 import { Activity, Play, List, Clock, HelpCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import TrackingModal from "./TrackingModal";
-import { useAppData } from "@/hooks/useAppData";
+
+// This should sync with the exercise data from Workouts page
+const todaysWorkout = [
+  { 
+    name: "Bench Press", 
+    sets: 4, 
+    lastWeight: "80kg/6", 
+    suggestedWeight: "82.5kg/6-8",
+    restTime: "2-3min", 
+    completed: 0 
+  },
+  { 
+    name: "Incline DB Press", 
+    sets: 3, 
+    lastWeight: "30kg/8", 
+    suggestedWeight: "31kg/8-10",
+    restTime: "90s", 
+    completed: 0 
+  },
+  { 
+    name: "Cable Flyes", 
+    sets: 3, 
+    lastWeight: "25kg/10", 
+    suggestedWeight: "25.5kg/8-10",
+    restTime: "60s", 
+    completed: 0 
+  },
+  { 
+    name: "Tricep Pushdowns", 
+    sets: 3, 
+    lastWeight: "40kg/12", 
+    suggestedWeight: "41kg/8-10",
+    restTime: "60s", 
+    completed: 0 
+  },
+];
+
+const bodyBattery = 90;
+
+const getBodyBatteryRecommendation = (bodyBattery: number) => {
+  if (bodyBattery >= 90) {
+    return { percentage: 5, description: 'Excellent energy - push for strength gains' };
+  } else if (bodyBattery >= 80) {
+    return { percentage: 2.5, description: 'Good energy - ideal for muscle building' };
+  } else if (bodyBattery >= 70) {
+    return { percentage: 0, description: 'Moderate energy - maintain current levels' };
+  } else {
+    return { percentage: -2.5, description: 'Low energy - focus on recovery' };
+  }
+};
 
 export default function WorkoutTracker() {
   const navigate = useNavigate();
-  const { currentWorkout, workoutStartTime, startWorkout, getDailyStats } = useAppData();
   const [showTrackingModal, setShowTrackingModal] = useState(false);
-  const [workoutDuration, setWorkoutDuration] = useState(0);
-
-  // This should sync with the exercise data from Workouts page
-  const todaysWorkout = [
-    { 
-      name: "Bench Press", 
-      sets: 4, 
-      lastWeight: "80kg/6", 
-      suggestedWeight: "82.5kg/6-8",
-      restTime: "2-3min", 
-      completed: 0 
-    },
-    { 
-      name: "Incline DB Press", 
-      sets: 3, 
-      lastWeight: "30kg/8", 
-      suggestedWeight: "31kg/8-10",
-      restTime: "90s", 
-      completed: 0 
-    },
-    { 
-      name: "Cable Flyes", 
-      sets: 3, 
-      lastWeight: "25kg/10", 
-      suggestedWeight: "25.5kg/8-10",
-      restTime: "60s", 
-      completed: 0 
-    },
-    { 
-      name: "Tricep Pushdowns", 
-      sets: 3, 
-      lastWeight: "40kg/12", 
-      suggestedWeight: "41kg/8-10",
-      restTime: "60s", 
-      completed: 0 
-    },
-  ];
-
-  const bodyBattery = getDailyStats(new Date().toISOString().split('T')[0]).bodyBattery;
-
-  // Update workout timer
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (workoutStartTime) {
-      interval = setInterval(() => {
-        const elapsed = Math.floor((new Date().getTime() - workoutStartTime.getTime()) / 60000);
-        setWorkoutDuration(elapsed);
-      }, 60000);
-    }
-    return () => clearInterval(interval);
-  }, [workoutStartTime]);
-
-  const getBodyBatteryRecommendation = (bodyBattery: number) => {
-    if (bodyBattery >= 90) {
-      return { percentage: 5, description: 'Excellent energy - push for strength gains' };
-    } else if (bodyBattery >= 80) {
-      return { percentage: 2.5, description: 'Good energy - ideal for muscle building' };
-    } else if (bodyBattery >= 70) {
-      return { percentage: 0, description: 'Moderate energy - maintain current levels' };
-    } else {
-      return { percentage: -2.5, description: 'Low energy - focus on recovery' };
-    }
-  };
-
+  
   const totalSets = todaysWorkout.reduce((sum, w) => sum + w.sets, 0);
-  const completedSets = currentWorkout ? 
-    currentWorkout.exercises.reduce((sum, ex) => sum + ex.sets.filter(set => set.completed).length, 0) : 0;
+  const completedSets = todaysWorkout.reduce((sum, w) => sum + w.completed, 0);
   const recommendation = getBodyBatteryRecommendation(bodyBattery);
 
   const handleWorkoutLogClick = () => {
@@ -84,12 +68,7 @@ export default function WorkoutTracker() {
   };
 
   const handleStartWorkoutClick = () => {
-    if (currentWorkout) {
-      setShowTrackingModal(true);
-    } else {
-      startWorkout("Push Day - Chest & Triceps", todaysWorkout);
-      setShowTrackingModal(true);
-    }
+    setShowTrackingModal(true);
   };
 
   // Convert today's workout to the format expected by TrackingModal
@@ -102,9 +81,6 @@ export default function WorkoutTracker() {
     }));
   };
 
-  const workoutStatus = currentWorkout ? "In Progress" : "Ready";
-  const displayDuration = currentWorkout ? `${workoutDuration}:00` : "0:00";
-
   return (
     <>
       <Card className="p-4 shadow-lg animate-fade-in">
@@ -116,16 +92,9 @@ export default function WorkoutTracker() {
           <div className="flex gap-2">
             <button 
               onClick={handleStartWorkoutClick}
-              className={`flex items-center gap-1 px-3 py-2 rounded-lg shadow-sm transition-colors active:scale-95 ${
-                currentWorkout 
-                  ? 'bg-green-600 text-white hover:bg-green-700' 
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-            >
+              className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 transition-colors active:scale-95">
               <Play size={16} />
-              <span className="text-sm font-medium">
-                {currentWorkout ? 'Continue' : 'Start'}
-              </span>
+              <span className="text-sm font-medium">Start</span>
             </button>
             <button 
               onClick={handleWorkoutLogClick}
@@ -142,7 +111,7 @@ export default function WorkoutTracker() {
             <h3 className="font-medium text-blue-800">Push Day - Chest & Triceps</h3>
             <div className="ml-auto flex items-center gap-1 text-xs text-blue-600">
               <Clock size={12} />
-              <span>{workoutStatus}</span>
+              <span>Ready to start</span>
             </div>
           </div>
           
@@ -199,11 +168,11 @@ export default function WorkoutTracker() {
               
               <div className="flex items-center justify-between">
                 <div className="text-xs text-blue-600">
-                  {currentWorkout ? 
-                    `${currentWorkout.exercises.find(ex => ex.name === item.name)?.sets.filter(set => set.completed).length || 0}/${item.sets} completed` :
-                    `${item.completed}/${item.sets} completed`
-                  }
+                  {item.completed}/{item.sets} completed
                 </div>
+                <button className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full hover:bg-blue-700 transition-colors active:scale-95">
+                  Start Set
+                </button>
               </div>
             </div>
           ))}
@@ -216,11 +185,11 @@ export default function WorkoutTracker() {
             <div className="text-xs text-gray-600">Sets</div>
           </div>
           <div className="text-center p-3 bg-blue-50 rounded-lg">
-            <div className="text-lg font-bold text-blue-600">{displayDuration}</div>
+            <div className="text-lg font-bold text-blue-600">0:00</div>
             <div className="text-xs text-gray-600">Duration</div>
           </div>
           <div className="text-center p-3 bg-blue-50 rounded-lg">
-            <div className="text-lg font-bold text-blue-600">{workoutStatus}</div>
+            <div className="text-lg font-bold text-blue-600">Ready</div>
             <div className="text-xs text-gray-600">Status</div>
           </div>
         </div>

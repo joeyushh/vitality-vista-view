@@ -7,7 +7,6 @@ import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import TrackingModal from "@/components/TrackingModal";
 import ExerciseManager from "@/components/ExerciseManager";
-import { useAppData } from "@/hooks/useAppData";
 
 const NAV_LINKS = [
   { label: "Dashboard", href: "/", active: false },
@@ -24,7 +23,7 @@ const weeklyGoals = {
   secondaryGoal: "Strength"
 };
 
-const initialWeeklyProgram = [
+const weeklyProgram = [
   { 
     day: "Monday", 
     workout: "Push Day - Chest & Triceps", 
@@ -122,14 +121,13 @@ const goalOptions = [
 export default function Workouts() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { currentWorkout, workoutStartTime, startWorkout, getDailyStats } = useAppData();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [editingProgram, setEditingProgram] = useState(false);
+  const [programData, setProgramData] = useState(weeklyProgram);
   const [showTrackingModal, setShowTrackingModal] = useState(false);
   const [primaryGoal, setPrimaryGoal] = useState("Weight Loss");
   const [secondaryGoal, setSecondaryGoal] = useState("Strength");
   const [editingGoals, setEditingGoals] = useState(false);
-  const [programData, setProgramData] = useState(initialWeeklyProgram);
   
   // Enhanced state for managing exercises with cleaner suggestions
   const [dayExercises, setDayExercises] = useState({
@@ -217,12 +215,7 @@ export default function Workouts() {
   };
 
   const handleStartWorkoutClick = () => {
-    if (currentWorkout) {
-      setShowTrackingModal(true);
-    } else {
-      startWorkout(workoutName, todaysWorkout);
-      setShowTrackingModal(true);
-    }
+    setShowTrackingModal(true);
   };
 
   // Convert today's workout to the format expected by TrackingModal
@@ -237,7 +230,26 @@ export default function Workouts() {
 
   // Get different body battery values based on the day
   const getBodyBatteryForDay = () => {
-    return getDailyStats(currentDate.toISOString().split('T')[0]).bodyBattery;
+    const day = getDayName(currentDate);
+    const today = new Date().toDateString();
+    const selectedDay = currentDate.toDateString();
+    
+    // Future dates have 100% battery
+    if (new Date(selectedDay) > new Date(today)) {
+      return 100;
+    }
+    
+    // Past days have different values
+    switch(day) {
+      case 'monday': return 85;
+      case 'tuesday': return 92;
+      case 'wednesday': return 78;
+      case 'thursday': return 90;
+      case 'friday': return 95;
+      case 'saturday': return 88;
+      case 'sunday': return 98;
+      default: return 90;
+    }
   };
 
   // Get different carb values based on the day
@@ -300,7 +312,7 @@ export default function Workouts() {
   };
 
   const handleCancelEdit = () => {
-    setProgramData(initialWeeklyProgram);
+    setProgramData(weeklyProgram);
     setEditingProgram(false);
     toast({
       title: "Changes Cancelled",
@@ -471,16 +483,10 @@ export default function Workouts() {
                 {!isRestDay && (
                   <button 
                     onClick={handleStartWorkoutClick}
-                    className={`flex items-center gap-1 px-3 py-2 rounded-lg shadow-sm transition-colors active:scale-95 ${
-                      currentWorkout 
-                        ? 'bg-green-600 text-white hover:bg-green-700' 
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                    }`}
+                    className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 transition-colors active:scale-95"
                   >
                     <Play size={16} />
-                    <span className="text-sm font-medium">
-                      {currentWorkout ? 'Continue Workout' : 'Start Workout'}
-                    </span>
+                    <span className="text-sm font-medium">Start</span>
                   </button>
                 )}
                 <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors">
@@ -529,21 +535,6 @@ export default function Workouts() {
                     </tbody>
                   </table>
                 </div>
-                
-                {/* Show workout progress if active */}
-                {currentWorkout && (
-                  <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-lg font-medium text-green-800">Workout in Progress</h3>
-                      <span className="text-sm text-green-600">
-                        {workoutStartTime && `${Math.floor((new Date().getTime() - workoutStartTime.getTime()) / 60000)} min`}
-                      </span>
-                    </div>
-                    <div className="text-sm text-green-700">
-                      Continue your workout by clicking "Continue Workout" above
-                    </div>
-                  </div>
-                )}
                 
                 {editingProgram && (
                   <div className="mt-4 p-4 bg-blue-50 rounded-lg">

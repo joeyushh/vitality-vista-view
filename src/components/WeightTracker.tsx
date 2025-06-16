@@ -1,20 +1,24 @@
-
 import { Card } from "@/components/ui/card";
-import { Weight, Plus, TrendingDown, TrendingUp } from "lucide-react";
+import { Weight, Plus, TrendingDown } from "lucide-react";
 import { useState } from "react";
 import TrackingModal from "./TrackingModal";
-import { useAppData } from "@/hooks/useAppData";
+
+const recentWeights = [
+  { date: "Today", weight: 78.2, change: -0.3 },
+  { date: "Yesterday", weight: 78.5, change: -0.1 },
+  { date: "2 days ago", weight: 78.6, change: +0.2 },
+  { date: "3 days ago", weight: 78.4, change: -0.4 },
+  { date: "4 days ago", weight: 78.8, change: +0.1 },
+  { date: "5 days ago", weight: 78.7, change: -0.2 },
+  { date: "6 days ago", weight: 78.9, change: +0.3 },
+];
 
 export default function WeightTracker() {
-  const { weightEntries } = useAppData();
   const [showTrackingModal, setShowTrackingModal] = useState(false);
-  
-  const recentWeights = weightEntries.slice(0, 7);
-  const currentWeight = recentWeights[0] || { weight: 0, change: 0 };
   
   const maxWeight = Math.max(...recentWeights.map(w => w.weight));
   const minWeight = Math.min(...recentWeights.map(w => w.weight));
-  const weightRange = maxWeight - minWeight || 1;
+  const weightRange = maxWeight - minWeight;
 
   const handleAddWeightClick = () => {
     setShowTrackingModal(true);
@@ -39,94 +43,79 @@ export default function WeightTracker() {
         {/* Current Weight Display */}
         <div className="mb-4 p-4 bg-gradient-to-r from-red-50 to-red-100 rounded-lg">
           <div className="text-center">
-            <div className="text-2xl font-bold text-red-800 mb-1">{currentWeight.weight} kg</div>
-            <div className="flex items-center justify-center gap-1 text-sm">
-              {currentWeight.change < 0 ? (
-                <>
-                  <TrendingDown size={14} className="text-green-600" />
-                  <span className="text-green-600">{Math.abs(currentWeight.change)} kg from yesterday</span>
-                </>
-              ) : currentWeight.change > 0 ? (
-                <>
-                  <TrendingUp size={14} className="text-red-600" />
-                  <span className="text-red-600">+{currentWeight.change} kg from yesterday</span>
-                </>
-              ) : (
-                <span className="text-gray-600">No change from yesterday</span>
-              )}
+            <div className="text-2xl font-bold text-red-800 mb-1">78.2 kg</div>
+            <div className="flex items-center justify-center gap-1 text-sm text-green-600">
+              <TrendingDown size={14} />
+              <span>0.3 kg from yesterday</span>
             </div>
             <div className="mt-2 text-xs text-red-600">
-              {currentWeight.change < 0 ? "Keep it up! You're on track." : currentWeight.change > 0 ? "Don't worry, stay consistent!" : "Steady progress!"}
+              Keep it up! You're on track.
             </div>
           </div>
         </div>
 
         {/* Weight Graph - Simplified for Mobile */}
-        {recentWeights.length > 1 && (
-          <div className="mb-4 p-3 bg-red-50 rounded-lg">
-            <div className="text-center mb-3">
-              <div className="text-sm font-semibold text-red-800">7-Day Trend</div>
-            </div>
-            <div className="relative h-16">
-              <svg className="w-full h-full" viewBox="0 0 300 60">
-                <defs>
-                  <linearGradient id="weightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#ef4444" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#ef4444" stopOpacity="0.1" />
-                  </linearGradient>
-                </defs>
-                
-                {/* Weight line */}
-                <polyline
-                  fill="none"
-                  stroke="#ef4444"
-                  strokeWidth="2"
-                  points={recentWeights.reverse().map((w, i) => {
-                    const x = (i / (recentWeights.length - 1)) * 280 + 10;
-                    const y = 50 - ((w.weight - minWeight) / weightRange) * 30;
-                    return `${x},${y}`;
-                  }).join(' ')}
-                />
-                
-                {/* Data points */}
-                {recentWeights.map((w, i) => {
-                  const x = (i / (recentWeights.length - 1)) * 280 + 10;
-                  const y = 50 - ((w.weight - minWeight) / weightRange) * 30;
-                  return (
-                    <circle
-                      key={i}
-                      cx={x}
-                      cy={y}
-                      r="2"
-                      fill="#ef4444"
-                      stroke="white"
-                      strokeWidth="1"
-                    />
-                  );
-                })}
-                
-                {/* Fill area under line */}
-                <polygon
-                  fill="url(#weightGradient)"
-                  points={`10,50 ${recentWeights.map((w, i) => {
-                    const x = (i / (recentWeights.length - 1)) * 280 + 10;
-                    const y = 50 - ((w.weight - minWeight) / weightRange) * 30;
-                    return `${x},${y}`;
-                  }).join(' ')} 290,50`}
-                />
-              </svg>
-            </div>
+        <div className="mb-4 p-3 bg-red-50 rounded-lg">
+          <div className="text-center mb-3">
+            <div className="text-sm font-semibold text-red-800">7-Day Trend</div>
           </div>
-        )}
+          <div className="relative h-16">
+            <svg className="w-full h-full" viewBox="0 0 300 60">
+              <defs>
+                <linearGradient id="weightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#ef4444" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#ef4444" stopOpacity="0.1" />
+                </linearGradient>
+              </defs>
+              
+              {/* Weight line */}
+              <polyline
+                fill="none"
+                stroke="#ef4444"
+                strokeWidth="2"
+                points={recentWeights.reverse().map((w, i) => {
+                  const x = (i / (recentWeights.length - 1)) * 280 + 10;
+                  const y = 50 - ((w.weight - minWeight) / (weightRange || 1)) * 30;
+                  return `${x},${y}`;
+                }).join(' ')}
+              />
+              
+              {/* Data points */}
+              {recentWeights.map((w, i) => {
+                const x = (i / (recentWeights.length - 1)) * 280 + 10;
+                const y = 50 - ((w.weight - minWeight) / (weightRange || 1)) * 30;
+                return (
+                  <circle
+                    key={i}
+                    cx={x}
+                    cy={y}
+                    r="2"
+                    fill="#ef4444"
+                    stroke="white"
+                    strokeWidth="1"
+                  />
+                );
+              })}
+              
+              {/* Fill area under line */}
+              <polygon
+                fill="url(#weightGradient)"
+                points={`10,50 ${recentWeights.map((w, i) => {
+                  const x = (i / (recentWeights.length - 1)) * 280 + 10;
+                  const y = 50 - ((w.weight - minWeight) / (weightRange || 1)) * 30;
+                  return `${x},${y}`;
+                }).join(' ')} 290,50`}
+              />
+            </svg>
+          </div>
+        </div>
 
         {/* Recent Entries - Compact Mobile View */}
         <div className="space-y-2">
           <h3 className="font-semibold text-red-800 text-sm">Recent Entries</h3>
-          {recentWeights.slice(0, 3).map((entry, i) => (
+          {recentWeights.reverse().slice(0, 3).map((entry, i) => (
             <div key={i} className="flex justify-between items-center py-2 px-3 bg-red-50 rounded-lg">
-              <span className="text-sm text-gray-600">
-                {i === 0 ? 'Today' : `${i} day${i > 1 ? 's' : ''} ago`}
-              </span>
+              <span className="text-sm text-gray-600">{entry.date}</span>
               <div className="flex items-center gap-2">
                 <span className="font-medium text-sm">{entry.weight} kg</span>
                 <span className={`text-xs px-2 py-1 rounded-full ${
