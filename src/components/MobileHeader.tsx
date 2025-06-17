@@ -1,4 +1,3 @@
-
 import { Calendar, Settings } from "lucide-react";
 import {
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useMobileApp } from "@/hooks/useMobileApp";
 
 interface MobileHeaderProps {
   title?: string;
@@ -23,6 +23,7 @@ export default function MobileHeader({
   onOpenCreditGoalsModal 
 }: MobileHeaderProps) {
   const { toast } = useToast();
+  const { isNative, platform, deviceInfo } = useMobileApp();
 
   const handleClearData = () => {
     localStorage.clear();
@@ -36,7 +37,9 @@ export default function MobileHeader({
     const data = {
       onboarding: localStorage.getItem('onboarding_data'),
       profile: localStorage.getItem('user_profile'),
-      completed: localStorage.getItem('onboarding_completed')
+      completed: localStorage.getItem('onboarding_completed'),
+      platform: platform,
+      deviceInfo: deviceInfo
     };
     
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -89,7 +92,7 @@ export default function MobileHeader({
   };
 
   return (
-    <header className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 px-4 py-3 z-40">
+    <header className={`sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 px-4 py-3 z-40 ${isNative ? 'safe-area-pt' : ''}`}>
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-gray-900">{title}</h1>
         <div className="flex items-center gap-3">
@@ -102,12 +105,12 @@ export default function MobileHeader({
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-8 w-8 mobile-button touch-feedback">
                 <Settings size={16} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Settings</DropdownMenuLabel>
+              <DropdownMenuLabel>Settings {isNative && `(${platform})`}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               
               {onOpenCreditGoalsModal && (
