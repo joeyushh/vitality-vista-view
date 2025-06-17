@@ -42,8 +42,10 @@ export class CapacitorService {
 
   static async setStatusBarStyle(style: 'LIGHT' | 'DARK' = 'LIGHT') {
     if (this.isNative()) {
-      const { StatusBar } = await import('@capacitor/status-bar');
-      await StatusBar.setStyle({ style });
+      const { StatusBar, Style } = await import('@capacitor/status-bar');
+      await StatusBar.setStyle({ 
+        style: style === 'LIGHT' ? Style.Light : Style.Dark 
+      });
     }
   }
 
