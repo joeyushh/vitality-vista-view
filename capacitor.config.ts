@@ -2,7 +2,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.2ac92cb0e998418ba3c3c872255db881',
+  appId: 'com.lovable.vitalityvista',
   appName: 'Vitality Vista',
   webDir: 'dist',
   server: {
