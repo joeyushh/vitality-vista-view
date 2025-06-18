@@ -31,6 +31,7 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --keyboard-height: 0px;
   }
 
   .dark {
@@ -71,10 +72,10 @@
   }
 }
 
-/* Mobile-specific styles */
+/* iOS-specific styles */
 @layer utilities {
   .safe-area-pb {
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: max(env(safe-area-inset-bottom), 20px);
   }
   
   .safe-area-pt {
@@ -95,53 +96,136 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Touch feedback */
-  .touch-feedback {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-    tap-highlight-color: rgba(0, 0, 0, 0.1);
+  /* iOS-specific app styles */
+  .ios-app {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
-  /* Smooth scrolling for mobile */
+  .ios-native-app {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-focus-ring-color: transparent;
+    outline: none;
+  }
+
+  /* Enhanced touch feedback for iOS */
+  .touch-feedback {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
+    tap-highlight-color: rgba(0, 0, 0, 0.05);
+    transform: translateZ(0);
+    transition: transform 0.1s ease-out;
+  }
+
+  .touch-feedback:active {
+    transform: scale(0.98) translateZ(0);
+  }
+
+  /* Smooth scrolling for iOS */
   .mobile-scroll {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+    scroll-behavior: smooth;
   }
 
-  /* Better button interactions for mobile */
+  /* Better button interactions for iOS */
   .mobile-button {
     touch-action: manipulation;
     user-select: none;
     -webkit-user-select: none;
+    cursor: pointer;
+  }
+
+  /* iOS keyboard handling */
+  .keyboard-open {
+    transform: translateY(calc(-1 * var(--keyboard-height) / 2));
+    transition: transform 0.3s ease-out;
+  }
+
+  /* iOS-specific scrollable areas */
+  .scrollable {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+
+  /* iOS app state classes */
+  .app-background {
+    filter: brightness(0.8);
+  }
+
+  .app-active {
+    filter: brightness(1);
+    transition: filter 0.2s ease-in-out;
   }
 }
 
-/* Animation for smooth transitions */
+/* iOS-specific animations */
+.ios-slide-in {
+  animation: iosSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ios-slide-out {
+  animation: iosSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes iosSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes iosSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+/* Enhanced fade in animation for iOS */
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-/* iOS-specific adjustments */
+/* iOS-specific safe area adjustments */
 @supports (-webkit-touch-callout: none) {
   .ios-safe-area {
     padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: max(env(safe-area-inset-bottom), 20px);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 }
 
-/* Android-specific adjustments */
-@media screen and (max-width: 768px) {
-  .android-navbar-spacing {
-    margin-bottom: env(safe-area-inset-bottom, 0px);
+/* iOS-specific media queries */
+@media screen and (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+  .ios-optimized {
+    font-size: 16px; /* Prevent zoom on input focus */
+  }
+  
+  .ios-button {
+    min-height: 44px; /* iOS minimum touch target */
+    min-width: 44px;
   }
 }

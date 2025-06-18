@@ -3,7 +3,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.lovable.2ac92cb0e998418ba3c3c872255db881',
-  appName: 'vitality-vista-view',
+  appName: 'Vitality Vista',
   webDir: 'dist',
   server: {
     url: 'https://2ac92cb0-e998-418b-a3c3-c872255db881.lovableproject.com?forceHideBadge=true',
@@ -13,18 +13,31 @@ const config: CapacitorConfig = {
     SplashScreen: {
       launchShowDuration: 2000,
       backgroundColor: '#ffffff',
-      showSpinner: false
+      showSpinner: false,
+      androidSpinnerStyle: 'small',
+      iosSpinnerStyle: 'small',
+      spinnerColor: '#007AFF'
     },
     StatusBar: {
-      style: 'LIGHT_CONTENT',
+      style: 'LIGHT',
       backgroundColor: '#ffffff'
+    },
+    Keyboard: {
+      resize: 'ionic',
+      resizeOnFullScreen: true
     }
   },
   ios: {
-    contentInset: 'automatic'
+    contentInset: 'automatic',
+    backgroundColor: '#ffffff',
+    allowsLinkPreview: false,
+    handleApplicationNotifications: false,
+    preferredContentMode: 'mobile'
   },
   android: {
-    allowMixedContent: true
+    allowMixedContent: true,
+    backgroundColor: '#ffffff',
+    webContentsDebuggingEnabled: false
   }
 };
 
