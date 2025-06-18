@@ -33,9 +33,10 @@ const App = () => {
       // Add iOS-specific body classes
       document.body.classList.add('ios-native-app');
       
-      // Disable text selection for better native feel
-      document.body.style.webkitUserSelect = 'none';
-      document.body.style.webkitTouchCallout = 'none';
+      // Disable text selection for better native feel - using proper typing
+      const bodyStyle = document.body.style as any;
+      bodyStyle.webkitUserSelect = 'none';
+      bodyStyle.webkitTouchCallout = 'none';
     }
   }, [isIOS, isNative]);
 
