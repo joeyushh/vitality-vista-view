@@ -10,6 +10,7 @@ import DateNavigation from "@/components/DateNavigation";
 import SimpleOnboardingFlow from "@/components/SimpleOnboardingFlow";
 import { SimpleOnboardingData } from "@/types/onboarding-simple";
 import CreditGoalsModal from "@/components/CreditGoalsModal";
+import { SafeStorage } from "@/utils/storage";
 import { useState, useEffect } from "react";
 
 // Available credit goals to choose from (same as in Rewards page)
@@ -48,8 +49,8 @@ export default function Index() {
   const handleOnboardingComplete = (data: SimpleOnboardingData) => {
     console.log('Onboarding completed with data:', data);
     // Save the simplified data
-    localStorage.setItem('onboarding_completed', 'true');
-    localStorage.setItem('user_profile', JSON.stringify(data));
+    SafeStorage.setItem('onboarding_completed', 'true');
+    SafeStorage.setItem('user_profile', JSON.stringify(data));
     setShowOnboarding(false);
     setIsFirstTime(false);
     
@@ -65,14 +66,14 @@ export default function Index() {
   };
 
   const handleSkipOnboarding = () => {
-    localStorage.setItem('onboarding_completed', 'true');
+    SafeStorage.setItem('onboarding_completed', 'true');
     setShowOnboarding(false);
     setIsFirstTime(false);
   };
 
   // Check if user should see onboarding on mount
   useEffect(() => {
-    const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
+    const hasCompletedOnboarding = SafeStorage.getItem('onboarding_completed');
     if (!hasCompletedOnboarding) {
       setShowOnboarding(true);
     } else {
@@ -80,7 +81,7 @@ export default function Index() {
     }
 
     // Load user profile if available
-    const savedProfile = localStorage.getItem('user_profile');
+    const savedProfile = SafeStorage.getItem('user_profile');
     if (savedProfile) {
       try {
         const profile = JSON.parse(savedProfile);
